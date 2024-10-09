@@ -1,5 +1,4 @@
-﻿
-namespace App.Data.Entities;
+﻿namespace App.Data.Entities.Data;
 
 public class AboutMe : Entity
 {

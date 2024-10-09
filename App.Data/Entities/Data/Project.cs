@@ -1,7 +1,6 @@
-﻿
-using App.Data.Entities.Auth;
+﻿using App.Data.Entities.Auth;
 
-namespace App.Data.Entities;
+namespace App.Data.Entities.Data;
 
 public class Project : Entity
 {
