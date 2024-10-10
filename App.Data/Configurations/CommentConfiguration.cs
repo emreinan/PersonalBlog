@@ -15,10 +15,12 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
 
         builder.HasOne(c => c.User)
             .WithMany(u => u.Comments)
-            .HasForeignKey(c => c.UserId);
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.Post)
             .WithMany(bp => bp.Comments)
-            .HasForeignKey(c => c.PostId);
+            .HasForeignKey(c => c.PostId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace App.Data.Entities.Auth;
 
-public class RefreshToken : Entity
+public class RefreshToken : Entity<Guid>
 {
     public Guid UserId { get; set; }
     public string Token { get; set; }

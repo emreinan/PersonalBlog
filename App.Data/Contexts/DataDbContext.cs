@@ -1,4 +1,5 @@
-﻿using App.Data.Entities.Data;
+﻿using App.Data.Configurations;
+using App.Data.Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,14 @@ public class DataDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder.ApplyConfiguration(new AboutMeConfiguration());
+        modelBuilder.ApplyConfiguration(new ExperienceConfiguration());
+        modelBuilder.ApplyConfiguration(new EducationConfiguration());
+        modelBuilder.ApplyConfiguration(new BlogPostConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentConfiguration());
+        modelBuilder.ApplyConfiguration(new ContactMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new PersonalInfoConfiguration());
+        modelBuilder.ApplyConfiguration(new ProjectConfiguration());
+
     }
 }

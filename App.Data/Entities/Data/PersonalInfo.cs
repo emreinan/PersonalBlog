@@ -1,6 +1,6 @@
 ﻿namespace App.Data.Entities.Data;
 
-public class PersonalInfo : Entity
+public class PersonalInfo : Entity<int>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

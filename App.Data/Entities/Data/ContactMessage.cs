@@ -1,6 +1,6 @@
 ﻿namespace App.Data.Entities.Data;
 
-public class ContactMessage : Entity
+public class ContactMessage : Entity<int>
 {
     public string Name { get; set; }
     public string Email { get; set; }

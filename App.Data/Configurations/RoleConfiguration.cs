@@ -14,3 +14,23 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.HasIndex(r => r.Name).IsUnique();
     }
 }
+internal class RoleEntitySeed : IEntityTypeConfiguration<Role>
+{
+    public void Configure(EntityTypeBuilder<Role> builder)
+    {
+        builder.HasData(
+            new Role
+            {
+                Id = 1,
+                Name = "Admin",
+                CreatedAt = DateTime.Now
+            },
+            new Role
+            {
+                Id = 2,
+                Name = "Commenter",
+                CreatedAt = DateTime.Now
+            }
+        );
+    }
+}

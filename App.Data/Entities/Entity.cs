@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace App.Data.Entities;
 
-public class Entity
+public class Entity<T>
 {
-    public Guid Id { get; set; }
+    public T Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

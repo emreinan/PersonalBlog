@@ -15,6 +15,7 @@ public class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
 
         builder.HasOne(bp => bp.User)
             .WithMany(u => u.BlogPosts)
-            .HasForeignKey(bp => bp.UserId);
+            .HasForeignKey(bp => bp.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

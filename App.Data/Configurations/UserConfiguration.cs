@@ -1,4 +1,5 @@
 ﻿using App.Data.Entities.Auth;
+using App.Shared.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -25,30 +26,70 @@ public class UserConfiguraiton : IEntityTypeConfiguration<User>
         builder.HasOne(u => u.Role)
             .WithMany()
             .HasForeignKey(u => u.RoleId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(u => u.RefreshTokens)
             .WithOne(r => r.User)
-            .HasForeignKey(r => r.UserId);
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(u => u.Experiences)
             .WithOne(e => e.User)
-            .HasForeignKey(e => e.UserId);
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(u => u.Educations)
             .WithOne(e => e.User)
-            .HasForeignKey(e => e.UserId);
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(u => u.Projects)
             .WithOne(p => p.User)
-            .HasForeignKey(p => p.UserId);
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(u => u.Comments)
             .WithOne(c => c.User)
-            .HasForeignKey(c => c.UserId);
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(u => u.BlogPosts)
             .WithOne(bp => bp.User)
-            .HasForeignKey(bp => bp.UserId);
+            .HasForeignKey(bp => bp.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+    }
+
+}
+
+internal class UserEntitySeed : IEntityTypeConfiguration<User>
+{
+
+    public void Configure(EntityTypeBuilder<User> builder)
+    {
+        HashingHelper.CreatePasswordHash("1234", out byte[] passwordHash, out byte[] passwordSalt);
+
+        builder.HasData(
+            new User
+            {
+                Id = Guid.NewGuid(),
+                Username = "admin",
+                Email = "admin@mail.com",
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                RoleId = 1,
+                CreatedAt = DateTime.Now
+            },
+            new User
+            {
+            Id = Guid.NewGuid(),
+            Username = "commenter",
+            Email = "commenter@mail.com",
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt,
+            RoleId = 2,
+            CreatedAt = DateTime.Now
+            }
+        );
     }
 }

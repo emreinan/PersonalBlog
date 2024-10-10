@@ -2,7 +2,7 @@
 
 namespace App.Data.Entities.Data;
 
-public class Project : Entity
+public class Project : Entity<int>
 {
     public string Title { get; set; }
     public string Description { get; set; }

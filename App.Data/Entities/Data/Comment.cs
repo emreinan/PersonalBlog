@@ -2,7 +2,7 @@
 
 namespace App.Data.Entities.Data;
 
-public class Comment : Entity
+public class Comment : Entity<int>
 {
     public string Content { get; set; }
     public bool IsApproved { get; set; } = false;

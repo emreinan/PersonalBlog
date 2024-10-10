@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace App.Data.Entities.Data;
 
-public class Experience : Entity
+public class Experience : Entity<int>
 {
     public string Title { get; set; }
     public string Company { get; set; }

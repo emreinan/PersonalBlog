@@ -2,7 +2,7 @@
 
 namespace App.Data.Entities.Data;
 
-public class BlogPost : Entity
+public class BlogPost : Entity<Guid>
 {
     public string Title { get; set; }
     public string Content { get; set; }
