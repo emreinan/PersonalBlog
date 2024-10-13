@@ -21,10 +21,19 @@ namespace App.Auth.Api.Controllers
             return await authService.RegisterAsync(registerDto);
         }
         [HttpGet("verify-email")]
-        public async Task<Result> VerifyEmail(VerifyEmailDto verifyEmailDto)
+        public async Task<Result> VerifyEmail([FromQuery]VerifyEmailDto verifyEmailDto)
         {
             return await authService.VerifyEmailAsync(verifyEmailDto);
         }
-        
+        [HttpPost("forgot-password")]
+        public async Task<Result> ForgotPassword(ForgotPasswordRequest forgotPasswordRequest)
+        {
+            return await authService.ForgotPasswordAsync(forgotPasswordRequest);
+        }
+        [HttpGet("reset-password")]
+        public async Task<Result> ResetPassword(ResetPasswordRequest resetPasswordRequest)
+        {
+            return await authService.ResetPasswordAsync(resetPasswordRequest);
+        }
     }
 }

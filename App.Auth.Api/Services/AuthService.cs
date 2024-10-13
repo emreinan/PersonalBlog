@@ -11,9 +11,22 @@ namespace App.Auth.Api.Services;
 
 public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, IMailService emailService) : IAuthService
 {
-    public Task<Result> ForgotPasswordAsync(ForgotPasswordRequest forgotPasswordRequest)
+    public async Task<Result> ForgotPasswordAsync(ForgotPasswordRequest forgotPasswordRequest)
     {
-        throw new NotImplementedException();
+        var user = await authDbContext.Users.SingleOrDefaultAsync(x => x.Email == forgotPasswordRequest.Email);
+        if (user is null)
+            return Result.Error("User not found");
+
+        string domain = "https://localhost:7213";
+        string httpEncodeEmail = HttpUtility.UrlEncode(user.Email);
+        var resetPasswordLink = $"{domain}/api/auth/reset-password?Email={httpEncodeEmail}";
+
+        var emailBody = $@"<h1>Reset Password</h1>
+                            <p>Click the link below to reset your password</p>
+                            <a href='{resetPasswordLink}'>Reset Password</a>";
+        await emailService.SendEmailAsync(user.Email, "Reset Password", emailBody);
+
+        return Result.Success();
     }
 
     public async Task<Result<LoggedResponse>> LoginAsync(LoginDto loginDto)
@@ -21,7 +34,7 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
         var user = await authDbContext.Users
             .Include(x => x.Role)
             .Include(x => x.RefreshTokens)
-            .FirstOrDefaultAsync(x => x.Email == loginDto.Email);
+            .SingleOrDefaultAsync(x => x.Email == loginDto.Email);
 
         if (user is null)
             return Result<LoggedResponse>.NotFound("User not found");
@@ -30,8 +43,11 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
         if (!passwordValid)
             return Result<LoggedResponse>.Invalid(new ValidationError("Invalid password"));
 
-        //if (!user.IsActive)
-        //    return Result<LoggedResponse>.Invalid(new ValidationError("User is not active"));
+        if (!user.IsActive)
+        {
+            await SendVerifyEmail(authDbContext, emailService, user);
+            return Result<LoggedResponse>.Error("Please verify your email");
+        }
 
         await tokenHelper.RevokedOldRefreshTokens(user); //Logout olunca RefreshToken bir daha kullanılmasın diye.
 
@@ -44,14 +60,9 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
         });
     }
 
-    public Task<Result<string>> RefreshTokenAsync(RefreshTokenRequest refreshTokenRequest)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Result> RegisterAsync(RegisterDto registerDto)
     {
-        var email = await authDbContext.Users.FirstOrDefaultAsync(x => x.Email == registerDto.Email);
+        var email = await authDbContext.Users.SingleOrDefaultAsync(x => x.Email == registerDto.Email);
         if (email is not null)
             return Result.Error("Email already exists");
 
@@ -67,34 +78,32 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
 
         await authDbContext.Users.AddAsync(user);
         await authDbContext.SaveChangesAsync();
-
-        var verificationCode = Guid.NewGuid().ToString().Substring(0, 6);
-        user.VerificationCode = verificationCode;
-        await authDbContext.SaveChangesAsync();
-
-        string domain = "https://localhost:7213";
-        string httpEncodeEmail = HttpUtility.UrlEncode(user.Email);
-        string verficationLink = $"{domain}/api/Auth/VerifyEmail?Email={httpEncodeEmail}&Code={verificationCode}";
-
-        var emailBody = $"""
-                            <h1>Welcome{user.UserName}</h1>
-                            <p>Your verification code is: {verificationCode}</p>
-                            <p>Click the link below to verify your email</p>
-                            <a href='{verficationLink}'>Verify Email</a>
-                            """;
-        await emailService.SendEmailAsync(user.Email, "Welcome to MessagingApp!", emailBody);
+        await SendVerifyEmail(authDbContext, emailService, user);
 
         return Result.Success();
     }
 
-    public Task<Result> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
+
+    public async Task<Result> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
     {
-        throw new NotImplementedException();
+        var user = await authDbContext.Users.SingleOrDefaultAsync(x => x.Email == resetPasswordRequest.Email);
+        if (user is null)
+            return Result.Error("User not found");
+
+        if(resetPasswordRequest.Password != resetPasswordRequest.PasswordRepeat)
+            return Result.Error("Passwords do not match");
+
+        HashingHelper.CreatePasswordHash(resetPasswordRequest.Password, out var passwordHash, out var passwordSalt);
+        user.PasswordHash = passwordHash;
+        user.PasswordSalt = passwordSalt;
+        await authDbContext.SaveChangesAsync();
+
+        return Result.Success();
     }
 
     public async Task<Result> VerifyEmailAsync(VerifyEmailDto verifyEmailDto)
     {
-       var user = await authDbContext.Users.FirstOrDefaultAsync(x => x.Email == verifyEmailDto.Email);
+       var user = await authDbContext.Users.SingleOrDefaultAsync(x => x.Email == verifyEmailDto.Email);
         if (user is null)
             return Result.Error("User not found");
 
@@ -106,5 +115,23 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
 
         return Result.Success();
 
+    }
+    private static async Task SendVerifyEmail(AuthDbContext authDbContext, IMailService emailService, User user)
+    {
+        var verificationCode = Guid.NewGuid().ToString().Substring(0, 6);
+        user.VerificationCode = verificationCode;
+        await authDbContext.SaveChangesAsync();
+
+        string domain = "https://localhost:7213";
+        string httpEncodeEmail = HttpUtility.UrlEncode(user.Email);
+        string verificationLink = $"{domain}/api/auth/verify-email?Email={httpEncodeEmail}&Code={verificationCode}";
+
+        var emailBody = $"""
+                            <h1>Welcome{user.UserName}</h1>
+                            <p>Your verification code is: {verificationCode}</p>
+                            <p>Click the link below to verify your email</p>
+                            <a href='{verificationLink}'>Verify Email</a>
+                            """;
+        await emailService.SendEmailAsync(user.Email, "Welcome to MessagingApp!", emailBody);
     }
 }

@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthDbRegistrations(builder.Configuration);
-builder.Services.AddAuthService();
+builder.Services.AddAuthService(builder.Configuration);
 
 var app = builder.Build();
 
