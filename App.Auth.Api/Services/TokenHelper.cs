@@ -58,7 +58,14 @@ public class TokenHelper(IConfiguration configuration,AuthDbContext authDbContex
         return newRefreshToken;
     }
 
-
+    public async Task<RefreshToken> RotateRefreshToken(User user, RefreshToken refreshToken)
+    {
+        refreshToken.Revoked = DateTime.UtcNow;
+        refreshToken.ReasonRevoked = "Replaced by new token";
+        var newRefreshToken = await CreateRefreshTokenAsync(user);
+        await authDbContext.SaveChangesAsync();
+        return newRefreshToken;
+    }
 
     public async Task RevokedOldRefreshTokens(User user)
     {
