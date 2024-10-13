@@ -134,4 +134,31 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
                             """;
         await emailService.SendEmailAsync(user.Email, "Welcome to MessagingApp!", emailBody);
     }
+
+    public async Task<Result<RefreshedTokenResponse>> RefrehsTokenAsync(RefreshTokenRequest refreshTokenRequest)
+    {
+        var refreshToken = await authDbContext.RefreshTokens.SingleOrDefaultAsync(x => x.Token == refreshTokenRequest.Token);
+
+        if (refreshToken is null)
+            return Result.Error("Refresh token not found");
+
+        if (refreshToken.Revoked is not null)
+            return Result.Error("Refresh token revoked");
+
+        if (refreshToken.ExpiresAt < DateTime.Now)
+            return Result.Error("Refresh token expired");
+
+        var user = await authDbContext.Users.SingleOrDefaultAsync(x => x.Id == refreshToken.UserId);
+        if (user is null)
+            return Result.Error("User not found");
+
+        var newRefreshToken = await tokenHelper.RotateRefreshToken(user, refreshToken);
+        var newAccessToken = tokenHelper.CreateAccessToken(user);
+
+        return Result<RefreshedTokenResponse>.Success(new RefreshedTokenResponse
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken.Token
+        });
+    }
 }
