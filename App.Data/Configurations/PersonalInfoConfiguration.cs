@@ -15,8 +15,15 @@ public class PersonalInfoConfiguration : IEntityTypeConfiguration<PersonalInfo>
         builder.Property(p => p.PhoneNumber).HasMaxLength(20);
         builder.Property(p => p.Email).IsRequired().HasMaxLength(150);
         builder.Property(p => p.BirthDate).IsRequired();
-        builder.Property(p => p.About).HasMaxLength(1000); 
+        builder.Property(p => p.About).HasMaxLength(1000);
 
+        new PersonalInfoSeed().Configure(builder);
+    }
+}
+internal class PersonalInfoSeed : IEntityTypeConfiguration<PersonalInfo>
+{
+    public void Configure(EntityTypeBuilder<PersonalInfo> builder)
+    {
         builder.HasData(new PersonalInfo
         {
             Id = 1,

@@ -1,3 +1,4 @@
+using App.Auth.Api.Services;
 using App.Data;
 using App.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthDbRegistrations(builder.Configuration);
+builder.Services.AddAuthService(builder.Configuration);
 
 var app = builder.Build();
 

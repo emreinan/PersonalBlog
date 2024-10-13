@@ -12,9 +12,11 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.Property(r => r.Name).IsRequired().HasMaxLength(50);
         builder.Property(r => r.CreatedAt).IsRequired();
         builder.HasIndex(r => r.Name).IsUnique();
+
+        new RoleSeed().Configure(builder);
     }
 }
-internal class RoleEntitySeed : IEntityTypeConfiguration<Role>
+internal class RoleSeed : IEntityTypeConfiguration<Role>
 {
     public void Configure(EntityTypeBuilder<Role> builder)
     {
