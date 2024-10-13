@@ -15,8 +15,8 @@ public class UserConfiguraiton : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(u => u.Id);
-        builder.Property(u => u.Username).IsRequired().HasMaxLength(50);
-        builder.HasIndex(u => u.Username).IsUnique();
+        builder.Property(u => u.UserName).IsRequired().HasMaxLength(50);
+        builder.HasIndex(u => u.UserName).IsUnique();
         builder.Property(u => u.Email).IsRequired().HasMaxLength(255);
         builder.HasIndex(u => u.Email).IsUnique();
         builder.Property(u => u.PasswordHash).IsRequired();
@@ -58,13 +58,13 @@ public class UserConfiguraiton : IEntityTypeConfiguration<User>
             .WithOne(bp => bp.User)
             .HasForeignKey(bp => bp.UserId)
             .OnDelete(DeleteBehavior.NoAction);
-    }
 
+        new UserSeed().Configure(builder);
+    }
 }
 
-internal class UserEntitySeed : IEntityTypeConfiguration<User>
+internal class UserSeed : IEntityTypeConfiguration<User>
 {
-
     public void Configure(EntityTypeBuilder<User> builder)
     {
         HashingHelper.CreatePasswordHash("1234", out byte[] passwordHash, out byte[] passwordSalt);
@@ -73,22 +73,24 @@ internal class UserEntitySeed : IEntityTypeConfiguration<User>
             new User
             {
                 Id = Guid.NewGuid(),
-                Username = "admin",
+                UserName = "admin",
                 Email = "admin@mail.com",
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 RoleId = 1,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                IsActive =true
             },
             new User
             {
             Id = Guid.NewGuid(),
-            Username = "commenter",
+            UserName = "commenter",
             Email = "commenter@mail.com",
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt,
             RoleId = 2,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now,
+            IsActive = true    
             }
         );
     }
