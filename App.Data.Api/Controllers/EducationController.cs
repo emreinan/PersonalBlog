@@ -39,12 +39,12 @@ namespace App.Data.Api.Controllers
 
             var education = new Education
             {
-                Id = educationDto.Id,
                 School = educationDto.School,
                 Degree = educationDto.Degree,
                 FieldOfStudy = educationDto.FieldOfStudy,
                 StartDate = educationDto.StartDate,
-                EndDate = educationDto.EndDate
+                EndDate = educationDto.EndDate,
+                CreatedAt = DateTime.UtcNow
             };
 
             await dbContext.Educations.AddAsync(education);
@@ -56,19 +56,17 @@ namespace App.Data.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEducation(int id, [FromBody] EducationDto educationDto)
         {
-            if (id != educationDto.Id)
-                return BadRequest("Education ID mismatch.");
 
             var education = await dbContext.Educations.FindAsync(id);
             if (education == null)
                 return NotFound("Education not found.");
 
-            education.Id = educationDto.Id;
             education.School = educationDto.School;
             education.Degree = educationDto.Degree;
             education.FieldOfStudy = educationDto.FieldOfStudy;
             education.StartDate = educationDto.StartDate;
             education.EndDate = educationDto.EndDate;
+            education.UpdatedAt = DateTime.UtcNow;
 
             dbContext.Educations.Update(education);
             await dbContext.SaveChangesAsync();

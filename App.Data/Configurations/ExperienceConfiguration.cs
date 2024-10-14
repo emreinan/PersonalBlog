@@ -15,9 +15,5 @@ public class ExperienceConfiguration : IEntityTypeConfiguration<Experience>
         builder.Property(e => e.StartDate).IsRequired();
         builder.Property(cm => cm.CreatedAt).IsRequired();
 
-        builder.HasOne(e => e.User)
-            .WithMany(u => u.Experiences)
-            .HasForeignKey(e => e.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

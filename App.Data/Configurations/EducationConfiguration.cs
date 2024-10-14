@@ -15,10 +15,5 @@ public class EducationConfiguration : IEntityTypeConfiguration<Education>
         builder.Property(e => e.StartDate).IsRequired();
         builder.Property(cm => cm.CreatedAt).IsRequired();
 
-
-        builder.HasOne(e => e.User)
-            .WithMany(u => u.Educations)
-            .HasForeignKey(e => e.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }
