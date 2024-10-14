@@ -10,7 +10,6 @@ public static class Extensions
 {
     public static IServiceCollection AddFileService(this IServiceCollection services)
     {
-        services.AddScoped<IFileService, FileService>();
         //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddScoped<IValidator<FileUploadRequest>, FileUploadRequestValidator>();
         services.AddScoped<IValidator<FileDownloadRequest>, FileDownloadRequestValidator>();
