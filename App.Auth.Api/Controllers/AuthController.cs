@@ -36,7 +36,7 @@ namespace App.Auth.Api.Controllers
             return await authService.ResetPasswordAsync(resetPasswordRequest);
         }
         [HttpPost("refresh-token")]
-        public async Task<Result> RefreshToken(RefreshTokenRequest refreshTokenRequest)
+        public async Task<Result<RefreshedTokenResponse>> RefreshToken(RefreshTokenRequest refreshTokenRequest)
         {
             return await authService.RefrehsTokenAsync(refreshTokenRequest);
         }

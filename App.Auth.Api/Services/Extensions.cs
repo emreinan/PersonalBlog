@@ -24,6 +24,7 @@ public static class Extensions
 
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
         services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
+        services.AddValidatorsFromAssemblyContaining<RefreshTokenRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<ForgotPasswordRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<ResetPasswordRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<VerifyEmailDtoValidator>();
