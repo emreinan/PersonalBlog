@@ -1,6 +1,5 @@
 ﻿using App.Shared.Dto.AboutMe;
 using App.Shared.Services.Abstract;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Data.Api.Controllers;
