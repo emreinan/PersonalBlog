@@ -11,7 +11,6 @@ public static class Extensions
             client.BaseAddress = new Uri(configuration["FileApiUrl"]);
         });
 
-        services.AddScoped<IAboutMeService, AboutMeService>();
         return services;
     }
 }

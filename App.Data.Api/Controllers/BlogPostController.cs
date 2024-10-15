@@ -102,7 +102,7 @@ public class BlogPostController(DataDbContext context, IHttpClientFactory httpCl
         var fileContent = new StreamContent(fileStream);
         formData.Add(fileContent, "file", image.FileName);
 
-        var response = await client.PostAsync("/api/file/upload", formData);
+        var response = await client.PostAsync("/api/File/Upload", formData);
 
         if (!response.IsSuccessStatusCode)
             return Result<string>.Error("Unexpected error occurred while uploading the file.");
