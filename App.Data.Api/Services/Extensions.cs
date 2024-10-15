@@ -1,4 +1,7 @@
-﻿using App.Shared.Services.Abstract;
+﻿using App.Shared.Dto.AboutMe;
+using App.Shared.Services.Abstract;
+using App.Shared.Services.Concrate;
+using FluentValidation;
 
 namespace App.Data.Api.Services;
 
@@ -10,6 +13,8 @@ public static class Extensions
         {
             client.BaseAddress = new Uri(configuration["FileApiUrl"]);
         });
+
+        services.AddScoped<IFileService, FileApiService>();
 
         return services;
     }

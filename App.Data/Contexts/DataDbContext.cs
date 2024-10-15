@@ -15,7 +15,7 @@ public class DataDbContext : DbContext
     public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
     {
     }
-    public DbSet<AboutMe> AboutMe { get; set; }
+    public DbSet<AboutMe> AboutMes { get; set; }
     public DbSet<Experience> Experiences { get; set; }
     public DbSet<Education> Educations { get; set; }
     public DbSet<BlogPost> BlogPosts { get; set; }

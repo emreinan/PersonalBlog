@@ -4,7 +4,6 @@ using App.Shared.Services.Abstract;
 using App.Shared.Services.Concrate;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 

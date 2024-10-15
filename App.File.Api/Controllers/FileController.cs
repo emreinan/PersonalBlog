@@ -28,8 +28,8 @@ namespace App.File.Api.Controllers
                 {
                     await file.CopyToAsync(stream);
                 }
-                var fileUrl = Url.Action("GetByUrl", "File", new { fileName = file.FileName }, Request.Scheme);
-                return Ok(fileUrl);
+
+                return Ok(file.FileName);
             }
             catch (IOException)
             {
@@ -57,15 +57,19 @@ namespace App.File.Api.Controllers
         [HttpDelete("Delete")]
         public IActionResult Delete([FromQuery] string fileName)
         {
+
             var filePath = Path.Combine(GetFileSaveFolder(), fileName);
 
             if (!System.IO.File.Exists(filePath))
+            {
                 return NotFound("File not found.");
+            }
 
             System.IO.File.Delete(filePath);
 
             return Ok(filePath);
         }
+
         [HttpGet("GetByUrl")]
         public IActionResult GetByUrl([FromQuery] string fileName)
         {
@@ -80,14 +84,18 @@ namespace App.File.Api.Controllers
         }
         private static string GetFileSaveFolder()
         {
-            var fileSaveFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 
-            if (!Directory.Exists(fileSaveFolder))
-            {
-                Directory.CreateDirectory(fileSaveFolder);
-            }
+            // wwwroot klasörü yoksa oluşturuyoruz
+            if (!Directory.Exists(rootPath))
+                Directory.CreateDirectory(rootPath);
 
-            return fileSaveFolder;
+            var uploadFolderPath = Path.Combine(rootPath, "uploads");
+
+            if (!Directory.Exists(uploadFolderPath))
+                Directory.CreateDirectory(uploadFolderPath);
+
+            return uploadFolderPath; // Dosyaların kaydedileceği klasör
         }
         private static string GetContentType(string path)
         {

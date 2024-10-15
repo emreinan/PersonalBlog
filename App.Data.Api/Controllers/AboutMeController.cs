@@ -1,5 +1,6 @@
 ﻿using App.Data.Contexts;
 using App.Shared.Dto.AboutMe;
+using App.Shared.Services.Abstract;
 using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,23 +10,22 @@ using System.Net.Http;
 namespace App.Data.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class AboutMeController(DataDbContext context, IHttpClientFactory httpClientFactory) : ControllerBase
+public class AboutMeController(DataDbContext context, IFileService fileService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAboutMe()
     {
-        var aboutMe = await context.AboutMe.FirstOrDefaultAsync();
+        var aboutMe = await context.AboutMes.FirstOrDefaultAsync();
         if (aboutMe == null)
             return NotFound("AboutMe section not found.");
 
         return Ok(aboutMe);
     }
 
-    // Update AboutMe
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAboutMe(int id, [FromForm] AboutMeDto aboutMeDto)
     {
-        var aboutMe = await context.AboutMe.FindAsync(id);
+        var aboutMe = await context.AboutMes.FindAsync(id);
         if (aboutMe == null)
             return NotFound("AboutMe section not found.");
 
@@ -33,7 +33,7 @@ public class AboutMeController(DataDbContext context, IHttpClientFactory httpCli
 
         if (aboutMeDto.Image1 != null)
         {
-            var imageUrl1 = await UploadImageAsync(aboutMeDto.Image1);
+            var imageUrl1 = await fileService.UploadFileAsync(aboutMeDto.Image1);
             if (string.IsNullOrEmpty(imageUrl1))
                 return BadRequest("Image1 upload failed.");
 
@@ -42,71 +42,48 @@ public class AboutMeController(DataDbContext context, IHttpClientFactory httpCli
 
         if (aboutMeDto.Image2 != null)
         {
-            var imageUrl2 = await UploadImageAsync(aboutMeDto.Image2);
+            var imageUrl2 = await fileService.UploadFileAsync(aboutMeDto.Image2);
             if (string.IsNullOrEmpty(imageUrl2))
                 return BadRequest("Image2 upload failed.");
 
             aboutMe.ImageUrl2 = imageUrl2;
         }
 
-        context.AboutMe.Update(aboutMe);
+        context.AboutMes.Update(aboutMe);
         await context.SaveChangesAsync();
 
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAboutMe(int id, [FromQuery] string imageUrl)
+    public async Task<IActionResult> DeleteAboutMe(int id, [FromQuery] string fileName)
     {
-        var aboutMe = await context.AboutMe.FindAsync(id);
+        var aboutMe = await context.AboutMes.FindAsync(id);
 
         if (aboutMe == null)
             return NotFound();
 
-        if (!string.IsNullOrEmpty(imageUrl))
+        if (!string.IsNullOrEmpty(fileName))
         {
-            var deleteResult = await DeleteImageAsync(imageUrl);
+            var deleteResult = await fileService.DeleteFileAsync(fileName);
 
             if (!deleteResult.IsSuccess)
                 return BadRequest("File deletion failed.");
         }
 
-        context.AboutMe.Remove(aboutMe);
+        if (aboutMe.ImageUrl1 == fileName)
+        {
+            aboutMe.ImageUrl1 = ""; 
+        }
+        else if (aboutMe.ImageUrl2 == fileName)
+        {
+            aboutMe.ImageUrl2 = ""; 
+        }
+
+        context.AboutMes.Update(aboutMe);
         await context.SaveChangesAsync();
 
         return NoContent();
-    }
-
-
-    private async Task<Result> DeleteImageAsync(string imageUrl)
-    {
-        var client = httpClientFactory.CreateClient("FileApiClient");
-        
-        var response = await client.DeleteAsync($"api/File?fileUrl={imageUrl}");
-
-        if (!response.IsSuccessStatusCode)
-            return Result.Error("Unexpected error occurred while deleting the file.");
-
-        return Result.Success();
-
-    }
-    private async Task<Result<string>> UploadImageAsync(IFormFile image)
-    {
-        var client = httpClientFactory.CreateClient("FileApiClient");
-        var formData = new MultipartFormDataContent();
-
-        using var fileStream = image.OpenReadStream();
-        var fileContent = new StreamContent(fileStream);
-        formData.Add(fileContent, "file", image.FileName);
-
-        var response = await client.PostAsync("/api/File/Upload", formData);
-
-        if (!response.IsSuccessStatusCode)
-            return Result<string>.Error("Unexpected error occurred while uploading the file.");
-
-        var fileUrl = await response.Content.ReadAsStringAsync();
-        return Result<string>.Success(fileUrl);
-
     }
 }
 
