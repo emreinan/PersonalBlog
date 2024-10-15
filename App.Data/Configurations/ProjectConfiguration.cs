@@ -14,9 +14,5 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.ImageUrl).HasMaxLength(255);
         builder.Property(cm => cm.CreatedAt).IsRequired();
 
-        builder.HasOne(p => p.User)
-            .WithMany(u => u.Projects)
-            .HasForeignKey(p => p.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

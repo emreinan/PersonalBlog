@@ -34,29 +34,9 @@ public class UserConfiguraiton : IEntityTypeConfiguration<User>
             .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(u => u.Experiences)
-            .WithOne(e => e.User)
-            .HasForeignKey(e => e.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasMany(u => u.Educations)
-            .WithOne(e => e.User)
-            .HasForeignKey(e => e.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasMany(u => u.Projects)
-            .WithOne(p => p.User)
-            .HasForeignKey(p => p.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
-
         builder.HasMany(u => u.Comments)
             .WithOne(c => c.User)
             .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasMany(u => u.BlogPosts)
-            .WithOne(bp => bp.User)
-            .HasForeignKey(bp => bp.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
         new UserSeed().Configure(builder);

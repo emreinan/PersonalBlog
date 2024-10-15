@@ -1,8 +1,18 @@
-﻿namespace App.Shared.Dto.AboutMe;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
+
+namespace App.Shared.Dto.AboutMe;
 
 public class AboutMeDto
 {
-    public string? Introduciton { get; set; }
-    public string? ImageUrl1 { get; set; }
-    public string? ImageUrl2 { get; set; }
+    public string Introduciton { get; set; }
+    public IFormFile? Image1 { get; set; }
+    public IFormFile? Image2 { get; set; }
+}
+public class AboutMeDtoValidator : AbstractValidator<AboutMeDto>
+{
+    public AboutMeDtoValidator()
+    {
+        RuleFor(x => x.Introduciton).NotEmpty();
+    }
 }

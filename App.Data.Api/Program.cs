@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDataDbRegistrations(builder.Configuration);
-builder.Services.AddDataServices();
+builder.Services.AddDataServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -32,7 +32,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<DataDbContext>();
-    //await context.Database.EnsureDeletedAsync();
+    await context.Database.EnsureDeletedAsync();
     await context.Database.EnsureCreatedAsync();
 }
 

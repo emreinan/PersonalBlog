@@ -6,8 +6,7 @@ public class BlogPost : Entity<Guid>
 {
     public string Title { get; set; }
     public string Content { get; set; }
-    public Guid UserId { get; set; }
+    public string ImageUrl { get; set; }
 
-    public virtual User User { get; set; } = default!;
     public virtual ICollection<Comment> Comments { get; set; } = default!;
 }
