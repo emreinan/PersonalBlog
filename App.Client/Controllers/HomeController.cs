@@ -11,7 +11,7 @@ namespace App.Client.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult BlogPost()
         {
             return View();
         }
