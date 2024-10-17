@@ -1,10 +1,9 @@
-using App.Client.Models;
+using App.Client.Services.AboutMe;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace App.Client.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IAboutMeService aboutMeservice) : Controller
     {
         public IActionResult Index()
         {
