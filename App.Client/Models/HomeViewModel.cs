@@ -8,6 +8,9 @@ public class HomeViewModel
     public List<EducationViewModel> Educations { get; set; }
     public List<ProjectViewModel> Projects { get; set; }
     public PersonalInfoViewModel PersonalInfo { get; set; }
-}
+    public ContactMessageViewModel ContactMessage { get; set; }
+    public PersonalInfoAboutMeViewModel PersonalInfoAboutMe { get; set; }
 
+
+}
 

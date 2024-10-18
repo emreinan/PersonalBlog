@@ -1,127 +1,28 @@
-﻿@* @model HomeViewModel *@
+﻿@model HomeViewModel
 
-
-    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar ftco-navbar-light site-navbar-target" id="ftco-navbar">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">Clark</a>
-            <button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="oi oi-menu"></span> Menu
-            </button>
-
-            <div class="collapse navbar-collapse" id="ftco-nav">
-                <ul class="navbar-nav nav ml-auto">
-                    <li class="nav-item"><a href="#home-section" class="nav-link"><span>Home</span></a></li>
-                    <li class="nav-item"><a href="#about-section" class="nav-link"><span>About</span></a></li>
-                    <li class="nav-item"><a href="#resume-section" class="nav-link"><span>Resume</span></a></li>
-                    <li class="nav-item"><a href="#services-section" class="nav-link"><span>Services</span></a></li>
-                    <li class="nav-item"><a href="#skills-section" class="nav-link"><span>Skills</span></a></li>
-                    <li class="nav-item"><a href="#projects-section" class="nav-link"><span>Projects</span></a></li>
-                    <li class="nav-item"><a href="#blog-section" class="nav-link"><span>My Blog</span></a></li>
-                    <li class="nav-item"><a href="#contact-section" class="nav-link"><span>Contact</span></a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    
     <section id="home-section" class="hero">
-        <partial name="Index/_Hero.cshtml" />
+        <partial name="Index/_Hero.cshtml" model="@Model.AboutMe" />
     </section>
 
     <section class="ftco-about img ftco-section ftco-no-pb" id="about-section">
-    <partial name="Index/_AboutMe.cshtml" />
+    <partial name="Index/_AboutMe.cshtml" model="@Model.PersonalInfoAboutMe" />
     </section>
 
     <section class="ftco-section ftco-no-pb" id="resume-section">
-    <partial name="Index/_Resume.cshtml" />
+    <partial name="Index/_Resume.cshtml" model="@Model.Experiences"/>
     </section>
-
-    <section class="ftco-section" id="services-section">
-        <div class="container">
-            <div class="row justify-content-center py-5 mt-5">
-                <div class="col-md-12 heading-section text-center ftco-animate">
-                    <h1 class="big big-2">Services</h1>
-                    <h2 class="mb-4">Services</h2>
-                    <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 text-center d-flex ftco-animate">
-                    <a href="#" class="services-1">
-                        <span class="icon">
-                            <i class="flaticon-analysis"></i>
-                        </span>
-                        <div class="desc">
-                            <h3 class="mb-5">Web Design</h3>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4 text-center d-flex ftco-animate">
-                    <a href="#" class="services-1">
-                        <span class="icon">
-                            <i class="flaticon-flasks"></i>
-                        </span>
-                        <div class="desc">
-                            <h3 class="mb-5">Phtography</h3>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4 text-center d-flex ftco-animate">
-                    <a href="#" class="services-1">
-                        <span class="icon">
-                            <i class="flaticon-ideas"></i>
-                        </span>
-                        <div class="desc">
-                            <h3 class="mb-5">Web Developer</h3>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-md-4 text-center d-flex ftco-animate">
-                    <a href="#" class="services-1">
-                        <span class="icon">
-                            <i class="flaticon-analysis"></i>
-                        </span>
-                        <div class="desc">
-                            <h3 class="mb-5">App Developing</h3>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4 text-center d-flex ftco-animate">
-                    <a href="#" class="services-1">
-                        <span class="icon">
-                            <i class="flaticon-flasks"></i>
-                        </span>
-                        <div class="desc">
-                            <h3 class="mb-5">Branding</h3>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4 text-center d-flex ftco-animate">
-                    <a href="#" class="services-1">
-                        <span class="icon">
-                            <i class="flaticon-ideas"></i>
-                        </span>
-                        <div class="desc">
-                            <h3 class="mb-5">Product Strategy</h3>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
 
     <section class="ftco-section" id="skills-section">
     <partial name="Index/_Skills.cshtml" />
     </section>
 
-
     <section class="ftco-section ftco-project" id="projects-section">
-    <partial name="Index/_Projects.cshtml" />
+    <partial name="Index/_Projects.cshtml" model="@Model.Projects"/>
     </section>
 
-
     <section class="ftco-section" id="blog-section">
-    <partial name="Index/_BlogPosts.cshtml" />
+    <partial name="Index/_BlogPosts.cshtml" model="@Model.BlogPosts" />
     </section>
 
     <section class="ftco-section ftco-no-pt ftco-no-pb ftco-counter img" id="section-counter">
@@ -176,5 +77,5 @@
     </section>
 
     <section class="ftco-section contact-section ftco-no-pb" id="contact-section">
-    <partial name="Index/_Contact.cshtml" />
+    <partial name="Index/_Contact.cshtml" model="@Model.ContactMessage" />
     </section>

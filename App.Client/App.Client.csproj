@@ -24,4 +24,8 @@
     <Folder Include="Views\Home\Blogpost\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\App.Shared\App.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,9 @@
+using App.Client;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddClientMvcServices(builder.Configuration);
 
 var app = builder.Build();
 
