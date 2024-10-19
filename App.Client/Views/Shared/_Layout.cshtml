@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="Partials/_Head.cshtml" />
+</head>
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+    <partial name="Partials/_Navbar.cshtml" />
+    @RenderBody()
+
+    <footer class="ftco-footer ftco-section">
+        <partial name="Partials/_Footer.cshtml" />
+    </footer>
+
+    <partial name="Partials/_Loader.cshtml" />
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
