@@ -1,6 +1,9 @@
 
+using App.Shared.Services.Abstract;
 using App.Shared.Services.Concrate;
 using FluentValidation;
+using FluentValidation.AspNetCore;
+using System.Reflection;
 
 namespace App.Data.Api.Services;
 
@@ -17,6 +20,9 @@ public static class Extensions
         });
 
         services.AddScoped<IFileService, FileApiService>();
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddFluentValidationAutoValidation();
+
 
         return services;
     }

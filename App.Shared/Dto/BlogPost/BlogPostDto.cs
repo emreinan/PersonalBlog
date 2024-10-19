@@ -8,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace App.Shared.Dto.BlogPost;
 
-public class BlogPostCreateDto
-
+public class BlogPostDto
 {
     public string Title { get; set; }
     public string Content { get; set; }
     public IFormFile Image { get; set; } 
 }
-public class BlogPostDtoValidator : AbstractValidator<BlogPostCreateDto>
+public class BlogPostDtoValidator : AbstractValidator<BlogPostDto>
 {
     public BlogPostDtoValidator()
     {

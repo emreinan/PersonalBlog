@@ -1,6 +1,5 @@
-﻿using App.Shared.Dto.File;
-using App.Shared.Services.Abstract;
-using FluentValidation;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
 using System.Reflection;
 
 
@@ -10,9 +9,8 @@ public static class Extensions
 {
     public static IServiceCollection AddFileService(this IServiceCollection services)
     {
-        //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        services.AddScoped<IValidator<FileUploadRequest>, FileUploadRequestValidator>();
-        services.AddScoped<IValidator<FileDownloadRequest>, FileDownloadRequestValidator>();
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddFluentValidationAutoValidation();
 
         return services;
     }

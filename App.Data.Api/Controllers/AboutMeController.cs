@@ -11,7 +11,7 @@ using System.Net.Http;
 namespace App.Data.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class AboutMeController(DataDbContext context, IFileService fileService) : ControllerBase
+public class AboutMeController(DataDbContext context, IFileService fileService,IMapper mapper) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAboutMe()

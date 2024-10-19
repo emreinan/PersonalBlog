@@ -2,9 +2,7 @@
 using App.Data.Entities.Data;
 using App.Shared.Dto.BlogPost;
 using App.Shared.Services.Abstract;
-using Ardalis.Result;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +10,7 @@ namespace App.Data.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BlogPostController(DataDbContext context,IFileService fileService) : ControllerBase
+public class BlogPostController(DataDbContext context,IFileService fileService,IMapper mapper) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetBlogPosts()
@@ -37,7 +35,7 @@ public class BlogPostController(DataDbContext context,IFileService fileService) 
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBlogPost([FromForm] BlogPostCreateDto blogPostDto)
+    public async Task<IActionResult> CreateBlogPost([FromForm] BlogPostDto blogPostDto)
     {
         var uploadResult = await fileService.UploadFileAsync(blogPostDto.Image);
 
@@ -54,7 +52,7 @@ public class BlogPostController(DataDbContext context,IFileService fileService) 
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBlogPost(Guid id, [FromForm] BlogPostCreateDto blogPostDto)
+    public async Task<IActionResult> UpdateBlogPost(Guid id, [FromForm] BlogPostDto blogPostDto)
     {
         var blogPost = await context.BlogPosts.FindAsync(id);
 

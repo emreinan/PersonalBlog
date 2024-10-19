@@ -14,22 +14,22 @@ namespace App.File.Api.Controllers
     {
 
         [HttpPost("Upload")]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> Upload(FileUploadRequest fileUploadRequest)
         {
-            if (file == null || file.Length == 0)
+            if (fileUploadRequest.File == null || fileUploadRequest.File.Length == 0)
             {
                 return BadRequest("Invalid file.");
             }
-            var filePath = Path.Combine(GetFileSaveFolder(), file.FileName);
+            var filePath = Path.Combine(GetFileSaveFolder(), fileUploadRequest.File.FileName);
 
             try
             {
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await file.CopyToAsync(stream);
+                    await fileUploadRequest.File.CopyToAsync(stream);
                 }
 
-                return Ok(file.FileName);
+                return Ok(fileUploadRequest.File.FileName);
             }
             catch (IOException)
             {
@@ -38,9 +38,9 @@ namespace App.File.Api.Controllers
         }
 
         [HttpGet("Download")]
-        public async Task<IActionResult> Download([FromQuery] string fileName)
+        public async Task<IActionResult> Download([FromQuery] FileDownloadRequest fileDownloadRequest)
         {
-            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
+            var filePath = Path.Combine(GetFileSaveFolder(), fileDownloadRequest.FileName);
 
             if (!System.IO.File.Exists(filePath))
             {
@@ -50,15 +50,14 @@ namespace App.File.Api.Controllers
             var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
             var contentType = GetContentType(filePath);
 
-            return File(fileBytes, contentType, fileName);
+            return File(fileBytes, contentType, fileDownloadRequest.FileName);
 
         }
 
         [HttpDelete("Delete")]
-        public IActionResult Delete([FromQuery] string fileName)
+        public IActionResult Delete([FromQuery] FileDeleteRequest fileDeleteRequest)
         {
-
-            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
+            var filePath = Path.Combine(GetFileSaveFolder(), fileDeleteRequest.FileName);
 
             if (!System.IO.File.Exists(filePath))
             {
@@ -71,31 +70,26 @@ namespace App.File.Api.Controllers
         }
 
         [HttpGet("GetByUrl")]
-        public IActionResult GetByUrl([FromQuery] string fileName)
+        public IActionResult GetByUrl([FromQuery] FileGetUrlReuqest fileGetUrlReuqest)
         {
-            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
+            var filePath = Path.Combine(GetFileSaveFolder(), fileGetUrlReuqest.FileName);
             if (!System.IO.File.Exists(filePath))
             {
                 return NotFound("File not found.");
             }
             var contentType =GetContentType(filePath);
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
-            return File(fileBytes, contentType, fileName);
+            return File(fileBytes, contentType, fileGetUrlReuqest.FileName);
         }
         private static string GetFileSaveFolder()
         {
-            var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
 
-            // wwwroot klasörü yoksa oluşturuyoruz
-            if (!Directory.Exists(rootPath))
-                Directory.CreateDirectory(rootPath);
-
-            var uploadFolderPath = Path.Combine(rootPath, "uploads");
-
+            // uploads klasörü yoksa oluşturuyoruz
             if (!Directory.Exists(uploadFolderPath))
                 Directory.CreateDirectory(uploadFolderPath);
 
-            return uploadFolderPath; // Dosyaların kaydedileceği klasör
+            return uploadFolderPath; 
         }
         private static string GetContentType(string path)
         {

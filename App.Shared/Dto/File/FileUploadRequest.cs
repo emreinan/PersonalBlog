@@ -1,19 +1,17 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 
 namespace App.Shared.Dto.File;
 
 public class FileUploadRequest
 {
-    public Stream Stream { get; set; } = null!;
-    public string Name { get; set; } = null!;
+    public IFormFile File { get; set; }
 }
 public class FileUploadRequestValidator : AbstractValidator<FileUploadRequest>
 {
     public FileUploadRequestValidator()
     {
-        RuleFor(x => x.Stream).NotNull();
-        RuleFor(x => x.Name).NotEmpty()
-            .MinimumLength(1)
-            .Must(x => x.Contains('.'));
+        RuleFor(x => x.File).NotNull().WithMessage("File is not uploaded.")
+            .Must(x=>x.Length>0).WithMessage("File can not be empty.");
     }
 }

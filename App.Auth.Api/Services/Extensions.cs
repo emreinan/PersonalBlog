@@ -3,8 +3,10 @@ using App.Shared.Dto.Auth;
 using App.Shared.Services.Abstract;
 using App.Shared.Services.Concrate;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 namespace App.Auth.Api.Services;
@@ -21,12 +23,8 @@ public static class Extensions
             configuration.GetSection("SmtpConfiguration").Bind(settings);
         });
 
-        services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
-        services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
-        services.AddValidatorsFromAssemblyContaining<RefreshTokenRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<ForgotPasswordRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<ResetPasswordRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<VerifyEmailDtoValidator>();
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddFluentValidationAutoValidation();
         JwtAuthentication(services, configuration);
         return services;
     }
