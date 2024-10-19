@@ -2,6 +2,7 @@
 using App.Shared.Dto.AboutMe;
 using App.Shared.Services.Abstract;
 using Ardalis.Result;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,7 +20,9 @@ public class AboutMeController(DataDbContext context, IFileService fileService) 
         if (aboutMe == null)
             return NotFound("AboutMe section not found.");
 
-        return Ok(aboutMe);
+        var aboutMeDto = mapper.Map<AboutMeDto>(aboutMe);
+        return Ok(aboutMeDto);
+
     }
 
     [HttpPut("{id}")]

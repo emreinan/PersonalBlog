@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.Education;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ namespace App.Data.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EducationController(DataDbContext dbContext) : ControllerBase
+    public class EducationController(DataDbContext dbContext,IMapper mapper) : ControllerBase
     {
 
         [HttpGet]
@@ -18,7 +19,8 @@ namespace App.Data.Api.Controllers
             if (educations == null || !educations.Any())
                 return NotFound("No educations found.");
 
-            return Ok(educations);
+            var educationsDto = mapper.Map<List<EducationDto>>(educations);
+            return Ok(educationsDto);
         }
 
         [HttpGet("{id}")]
@@ -28,7 +30,8 @@ namespace App.Data.Api.Controllers
             if (education == null)
                 return NotFound("Education not found.");
 
-            return Ok(education);
+            var educationDto = mapper.Map<EducationDto>(education);
+            return Ok(educationDto);
         }
 
         [HttpPost]
@@ -37,15 +40,8 @@ namespace App.Data.Api.Controllers
             if (educationDto == null)
                 return BadRequest("Invalid education data.");
 
-            var education = new Education
-            {
-                School = educationDto.School,
-                Degree = educationDto.Degree,
-                FieldOfStudy = educationDto.FieldOfStudy,
-                StartDate = educationDto.StartDate,
-                EndDate = educationDto.EndDate,
-                CreatedAt = DateTime.UtcNow
-            };
+            var education = mapper.Map<Education>(educationDto);
+            education.CreatedAt = DateTime.UtcNow;
 
             await dbContext.Educations.AddAsync(education);
             await dbContext.SaveChangesAsync();
@@ -56,19 +52,14 @@ namespace App.Data.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEducation(int id, [FromBody] EducationDto educationDto)
         {
-
             var education = await dbContext.Educations.FindAsync(id);
             if (education == null)
                 return NotFound("Education not found.");
 
-            education.School = educationDto.School;
-            education.Degree = educationDto.Degree;
-            education.FieldOfStudy = educationDto.FieldOfStudy;
-            education.StartDate = educationDto.StartDate;
-            education.EndDate = educationDto.EndDate;
-            education.UpdatedAt = DateTime.UtcNow;
+            var educationUpdated = mapper.Map(educationDto, education);
+            educationUpdated.UpdatedAt = DateTime.UtcNow;
 
-            dbContext.Educations.Update(education);
+            dbContext.Educations.Update(educationUpdated);
             await dbContext.SaveChangesAsync();
 
             return Ok(educationDto);
