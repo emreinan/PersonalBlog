@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.BlogPost;
+using App.Shared.Services.Abstract;
 using Ardalis.Result;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -36,9 +37,9 @@ public class BlogPostController(DataDbContext context,IFileService fileService) 
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBlogPost([FromForm] BlogPostDto blogPostDto)
+    public async Task<IActionResult> CreateBlogPost([FromForm] BlogPostCreateDto blogPostDto)
     {
-        var uploadResult = await UploadImageAsync(blogPostDto.Image);
+        var uploadResult = await fileService.UploadFileAsync(blogPostDto.Image);
 
         if (!uploadResult.IsSuccess)
             return BadRequest(uploadResult.Errors); 
@@ -53,7 +54,7 @@ public class BlogPostController(DataDbContext context,IFileService fileService) 
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBlogPost(Guid id, [FromForm] BlogPostDto blogPostDto)
+    public async Task<IActionResult> UpdateBlogPost(Guid id, [FromForm] BlogPostCreateDto blogPostDto)
     {
         var blogPost = await context.BlogPosts.FindAsync(id);
 
@@ -62,7 +63,7 @@ public class BlogPostController(DataDbContext context,IFileService fileService) 
 
         if (blogPostDto.Image != null)
         {
-            var imageUrl = await UploadImageAsync(blogPostDto.Image);
+            var imageUrl = await fileService.UploadFileAsync(blogPostDto.Image);
 
             if (!imageUrl.IsSuccess)
                 return BadRequest(imageUrl.Errors);
@@ -93,25 +94,5 @@ public class BlogPostController(DataDbContext context,IFileService fileService) 
 
         return NoContent();
     }
-
-    private async Task<Result<string>> UploadImageAsync(IFormFile image)
-    {
-        var client = httpClientFactory.CreateClient("FileApiClient");
-        var formData = new MultipartFormDataContent();
-
-        using var fileStream = image.OpenReadStream();
-        var fileContent = new StreamContent(fileStream);
-        formData.Add(fileContent, "file", image.FileName);
-
-        var response = await client.PostAsync("/api/File/Upload", formData);
-
-        if (!response.IsSuccessStatusCode)
-            return Result<string>.Error("Unexpected error occurred while uploading the file.");
-
-        var fileUrl = await response.Content.ReadAsStringAsync();
-        return Result<string>.Success(fileUrl);
-
-    }
-
 }
 

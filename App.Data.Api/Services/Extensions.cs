@@ -1,4 +1,4 @@
-﻿using App.Shared.Services.Abstract;
+
 using App.Shared.Services.Concrate;
 using FluentValidation;
 
@@ -12,7 +12,8 @@ public static class Extensions
 
         services.AddHttpClient("FileApiClient", client =>
         {
-            client.BaseAddress = new Uri(configuration["FileApiUrl"]);
+            string apiUrl = configuration["FileApiUrl"] ?? throw new InvalidOperationException();
+            client.BaseAddress = new Uri(apiUrl);
         });
 
         services.AddScoped<IFileService, FileApiService>();

@@ -25,8 +25,7 @@ internal class AboutMeSeed : IEntityTypeConfiguration<AboutMe>
             {
                 Id = 1,
                 Introduciton = "Hello, I'm a software developer.",
-                ImageUrl1 = "https://picsum.photos/id/237/200/300",
-                ImageUrl2 = "https://picsum.photos/id/238/200/300"
+                ImageUrl1 = "https://picsum.photos/id/237/200/300"
             }
         );
     }

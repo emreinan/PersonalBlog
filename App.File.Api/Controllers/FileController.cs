@@ -1,14 +1,16 @@
-﻿using App.Shared.Dto.File;
+﻿using App.File.Api.Services;
+using App.Shared.Dto.File;
 using App.Shared.Services.Abstract;
+using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace App.File.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FileController(IFileService fileService) : ControllerBase
+    public class FileController : ControllerBase
     {
 
         [HttpPost("Upload")]
@@ -18,38 +20,95 @@ namespace App.File.Api.Controllers
             {
                 return BadRequest("Invalid file.");
             }
-            var result = await fileService.UploadFileAsync( new FileUploadRequest
-            {
-                Name = file.FileName,
-                Stream = file.OpenReadStream()
-            });
+            var filePath = Path.Combine(GetFileSaveFolder(), file.FileName);
 
-            if (!result.IsSuccess)
+            try
             {
-                return result.ToActionResult(this).Result ?? BadRequest("File cannot upload.");
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                return Ok(file.FileName);
             }
-            return CreatedAtAction(nameof(Download), new { fileName = result.Value.FileName }, result.Value);
+            catch (IOException)
+            {
+                return Conflict("File already exists.");
+            }
         }
 
         [HttpGet("Download")]
-        public async Task<IActionResult> Download([FromQuery] string fileName )
+        public async Task<IActionResult> Download([FromQuery] string fileName)
         {
-            var result = await fileService.DownloadFileAsync(new FileDownloadRequest { FileName = fileName });
+            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
 
-            if (!result.IsSuccess)
+            if (!System.IO.File.Exists(filePath))
             {
-                return result.ToActionResult(this).Result ?? NotFound("File not found.");
+                return NotFound("File not found.");
             }
-            var file = result.Value;
 
-            return File(file.FileContent, file.ContentType, file.FileName);
+            var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            var contentType = GetContentType(filePath);
+
+            return File(fileBytes, contentType, fileName);
+
         }
 
         [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete([FromQuery]string fileName)
+        public IActionResult Delete([FromQuery] string fileName)
         {
-            var result = await fileService.DeleteFileAsync(fileName);
-            return this.ToActionResult(result); // Sonuç ne ise ona göre dönüş yapar.
+
+            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound("File not found.");
+            }
+
+            System.IO.File.Delete(filePath);
+
+            return Ok(filePath);
+        }
+
+        [HttpGet("GetByUrl")]
+        public IActionResult GetByUrl([FromQuery] string fileName)
+        {
+            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound("File not found.");
+            }
+            var contentType =GetContentType(filePath);
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, contentType, fileName);
+        }
+        private static string GetFileSaveFolder()
+        {
+            var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+            // wwwroot klasörü yoksa oluşturuyoruz
+            if (!Directory.Exists(rootPath))
+                Directory.CreateDirectory(rootPath);
+
+            var uploadFolderPath = Path.Combine(rootPath, "uploads");
+
+            if (!Directory.Exists(uploadFolderPath))
+                Directory.CreateDirectory(uploadFolderPath);
+
+            return uploadFolderPath; // Dosyaların kaydedileceği klasör
+        }
+        private static string GetContentType(string path)
+        {
+            var types = new Dictionary<string, string>
+        {
+            {".jpg", "image/jpeg"},
+            {".png", "image/png"},
+            {".txt", "text/plain"},
+            {".pdf", "application/pdf"}
+        };
+
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types.ContainsKey(ext) ? types[ext] : "application/octet-stream";
         }
     }
 }
