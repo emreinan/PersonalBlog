@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.Experience;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,23 +10,15 @@ namespace App.Data.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ExperienceController(DataDbContext context) : ControllerBase
+    public class ExperienceController(DataDbContext context,IMapper mapper) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var experiences = await context.Experiences
-                .Select(e => new ExperienceDto
-                {
-                    Title = e.Title,
-                    Company = e.Company,
-                    StartDate = e.StartDate,
-                    EndDate = e.EndDate,
-                    Description = e.Description
-                })
-                .ToListAsync();
+            var experiences = await context.Experiences.ToListAsync();
 
-            return Ok(experiences);
+            var experienceDtos = mapper.Map<List<ExperienceDto>>(experiences);
+            return Ok(experienceDtos);
         }
 
         [HttpGet("{id}")]
@@ -33,18 +26,9 @@ namespace App.Data.Api.Controllers
         {
             var experience = await context.Experiences.FindAsync(id);
             if (experience == null)
-            {
                 return NotFound();
-            }
 
-            var experienceDto = new ExperienceDto
-            {
-                Title = experience.Title,
-                Company = experience.Company,
-                StartDate = experience.StartDate,
-                EndDate = experience.EndDate,
-                Description = experience.Description
-            };
+            var experienceDto = mapper.Map<ExperienceDto>(experience);
 
             return Ok(experienceDto);
         }
@@ -52,19 +36,11 @@ namespace App.Data.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ExperienceDto experienceDto)
         {
-            var experience = new Experience
-            {
-                Title = experienceDto.Title,
-                Company = experienceDto.Company,
-                StartDate = experienceDto.StartDate,
-                EndDate = experienceDto.EndDate,
-                Description = experienceDto.Description,
-                CreatedAt = DateTime.UtcNow
-            };
+            var experience =mapper.Map<Experience>(experienceDto);
+            experience.CreatedAt = DateTime.UtcNow;
 
             context.Experiences.Add(experience);
             await context.SaveChangesAsync();
-
 
             return CreatedAtAction(nameof(GetById), new { id = experience.Id }, experienceDto);
         }
@@ -74,18 +50,12 @@ namespace App.Data.Api.Controllers
         {
             var experience = await context.Experiences.FindAsync(id);
             if (experience == null)
-            {
                 return NotFound();
-            }
 
-            experience.Title = experienceDto.Title;
-            experience.Company = experienceDto.Company;
-            experience.StartDate = experienceDto.StartDate;
-            experience.EndDate = experienceDto.EndDate;
-            experience.Description = experienceDto.Description;
-            experience.UpdatedAt = DateTime.UtcNow;
+            var experienceUpdate = mapper.Map<Experience>(experienceDto);
+            experienceUpdate.UpdatedAt = DateTime.UtcNow;
 
-            context.Experiences.Update(experience);
+            context.Experiences.Update(experienceUpdate);
             await context.SaveChangesAsync();
 
             return NoContent();

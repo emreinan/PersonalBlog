@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Shared.Dto.AboutMe;
 using Ardalis.Result;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using System.Net.Http;
 namespace App.Data.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class AboutMeController(DataDbContext context, IHttpClientFactory httpClientFactory) : ControllerBase
+public class AboutMeController(DataDbContext context, IFileService fileService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAboutMe()
@@ -18,7 +19,9 @@ public class AboutMeController(DataDbContext context, IHttpClientFactory httpCli
         if (aboutMe == null)
             return NotFound("AboutMe section not found.");
 
-        return Ok(aboutMe);
+        var aboutMeDto = mapper.Map<AboutMeDto>(aboutMe);
+        return Ok(aboutMeDto);
+
     }
 
     // Update AboutMe

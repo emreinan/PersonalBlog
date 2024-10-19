@@ -2,6 +2,7 @@
 using App.Data.Entities.Data;
 using App.Shared.Dto.BlogPost;
 using Ardalis.Result;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,13 +11,15 @@ namespace App.Data.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BlogPostController(DataDbContext context, IHttpClientFactory httpClientFactory) : ControllerBase
+public class BlogPostController(DataDbContext context,IFileService fileService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetBlogPosts()
     {
         var blogPosts = await context.BlogPosts.Include(b => b.Comments).ToListAsync();
-        return Ok(blogPosts);
+
+        var blogPostsDto = mapper.Map<List<BlogPostDto>>(blogPosts);
+        return Ok(blogPostsDto);
     }
 
     [HttpGet("{id}")]
@@ -27,7 +30,9 @@ public class BlogPostController(DataDbContext context, IHttpClientFactory httpCl
         if (blogPost == null)
             return NotFound();
 
-        return Ok(blogPost);
+        var blogPostDto = mapper.Map<BlogPostDto>(blogPost);
+
+        return Ok(blogPostDto);
     }
 
     [HttpPost]
@@ -38,17 +43,13 @@ public class BlogPostController(DataDbContext context, IHttpClientFactory httpCl
         if (!uploadResult.IsSuccess)
             return BadRequest(uploadResult.Errors); 
 
-        var blogPost = new BlogPost
-        {
-            Title = blogPostDto.Title,
-            Content = blogPostDto.Content,
-            ImageUrl = uploadResult.Value
-        };
+        var blogPost = mapper.Map<BlogPost>(blogPostDto);
+        blogPost.CreatedAt = DateTime.UtcNow;
 
         context.BlogPosts.Add(blogPost);
         await context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetBlogPost), new { id = blogPost.Id }, blogPost);
+        return CreatedAtAction(nameof(GetBlogPost), new { id = blogPost.Id }, blogPostDto);
     }
 
     [HttpPut("{id}")]

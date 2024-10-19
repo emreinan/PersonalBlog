@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.Project;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,13 +10,15 @@ namespace App.Data.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectController(DataDbContext context) : ControllerBase
+public class ProjectController(DataDbContext context,IMapper mapper) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetProjects()
     {
         var projects = await context.Projects.ToListAsync();
-        return Ok(projects);
+        var projectDtos = mapper.Map<List<ProjectDto>>(projects);
+
+        return Ok(projectDtos);
     }
 
     [HttpGet("{id}")]
@@ -24,28 +27,22 @@ public class ProjectController(DataDbContext context) : ControllerBase
         var project = await context.Projects.FindAsync(id);
 
         if (project == null)
-        {
             return NotFound();
-        }
 
-        return Ok(project);
+        var projectDto = mapper.Map<ProjectDto>(project);
+        return Ok(projectDto);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateProject(ProjectDto projectDto)
     {
-        var project = new Project
-        {
-            Title = projectDto.Title,
-            Description = projectDto.Description,
-            ImageUrl = projectDto.ImageUrl,
-            CreatedAt = DateTime.Now
-        };
+        var project = mapper.Map<Project>(projectDto);
+        project.CreatedAt = DateTime.Now;
 
         context.Projects.Add(project);
         await context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetProject), new { id = project.Id }, project);
+        return CreatedAtAction(nameof(GetProject), new { id = project.Id }, projectDto);
     }
 
     [HttpPut("{id}")]
@@ -54,16 +51,12 @@ public class ProjectController(DataDbContext context) : ControllerBase
         var project = await context.Projects.FindAsync(id);
 
         if (project == null)
-        {
             return NotFound();
-        }
 
-        project.Title = projectDto.Title;
-        project.Description = projectDto.Description;
-        project.ImageUrl = projectDto.ImageUrl;
-        project.UpdatedAt = DateTime.Now;
+        var projectUpdate = mapper.Map<Project>(projectDto);
+        projectUpdate.UpdatedAt = DateTime.Now;
 
-        context.Projects.Update(project);
+        context.Projects.Update(projectUpdate);
         await context.SaveChangesAsync();
 
         return NoContent();
