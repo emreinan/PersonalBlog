@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.BlogPost;
+using App.Shared.Dto.File;
 using App.Shared.Services.Abstract;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ public class BlogPostController(DataDbContext context,IFileService fileService,I
     {
         var blogPosts = await context.BlogPosts.Include(b => b.Comments).ToListAsync();
 
-        var blogPostsDto = mapper.Map<List<BlogPostDto>>(blogPosts);
+        var blogPostsDto = mapper.Map<List<BlogPostResponseDto>>(blogPosts);
         return Ok(blogPostsDto);
     }
 
@@ -29,7 +30,7 @@ public class BlogPostController(DataDbContext context,IFileService fileService,I
         if (blogPost == null)
             return NotFound();
 
-        var blogPostDto = mapper.Map<BlogPostDto>(blogPost);
+        var blogPostDto = mapper.Map<BlogPostResponseDto>(blogPost);
 
         return Ok(blogPostDto);
     }
@@ -40,15 +41,20 @@ public class BlogPostController(DataDbContext context,IFileService fileService,I
         var uploadResult = await fileService.UploadFileAsync(blogPostDto.Image);
 
         if (!uploadResult.IsSuccess)
-            return BadRequest(uploadResult.Errors); 
+            return BadRequest(uploadResult.Errors);
 
-        var blogPost = mapper.Map<BlogPost>(blogPostDto);
-        blogPost.CreatedAt = DateTime.UtcNow;
+        var blogPost = new BlogPost
+        {
+            Title = blogPostDto.Title,
+            Content = blogPostDto.Content,
+            ImageUrl = uploadResult.Value
+        };
 
         context.BlogPosts.Add(blogPost);
         await context.SaveChangesAsync();
+        var blogPostResponse = mapper.Map<BlogPostResponseDto>(blogPost);
 
-        return CreatedAtAction(nameof(GetBlogPost), new { id = blogPost.Id }, blogPostDto);
+        return CreatedAtAction(nameof(GetBlogPost), new { id = blogPost.Id }, blogPostResponse);
     }
 
     [HttpPut("{id}")]
@@ -61,12 +67,12 @@ public class BlogPostController(DataDbContext context,IFileService fileService,I
 
         if (blogPostDto.Image != null)
         {
-            var imageUrl = await fileService.UploadFileAsync(blogPostDto.Image);
+            var result = await fileService.UploadFileAsync(blogPostDto.Image);
 
-            if (!imageUrl.IsSuccess)
-                return BadRequest(imageUrl.Errors);
+            if (!result.IsSuccess)
+                return BadRequest(result.Errors);
 
-            blogPost.ImageUrl = imageUrl.Value;
+            blogPost.ImageUrl = result.Value;
         }
 
         blogPost.Title = blogPostDto.Title;

@@ -16,31 +16,34 @@ namespace App.File.Api.Controllers
         [HttpPost("Upload")]
         public async Task<IActionResult> Upload(FileUploadRequest fileUploadRequest)
         {
-            if (fileUploadRequest.File == null || fileUploadRequest.File.Length == 0)
+            var file = fileUploadRequest.File;
+            var filePath = Path.Combine(GetFileSaveFolder(), file.FileName);
+
+            if (System.IO.File.Exists(filePath))
             {
-                return BadRequest("Invalid file.");
+                return Conflict("File already exists.");
             }
-            var filePath = Path.Combine(GetFileSaveFolder(), fileUploadRequest.File.FileName);
 
             try
             {
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await fileUploadRequest.File.CopyToAsync(stream);
+                    await file.CopyToAsync(stream);
                 }
 
-                return Ok(fileUploadRequest.File.FileName);
+                return Ok(file.FileName);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
-                return Conflict("File already exists.");
+                return Conflict(ex.Message);
             }
         }
 
         [HttpGet("Download")]
         public async Task<IActionResult> Download([FromQuery] FileDownloadRequest fileDownloadRequest)
         {
-            var filePath = Path.Combine(GetFileSaveFolder(), fileDownloadRequest.FileName);
+            var fileName = fileDownloadRequest.FileName;
+            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
 
             if (!System.IO.File.Exists(filePath))
             {
@@ -50,7 +53,7 @@ namespace App.File.Api.Controllers
             var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
             var contentType = GetContentType(filePath);
 
-            return File(fileBytes, contentType, fileDownloadRequest.FileName);
+            return File(fileBytes, contentType, fileName);
 
         }
 
@@ -83,14 +86,14 @@ namespace App.File.Api.Controllers
         }
         private static string GetFileSaveFolder()
         {
-            var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-            // uploads klasörü yoksa oluşturuyoruz
-            if (!Directory.Exists(uploadFolderPath))
-                Directory.CreateDirectory(uploadFolderPath);
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
 
-            return uploadFolderPath; 
+            return folderPath;
         }
+
         private static string GetContentType(string path)
         {
             var types = new Dictionary<string, string>

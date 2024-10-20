@@ -1,4 +1,5 @@
-﻿using App.Shared.Services.Abstract;
+﻿using App.Shared.Dto.File;
+using App.Shared.Services.Abstract;
 using Ardalis.Result;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -12,11 +13,11 @@ namespace App.Shared.Services.Concrate;
 
 public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
 {
+    private readonly HttpClient client = httpClientFactory.CreateClient("FileApiClient");
     public async Task<Result> DeleteFileAsync(string fileName)
     {
-        var client = httpClientFactory.CreateClient("FileApiClient");
-
-        var response = await client.DeleteAsync($"/api/File/Delete?fileName={fileName}");
+        var deleteRequestDto = new FileDeleteRequest { FileName = fileName };
+        var response = await client.DeleteAsync($"/api/File/Delete?FileName={deleteRequestDto}");
 
         if (!response.IsSuccessStatusCode)
             return Result.Error("Unexpected error occurred while deleting the file.");
@@ -26,9 +27,8 @@ public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
 
     public async Task<Result> DownloadFileAsync(string fileName)
     {
-        var client = httpClientFactory.CreateClient("FileApiClient");
-
-        var response = await client.GetAsync($"/api/File/Download?fileName={fileName}");
+        var downloadRequestDto = new FileDownloadRequest { FileName = fileName };
+        var response = await client.GetAsync($"/api/File/Download?FileName={downloadRequestDto}");
 
         if (!response.IsSuccessStatusCode)
             return Result.Error("Unexpected error occurred while downloading the file.");
@@ -37,21 +37,22 @@ public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
     }
 
 
-    public async Task<Result<string>> UploadFileAsync(IFormFile image)
+    public async Task<Result<string>> UploadFileAsync(IFormFile file)
     {
-        var client = httpClientFactory.CreateClient("FileApiClient");
         var formData = new MultipartFormDataContent();
 
-        using var fileStream = image.OpenReadStream();
+        using var fileStream = file.OpenReadStream();
         var fileContent = new StreamContent(fileStream);
-        formData.Add(fileContent, "file", image.FileName);
+        formData.Add(fileContent, "file", file.FileName);
 
         var response = await client.PostAsync("/api/File/Upload", formData);
 
         if (!response.IsSuccessStatusCode)
-            return Result<string>.Error("Unexpected error occurred while uploading the file.");
+            return Result.Error("Unexpected error occurred while uploading the file.");
 
-        var fileUrl = await response.Content.ReadAsStringAsync();
-        return Result<string>.Success(fileUrl);
+        var fileName = await response.Content.ReadAsStringAsync();
+        return Result.Success(fileName);
+
     }
 }
+
