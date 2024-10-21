@@ -9,7 +9,7 @@ using System.Web;
 
 namespace App.Auth.Api.Services;
 
-public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, IMailService emailService) : IAuthService
+public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, IMailService emailService, IFileService fileService) : IAuthService
 {
     public async Task<Result> ForgotPasswordAsync(ForgotPasswordRequest forgotPasswordRequest)
     {
@@ -56,6 +56,7 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
 
         return Result<LoggedResponse>.Success(new LoggedResponse
         {
+            AccessToken = token,
             RefreshToken = refreshToken.Token
         });
     }
@@ -160,5 +161,23 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
             AccessToken = newAccessToken,
             RefreshToken = newRefreshToken.Token
         });
+    }
+
+    public async Task<Result> UploadProfilImage(IFormFile file, Guid userId)
+    {
+        var user = await authDbContext.Users.FindAsync(userId);
+
+        if (user is null)
+            return Result.Error("User not found");
+
+        var result = await fileService.UploadFileAsync(file);
+
+        if (!result.IsSuccess)
+            return Result.Error("Profil Image can not be upload.");
+
+        user.ProfilePhoto = result.Value;
+
+        await authDbContext.SaveChangesAsync();
+        return Result.Success();
     }
 }
