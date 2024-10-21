@@ -12,9 +12,11 @@ namespace App.Data.Contexts;
 
 public class DataDbContext : DbContext
 {
-    public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
+    public DataDbContext(DbContextOptions<DataDbContext> options, AuthDbContext authDbContext) : base(options)
     {
+        AuthDbContext = authDbContext;
     }
+    public AuthDbContext AuthDbContext { get; }
     public DbSet<AboutMe> AboutMes { get; set; }
     public DbSet<Experience> Experiences { get; set; }
     public DbSet<Education> Educations { get; set; }

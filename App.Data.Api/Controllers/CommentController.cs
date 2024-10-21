@@ -10,7 +10,7 @@ namespace App.Data.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CommentController(DataDbContext datDbContext, AuthDbContext authDbContext, IMapper mapper) : ControllerBase
+public class CommentController(DataDbContext datDbContext, IMapper mapper) : ControllerBase
 {
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCommentById(int id)
@@ -22,7 +22,7 @@ public class CommentController(DataDbContext datDbContext, AuthDbContext authDbC
         if (comment is null)
             return NotFound("Comment not found.");
 
-        var user = await authDbContext.Users.FirstOrDefaultAsync(u => u.Id == comment.UserId);
+        var user = await datDbContext.AuthDbContext.Users.FirstOrDefaultAsync(u => u.Id == comment.UserId);
 
         if (user is null)
             return NotFound("User not found this comment.");
@@ -53,7 +53,7 @@ public class CommentController(DataDbContext datDbContext, AuthDbContext authDbC
         var commentDtos = new List<CommentResponse>();
 
         foreach (var comment in comments) {
-            var user = await authDbContext.Users.FirstOrDefaultAsync(u => u.Id == comment.UserId);
+            var user = await datDbContext.AuthDbContext.Users.FirstOrDefaultAsync(u => u.Id == comment.UserId);
 
             if (user is null)
                 return NotFound("User not found this comment.");
@@ -92,21 +92,27 @@ public class CommentController(DataDbContext datDbContext, AuthDbContext authDbC
         await datDbContext.Comments.AddAsync(comment);
         await datDbContext.SaveChangesAsync();
 
-        var commantDto = mapper.Map<CommentDto>(comment);
-        return CreatedAtAction(nameof(GetCommentById), new { id = comment.Id }, commantDto);
+        var commentResponse = new CommentResponse
+        {
+            Id = comment.Id,
+            Content = comment.Content,
+            CreatedAt = comment.CreatedAt,
+            PostId = comment.PostId,
+            UserId = comment.UserId
+        };
+
+        return CreatedAtAction(nameof(GetCommentById), new { id = comment.Id }, commentResponse);
 
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateComment(int id, [FromBody] CommentDto commentDto)
+    public async Task<IActionResult> UpdateComment(int id, [FromBody] CommentUpdateDto commentDto)
     {
         var comment = await datDbContext.Comments.FindAsync(id);
         if (comment == null)
             return NotFound("Comment not found.");
 
         comment.Content = commentDto.Content;
-        comment.UserId = commentDto.UserId;
-        comment.PostId = commentDto.PostId;
         comment.UpdatedAt = DateTime.UtcNow;
     
         datDbContext.Comments.Update(comment);
