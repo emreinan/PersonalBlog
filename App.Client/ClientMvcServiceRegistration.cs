@@ -23,6 +23,7 @@ public static class ClientMvcServiceRegistration
         GetApiUrl(services, configuration);
 
         services.AddJwtAuthentication(configuration);
+        services.AddHttpContextAccessor();
         services.AddScoped<IAboutMeService,AboutMeService>();
         services.AddScoped<IBlogPostService, BlogPostService>();
         services.AddScoped<ICommentService, CommentService>();
