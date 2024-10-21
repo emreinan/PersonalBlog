@@ -163,21 +163,4 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
         });
     }
 
-    public async Task<Result> UploadProfilImage(IFormFile file, Guid userId)
-    {
-        var user = await authDbContext.Users.FindAsync(userId);
-
-        if (user is null)
-            return Result.Error("User not found");
-
-        var result = await fileService.UploadFileAsync(file);
-
-        if (!result.IsSuccess)
-            return Result.Error("Profil Image can not be upload.");
-
-        user.ProfilePhoto = result.Value;
-
-        await authDbContext.SaveChangesAsync();
-        return Result.Success();
-    }
 }

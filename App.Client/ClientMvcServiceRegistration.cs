@@ -8,6 +8,8 @@ using App.Client.Services.Experience;
 using App.Client.Services.PersonalInfo;
 using App.Client.Services.Project;
 using App.Client.Services.Token;
+using App.Shared.Services.Abstract;
+using App.Shared.Services.Concrate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
@@ -20,11 +22,18 @@ public static class ClientMvcServiceRegistration
     public static IServiceCollection AddClientMvcServices(this IServiceCollection services,IConfiguration configuration)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        GetApiUrl(services, configuration);
-
         services.AddJwtAuthentication(configuration);
         services.AddHttpContextAccessor();
-        services.AddScoped<IAboutMeService,AboutMeService>();
+
+        GetApiUrl(services, configuration);
+        AddServices(services);
+
+        return services;
+    }
+
+    private static void AddServices(IServiceCollection services)
+    {
+        services.AddScoped<IAboutMeService, AboutMeService>();
         services.AddScoped<IBlogPostService, BlogPostService>();
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IContactMessageService, ContactMessageService>();
@@ -34,9 +43,8 @@ public static class ClientMvcServiceRegistration
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IAuthService, HttpAuthService>();
         services.AddScoped<ITokenService, CookieTokenService>();
-
-
-        return services;
+        services.AddScoped<IFileService, FileApiService>();
+        services.AddScoped<IUserService, UserService>();
     }
 
     private static void GetApiUrl(IServiceCollection services, IConfiguration configuration)
@@ -46,7 +54,6 @@ public static class ClientMvcServiceRegistration
             string apiUrl = configuration["ExternalApis:FileApiUrl"] ?? throw new InvalidOperationException("FileApi URL is missing");
             client.BaseAddress = new Uri(apiUrl);
         });
-
         services.AddHttpClient("DataApiClient", client =>
         {
             string apiUrl = configuration["ExternalApis:DataApiUrl"] ?? throw new InvalidOperationException("DataApi URL is missing");

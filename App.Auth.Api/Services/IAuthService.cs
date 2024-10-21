@@ -2,7 +2,7 @@
 using Ardalis.Result;
 using Microsoft.AspNetCore.Http;
 
-namespace App.Shared.Services.Abstract;
+namespace App.Auth.Api.Services;
 
 public interface IAuthService
 {
@@ -12,5 +12,4 @@ public interface IAuthService
     Task<Result> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest);
     Task<Result> VerifyEmailAsync(VerifyEmailDto verifyEmailDto);
     Task<Result<RefreshedTokenResponse>> RefrehsTokenAsync(RefreshTokenRequest refreshTokenRequest);
-    Task<Result> UploadProfilImage(IFormFile file, Guid userId);
 }
