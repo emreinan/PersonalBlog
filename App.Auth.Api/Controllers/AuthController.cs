@@ -1,8 +1,8 @@
 ﻿using App.Shared.Dto.Auth;
 using App.Shared.Services.Abstract;
-using Ardalis.Result;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace App.Auth.Api.Controllers
 {
@@ -11,34 +11,69 @@ namespace App.Auth.Api.Controllers
     public class AuthController(IAuthService authService) : ControllerBase
     {
         [HttpPost("login")]
-        public async Task<Result<LoggedResponse>> Login(LoginDto loginDto)
+        public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            return await authService.LoginAsync(loginDto);
+            var result = await authService.LoginAsync(loginDto);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpPost("register")]
-        public async Task<Result> Register(RegisterDto registerDto)
+        public async Task<IActionResult> Register(RegisterDto registerDto)
         {
-            return await authService.RegisterAsync(registerDto);
+            var result = await authService.RegisterAsync(registerDto);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("verify-email")]
-        public async Task<Result> VerifyEmail([FromQuery]VerifyEmailDto verifyEmailDto)
+        public async Task<IActionResult> VerifyEmail([FromQuery]VerifyEmailDto verifyEmailDto)
         {
-            return await authService.VerifyEmailAsync(verifyEmailDto);
+            var result = await authService.VerifyEmailAsync(verifyEmailDto);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpPost("forgot-password")]
-        public async Task<Result> ForgotPassword(ForgotPasswordRequest forgotPasswordRequest)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest forgotPasswordRequest)
         {
-            return await authService.ForgotPasswordAsync(forgotPasswordRequest);
+            var result = await authService.ForgotPasswordAsync(forgotPasswordRequest);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("reset-password")]
-        public async Task<Result> ResetPassword(ResetPasswordRequest resetPasswordRequest)
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest resetPasswordRequest)
         {
-            return await authService.ResetPasswordAsync(resetPasswordRequest);
+            var result = await authService.ResetPasswordAsync(resetPasswordRequest);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpPost("refresh-token")]
-        public async Task<Result<RefreshedTokenResponse>> RefreshToken(RefreshTokenRequest refreshTokenRequest)
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshTokenRequest)
         {
-            return await authService.RefrehsTokenAsync(refreshTokenRequest);
+            var result = await authService.RefrehsTokenAsync(refreshTokenRequest);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("upload-profile-image")]
+        public async Task<IActionResult> UploadProfileImage([FromForm] ProfilePicUpload profilePicUpload)
+        {
+            var userId = GetUserId();
+            var result = await authService.UploadProfilImage(profilePicUpload.File, userId);
+
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
+
+        private Guid GetUserId()
+        {
+            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
     }
 }
