@@ -9,7 +9,7 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
 
     public async Task<List<ProjectViewModel>> GetProjects()
     {
-        var response = await _dataHttpClient.GetAsync("/api/Project/GetProjects");
+        var response = await _dataHttpClient.GetAsync("/api/Project");
         await response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<List<ProjectViewModel>>();
         return result;

@@ -13,5 +13,6 @@
 
     <partial name="Partials/_Loader.cshtml" />
     @await RenderSectionAsync("Scripts", required: false)
+    @await Component.InvokeAsync("NToastNotify")
 </body>
 </html>

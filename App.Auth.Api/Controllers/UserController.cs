@@ -1,14 +1,19 @@
-﻿using App.Data.Contexts;
+﻿using App.Auth.Api.Services;
+using App.Data.Contexts;
+using App.Shared.Dto.Auth;
 using App.Shared.Dto.User;
+using App.Shared.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace App.Auth.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(AuthDbContext authDbContext) : ControllerBase
+public class UserController(AuthDbContext authDbContext,IFileService fileService) : ControllerBase
 {
 
     [HttpGet("{id}")]
@@ -59,6 +64,7 @@ public class UserController(AuthDbContext authDbContext) : ControllerBase
         return Ok(userGetResults);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(Guid id, UserUpdateDto userUpdateDto)
     {
@@ -76,6 +82,7 @@ public class UserController(AuthDbContext authDbContext) : ControllerBase
         return Ok("User updated successfully.");
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(Guid id)
     {
@@ -90,4 +97,29 @@ public class UserController(AuthDbContext authDbContext) : ControllerBase
         return Ok("User deleted successfully.");
     }
 
+    [Authorize]
+    [HttpPost("upload-profile-image")]
+    public async Task<IActionResult> UploadProfileImage([FromForm] ProfilePicUpload profilePicUpload)
+    {
+        var userId = GetUserId();
+        var user = await authDbContext.Users.FindAsync(userId);
+
+        if (user is null)
+            return NotFound("User not found.");
+
+        var result = await fileService.UploadFileAsync(profilePicUpload.File);
+
+        if (!result.IsSuccess)
+            return BadRequest("Profile image can not be uploaded.");
+
+        user.ProfilePhoto = result.Value;
+
+        await authDbContext.SaveChangesAsync();
+        return Ok();
+    }
+
+    private Guid GetUserId()
+    {
+        return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+    }
 }

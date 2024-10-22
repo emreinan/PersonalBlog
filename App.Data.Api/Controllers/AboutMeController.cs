@@ -16,7 +16,7 @@ public class AboutMeController(DataDbContext context, IFileService fileService,I
     [HttpGet]
     public async Task<IActionResult> GetAboutMe()
     {
-        var aboutMe = await context.AboutMes.FirstOrDefaultAsync();
+        var aboutMe = await context.AboutMes.SingleOrDefaultAsync();
         if (aboutMe == null)
             return NotFound("AboutMe section not found.");
 

@@ -15,7 +15,7 @@ public class PersonalInfoConfiguration : IEntityTypeConfiguration<PersonalInfo>
         builder.Property(p => p.PhoneNumber).HasMaxLength(20);
         builder.Property(p => p.Email).IsRequired().HasMaxLength(150);
         builder.Property(p => p.BirthDate).IsRequired();
-        builder.Property(p => p.About).HasMaxLength(1000);
+        builder.Property(p => p.Address).HasMaxLength(1000);
 
         new PersonalInfoSeed().Configure(builder);
     }
@@ -32,7 +32,7 @@ internal class PersonalInfoSeed : IEntityTypeConfiguration<PersonalInfo>
             PhoneNumber = "123456789",
             Email = "emreinannn@gmail.com",
             BirthDate = new DateTime(1993, 8, 9),
-            About = "Software developer with 1 years of experience."
+            Address = "İstanbul TR"
         });
     }
 }

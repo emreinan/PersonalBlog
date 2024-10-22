@@ -1,8 +1,6 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.Comment;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +8,7 @@ namespace App.Data.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CommentController(DataDbContext datDbContext, IMapper mapper) : ControllerBase
+public class CommentController(DataDbContext datDbContext) : ControllerBase
 {
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCommentById(int id)

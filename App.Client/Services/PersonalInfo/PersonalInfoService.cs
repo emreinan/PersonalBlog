@@ -9,7 +9,7 @@ public class PersonalInfoService(IHttpClientFactory httpClientFactory) : IPerson
 
     public async Task<PersonalInfoViewModel> GetPersonalInfo()
     {
-        var response = await _dataHttpClient.GetAsync("/api/PersonalInfo/GetPersonalInfo");
+        var response = await _dataHttpClient.GetAsync("/api/PersonalInfo");
         await response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<PersonalInfoViewModel>();
         return result;

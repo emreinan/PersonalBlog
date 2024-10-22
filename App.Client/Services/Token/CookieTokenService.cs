@@ -18,9 +18,8 @@ public class CookieTokenService(IHttpContextAccessor httpContextAccessor) : ITok
         {
             Secure = true, // cookie sadece https üzerinden çalışır
             Expires = DateTimeOffset.UtcNow.AddMinutes(10), // 10 dakika sonra cookie silinir
-            IsEssential = true, // cookie silinirse kullanıcı oturumu sonlanır
-            SameSite = SameSiteMode.Strict, // cookie sadece aynı domainde çalışır
-            HttpOnly = true, // js ile erişilemez
+            SameSite = SameSiteMode.None, // cookie sadece kendi domain'ine gönderilir
+            HttpOnly = true, // cookie sadece http üzerinden erişilebilir
         });
     }
 
@@ -29,10 +28,9 @@ public class CookieTokenService(IHttpContextAccessor httpContextAccessor) : ITok
         httpContextAccessor.HttpContext.Response.Cookies.Append("refresh_token", refreshToken, new CookieOptions
         {
             Secure = true, 
-            Expires = DateTimeOffset.UtcNow.AddMinutes(10), 
-            IsEssential = true, 
-            SameSite = SameSiteMode.Strict, 
-            HttpOnly = true, 
+            Expires = DateTimeOffset.UtcNow.AddMinutes(10),
+            SameSite = SameSiteMode.None,
+            HttpOnly = true,
         });
     }
 }

@@ -1,5 +1,5 @@
-﻿using App.Shared.Dto.Auth;
-using App.Shared.Services.Abstract;
+﻿using App.Auth.Api.Services;
+using App.Shared.Dto.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -59,21 +59,5 @@ namespace App.Auth.Api.Controllers
             return Ok(result);
         }
 
-        [Authorize]
-        [HttpPost("upload-profile-image")]
-        public async Task<IActionResult> UploadProfileImage([FromForm] ProfilePicUpload profilePicUpload)
-        {
-            var userId = GetUserId();
-            var result = await authService.UploadProfilImage(profilePicUpload.File, userId);
-
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return Ok(result);
-        }
-
-        private Guid GetUserId()
-        {
-            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        }
     }
 }

@@ -8,7 +8,7 @@ public class AboutMeService(IHttpClientFactory httpClientFactory) : IAboutMeServ
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
     public async Task<AboutMeViewModel> GetAboutMe()
     {
-        var response = await _dataHttpClient.GetAsync("/api/AboutMe/GetAboutMe");
+        var response = await _dataHttpClient.GetAsync("/api/AboutMe");
         await response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<AboutMeViewModel>();
         return result;

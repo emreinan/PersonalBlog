@@ -2,7 +2,6 @@
 using App.Data.Entities.Data;
 using App.Shared.Dto.PersonalInfo;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +14,7 @@ namespace App.Data.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPersonalInfo()
         {
-            var personalInfo = await context.PersonalInfos.FirstOrDefaultAsync();
+            var personalInfo = await context.PersonalInfos.SingleOrDefaultAsync();
             var personalInfoDto = mapper.Map<PersonalInfoDto>(personalInfo);
             return Ok(personalInfoDto);
         }

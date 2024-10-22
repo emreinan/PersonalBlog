@@ -7,6 +7,7 @@ using App.Client.Services.Education;
 using App.Client.Services.Experience;
 using App.Client.Services.PersonalInfo;
 using App.Client.Services.Project;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -51,7 +52,7 @@ public class HomeController(
 
         return View(model);
     }
-
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> SubmitContactMessage(ContactMessageViewModel contactMessageViewModel)
     {
@@ -80,6 +81,7 @@ public class HomeController(
 
         var model = new BlogPostViewModel
         {
+            Id = postId,
             Comments = comments
         };
 
@@ -91,10 +93,6 @@ public class HomeController(
     }
     private string GetUserMail()
     {
-        if (User.Identity.IsAuthenticated)
-        {
-            return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-        }
-        return null;
+        return User.FindFirst(ClaimTypes.Email).Value;
     }
 }

@@ -14,7 +14,7 @@ public class AuthController
     : Controller
 {
     [HttpGet("/Login")]
-    public async Task<IActionResult> Login()
+    public IActionResult Login()
     {
         return View();
     }
