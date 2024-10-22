@@ -10,14 +10,13 @@ public class HttpAuthService(IHttpClientFactory httpClientFactory) : IAuthServic
     public async Task ForgotPasswordAsync(string email)
     {
         var emailRequest = new ForgotPasswordRequest { Email = email };
-        var response = await _httpClient.PostAsJsonAsync("/api/Auth/ForgotPassword", new { emailRequest });
+        var response = await _httpClient.PostAsJsonAsync("/api/Auth/forgot-password", new { emailRequest });
         response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task<TokenResponse> LoginAsync(LoginDto loginDto)
     {
-
-        var response = await _httpClient.PostAsJsonAsync("/api/Auth/Login", new { loginDto.Email, loginDto.Password });
+        var response = await _httpClient.PostAsJsonAsync("/api/Auth/login", loginDto);
         response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
         return result;
@@ -26,7 +25,7 @@ public class HttpAuthService(IHttpClientFactory httpClientFactory) : IAuthServic
     public async Task<TokenResponse> RefreshTokenAsync(string refreshToken)
     {
         var refreshTokenRequest = new RefreshTokenRequest { Token = refreshToken };
-        var response = await _httpClient.PostAsJsonAsync("/api/Auth/RefreshToken", new { refreshTokenRequest });
+        var response = await _httpClient.PostAsJsonAsync("/api/Auth/refresh-token", new { refreshTokenRequest });
         response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
         return result;
@@ -34,7 +33,7 @@ public class HttpAuthService(IHttpClientFactory httpClientFactory) : IAuthServic
 
     public async Task<TokenResponse> RegisterAsync(RegisterDto registerDto)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/Auth/Register", new { registerDto.Email, registerDto.Password, registerDto.UserName });
+        var response = await _httpClient.PostAsJsonAsync("/api/Auth/register", registerDto);
         response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
         return result;
