@@ -21,12 +21,13 @@ public static class ClientMvcServiceRegistration
 {
     public static IServiceCollection AddClientMvcServices(this IServiceCollection services,IConfiguration configuration)
     {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddJwtAuthentication(configuration);
-        services.AddHttpContextAccessor();
-
         GetApiUrl(services, configuration);
         AddServices(services);
+        services.AddHttpContextAccessor();
+
+        services.AddJwtAuthentication(configuration);
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 
         return services;
     }

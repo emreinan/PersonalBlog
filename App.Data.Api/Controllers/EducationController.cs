@@ -16,8 +16,6 @@ namespace App.Data.Api.Controllers
         public async Task<IActionResult> GetAllEducations()
         {
             var educations = await dbContext.Educations.ToListAsync();
-            if (educations == null || !educations.Any())
-                return NotFound("No educations found.");
 
             var educationsDto = mapper.Map<List<EducationDto>>(educations);
             return Ok(educationsDto);

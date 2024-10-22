@@ -9,7 +9,7 @@ public class BlogPostService(IHttpClientFactory httpClientFactory) : IBlogPostSe
 
     public async Task<List<BlogPostViewModel>> GetBlogPosts()
     {
-        var response = await _dataHttpClient.GetAsync("/api/BlogPost/GetBlogPosts");
+        var response = await _dataHttpClient.GetAsync("/api/BlogPost");
         await response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<List<BlogPostViewModel>>();
         return result;

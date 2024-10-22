@@ -9,7 +9,7 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
 
     public async Task<List<CommentViewModel>> GetCommentsForPost(Guid postId)
     {
-        var response = await _dataHttpClient.GetAsync($"/api/Comment/GetCommentsForPost/{postId}");
+        var response = await _dataHttpClient.GetAsync($"/api/Comment/PostComment/{postId}");
         await response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<List<CommentViewModel>>();
         return result;
