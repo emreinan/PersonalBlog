@@ -13,6 +13,10 @@ public class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
         builder.Property(bp => bp.Content).IsRequired();
         builder.Property(bp => bp.CreatedAt).IsRequired();
 
- 
+        builder.HasMany(bp => bp.Comments)
+            .WithOne(c => c.Post)
+            .HasForeignKey(c => c.PostId)
+            .OnDelete(DeleteBehavior.NoAction);
+
     }
 }

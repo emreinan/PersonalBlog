@@ -29,7 +29,7 @@ internal class PersonalInfoSeed : IEntityTypeConfiguration<PersonalInfo>
             Id = 1,
             FirstName = "Emre",
             LastName = "İnan",
-            PhoneNumber = "123456789",
+            PhoneNumber = "+90 553 238 2222",
             Email = "emreinannn@gmail.com",
             BirthDate = new DateTime(1993, 8, 9),
             Address = "İstanbul TR"

@@ -34,39 +34,6 @@ public class UserConfiguraiton : IEntityTypeConfiguration<User>
             .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        new UserSeed().Configure(builder);
     }
 }
 
-internal class UserSeed : IEntityTypeConfiguration<User>
-{
-    public void Configure(EntityTypeBuilder<User> builder)
-    {
-        HashingHelper.CreatePasswordHash("1234", out byte[] passwordHash, out byte[] passwordSalt);
-
-        builder.HasData(
-            new User
-            {
-                Id = Guid.NewGuid(),
-                UserName = "admin",
-                Email = "admin@mail.com",
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                RoleId = 1,
-                CreatedAt = DateTime.Now,
-                IsActive =true
-            },
-            new User
-            {
-            Id = Guid.NewGuid(),
-            UserName = "commenter",
-            Email = "commenter@mail.com",
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt,
-            RoleId = 2,
-            CreatedAt = DateTime.Now,
-            IsActive = true    
-            }
-        );
-    }
-}
