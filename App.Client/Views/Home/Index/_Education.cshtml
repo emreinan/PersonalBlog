@@ -1,0 +1,24 @@
+﻿@model IEnumerable<EducationViewModel>
+
+
+<div class="container">
+    <div class="row justify-content-center pb-5">
+        <div class="col-md-12 heading-section text-center ftco-animate">
+            <h1 class="big big-2">Education</h1>
+            <h2 class="mb-4">My Education</h2>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6">
+                <div class="resume-wrap ftco-animate">
+                    <span class="date">@item.StartDate.ToString("MMMM yyyy") - @(item.EndDate.HasValue ? item.EndDate.Value.ToString("MMMM yyyy") : "Present")</span>
+                    <h2>@item.Degree</h2>
+                    <span class="position">@item.FieldOfStudy</span>
+                    <p class="mt-4">@item.School</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

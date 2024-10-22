@@ -81,6 +81,7 @@ public class HomeController(
 
         var model = new BlogPostViewModel
         {
+            Id = postId,
             Comments = comments
         };
 

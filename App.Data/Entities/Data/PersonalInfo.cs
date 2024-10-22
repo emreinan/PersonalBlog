@@ -7,5 +7,5 @@ public class PersonalInfo : Entity<int>
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public DateTime BirthDate { get; set; }
-    public string About { get; set; }
+    public string Address { get; set; }
 }

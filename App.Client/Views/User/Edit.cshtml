@@ -10,7 +10,7 @@
             <div class="col-md-6">
                 <h2 class="text-center">Edit Profile</h2>
                 <div class="text-center mb-4">
-                    <img src="@Model.ProfilePictureUrl ?? "https://freesvg.org/img/abstract-user-flat-4.png"" alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;">
+                    <img src="@Model.ProfilePhoto ?? "https://freesvg.org/img/abstract-user-flat-4.png"" alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;">
                 </div>
                 <form asp-action="UploadProfilePhoto" method="post" enctype="multipart/form-data" class="mb-4">
                     <div class="form-group">

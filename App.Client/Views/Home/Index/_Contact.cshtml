@@ -3,41 +3,46 @@
 <div class="container">
     <div class="row justify-content-center mb-5 pb-3">
         <div class="col-md-7 heading-section text-center ftco-animate">
-            <h1 class="big big-2">Contact</h1>
-            <h2 class="mb-4">Contact Me</h2>
+            <h2 class="mb-4">Contact Us</h2>
             <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
         </div>
     </div>
 
-    <div class="row no-gutters block-9">
+    <div class="row block-9">
         <div class="col-md-6 order-md-last d-flex">
-            <form asp-action="SubmitContactMessage" class="bg-light p-4 p-md-5 contact-form" method="post">
+            <form asp-action="SubmitContactMessage" method="post" class="bg-light p-5 contact-form">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Your Name" asp-for="Name" />
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Your Email" asp-for="Email" />
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Subject" asp-for="Subject" />
+                    <label asp-for="Subject"></label>
+                    <input asp-for="Subject" class="form-control" />
                     <span asp-validation-for="Subject" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <textarea asp-for="Message" cols="30" rows="7" class="form-control" placeholder="Message"></textarea>
+                    <label asp-for="Message"></label>
+                    <textarea asp-for="Message" class="form-control"></textarea>
                     <span asp-validation-for="Message" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5" />
+                    <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5">
                 </div>
             </form>
-
-
         </div>
 
         <div class="col-md-6 d-flex">
-            <div class="img" style="background-image: url(images/about.jpg);"></div>
+            <div id="map" class="bg-white"></div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

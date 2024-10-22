@@ -1,81 +1,30 @@
 ﻿@model HomeViewModel
 
-    
-    <section id="home-section" class="hero">
-        <partial name="Index/_Hero.cshtml" model="@Model.AboutMe" />
-    </section>
 
-    <section class="ftco-about img ftco-section ftco-no-pb" id="about-section">
+<section id="home-section" class="hero">
+    <partial name="Index/_Hero.cshtml" model="@Model.PersonalInfoAboutMe" />
+</section>
+
+<section class="ftco-section" id="education-section">
+    <partial name="Index/_Education.cshtml" model="@Model.Educations" />
+</section>
+
+<section class="ftco-about img ftco-section ftco-no-pb" id="about-section">
     <partial name="Index/_AboutMe.cshtml" model="@Model.PersonalInfoAboutMe" />
-    </section>
+</section>
 
-    <section class="ftco-section ftco-no-pb" id="resume-section">
-    <partial name="Index/_Resume.cshtml" model="@Model.Experiences"/>
-    </section>
+<section class="ftco-section ftco-no-pb" id="resume-section">
+    <partial name="Index/_Resume.cshtml" model="@Model.Experiences" />
+</section>
 
-    <section class="ftco-section" id="skills-section">
-    <partial name="Index/_Skills.cshtml" />
-    </section>
+<section class="ftco-section ftco-project" id="projects-section">
+    <partial name="Index/_Projects.cshtml" model="@Model.Projects" />
+</section>
 
-    <section class="ftco-section ftco-project" id="projects-section">
-    <partial name="Index/_Projects.cshtml" model="@Model.Projects"/>
-    </section>
-
-    <section class="ftco-section" id="blog-section">
+<section class="ftco-section" id="blog-section">
     <partial name="Index/_BlogPosts.cshtml" model="@Model.BlogPosts" />
-    </section>
+</section>
 
-    <section class="ftco-section ftco-no-pt ftco-no-pb ftco-counter img" id="section-counter">
-        <div class="container">
-            <div class="row d-md-flex align-items-center">
-                <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
-                    <div class="block-18">
-                        <div class="text">
-                            <strong class="number" data-number="100">0</strong>
-                            <span>Awards</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
-                    <div class="block-18">
-                        <div class="text">
-                            <strong class="number" data-number="1200">0</strong>
-                            <span>Complete Projects</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
-                    <div class="block-18">
-                        <div class="text">
-                            <strong class="number" data-number="1200">0</strong>
-                            <span>Happy Customers</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
-                    <div class="block-18">
-                        <div class="text">
-                            <strong class="number" data-number="500">0</strong>
-                            <span>Cups of coffee</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="ftco-section ftco-hireme img margin-top" style="background-image: url(images/bg_1.jpg)">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-7 ftco-animate text-center">
-                    <h2>I'm <span>Available</span> for freelancing</h2>
-                    <p>A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                    <p class="mb-0"><a href="#" class="btn btn-primary py-3 px-5">Hire me</a></p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="ftco-section contact-section ftco-no-pb" id="contact-section">
+<section class="ftco-section contact-section ftco-no-pb" id="contact-section">
     <partial name="Index/_Contact.cshtml" model="@Model.ContactMessage" />
-    </section>
+</section>
