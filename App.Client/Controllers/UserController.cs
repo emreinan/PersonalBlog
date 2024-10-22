@@ -69,8 +69,9 @@ public class UserController(IUserService userService) : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete(Guid userId)
+    public async Task<IActionResult> Delete()
     {
+        var userId = GetUserId();
         var result = await userService.DeleteUserAsync(userId);
 
         if (!result.IsSuccess)
@@ -92,7 +93,7 @@ public class UserController(IUserService userService) : Controller
         if (!result.IsSuccess)
             return BadRequest(result.Errors);
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction(nameof(Details));
     }
     public Guid GetUserId()
     {
