@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.Comment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,10 +61,12 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
             {
                 Id = comment.Id,
                 Content = comment.Content,
+                IsApproved = comment.IsApproved,
                 CreatedAt = comment.CreatedAt,
                 PostId = comment.PostId,
                 UserId = comment.UserId,
-                Author = user.UserName
+                Author = user.UserName,
+                UserImage = user.ProfilePhoto
             };
 
             commentDtos.Add(commentDto);
@@ -71,6 +74,7 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
         return Ok(commentDtos);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateComment([FromBody] CommentDto commentDto)
     {

@@ -1,4 +1,6 @@
-﻿namespace App.Client.Models;
+﻿using System.Reflection.Metadata;
+
+namespace App.Client.Models;
 
 public class BlogPostViewModel
 {
@@ -7,7 +9,7 @@ public class BlogPostViewModel
     public string Content { get; set; }
     public string ImageUrl { get; set; }
     public DateTime Date { get; set; }
-    public string Author { get; set; }
-    public List<CommentViewModel> Comments { get; set; }
+    public List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
+    public List<BlogPostViewModel> RecentBlogs { get; set; } = new List<BlogPostViewModel>();
 }
 

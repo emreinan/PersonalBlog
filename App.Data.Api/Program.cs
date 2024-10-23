@@ -1,6 +1,7 @@
 using App.Data;
 using App.Data.Api.Services;
 using App.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +30,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<DataDbContext>();
-    //await context.Database.EnsureDeletedAsync();
-    await context.Database.EnsureCreatedAsync();
+    await context.Database.MigrateAsync();
 }
 
 app.Run();

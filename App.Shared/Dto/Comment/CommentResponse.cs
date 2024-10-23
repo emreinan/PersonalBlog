@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace App.Shared.Dto.Comment;
 
 public class CommentResponse
@@ -14,5 +9,6 @@ public class CommentResponse
     public Guid UserId { get; set; }
     public string Author { get; set; }
     public bool IsApproved { get; set; }
+    public string UserImage { get; set; }
     public DateTime CreatedAt { get; set; }
 }

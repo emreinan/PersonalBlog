@@ -17,9 +17,4 @@
     <ProjectReference Include="..\App.Shared\App.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-    <Folder Include="wwwroot\uploads\" />
-  </ItemGroup>
-
 </Project>

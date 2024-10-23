@@ -4,17 +4,13 @@
 @{
     ViewData["Title"] = "About Me";
 }
-@{
-    var downloadRequestDto = new FileDownloadRequest { FileName = Model.AboutMe.Cv };
-    var fileUrl = "https://localhost:7207/api/File/GetByUrl?FileName=";
-}
 
 <div class="container">
     <div class="row d-flex">
         <div class="col-md-6 col-lg-5 d-flex">
             <div class="img-about img d-flex align-items-stretch">
                 <div class="overlay"></div>
-                <div class="img d-flex align-self-stretch align-items-center" style="background-image: url('@(fileUrl + Model.AboutMe.ImageUrl1)')">
+                <div class="img d-flex align-self-stretch align-items-center" style="background-image: url(@Model.AboutMe.ImageUrl1)">
                 </div>
             </div>
         </div>
@@ -35,7 +31,7 @@
             </div>
             <div class="counter-wrap ftco-animate d-flex mt-md-3">
                 <div class="text">
-                    <p><a href="@Url.Action("Download", "File", downloadRequestDto)" class="btn btn-primary py-3 px-3" download>Download CV</a></p>
+                    <p><a asp-controller="File" asp-action="Download" asp-route-FileName="@Model.AboutMe.Cv" class="btn btn-primary py-3 px-3" download>Download CV</a></p>
 
                 </div>
             </div>

@@ -4,13 +4,12 @@ public class CommentViewModel
 {
     public int Id { get; set; }
     public string Content { get; set; }
-    public DateTime Created { get; set; }
-
-    public UserDto User { get; set; }
-
-}
-public class UserDto
-{
+    public Guid PostId { get; set; }
     public Guid UserId { get; set; }
-    public string Username { get; set; }
+    public string Author { get; set; }
+    public bool IsApproved { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string UserImage { get; set; }
+
 }
+

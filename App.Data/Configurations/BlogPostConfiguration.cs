@@ -18,5 +18,38 @@ public class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
             .HasForeignKey(c => c.PostId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        new BlogPostSeed().Configure(builder);
+    }
+}
+internal class BlogPostSeed : IEntityTypeConfiguration<BlogPost>
+{
+    public void Configure(EntityTypeBuilder<BlogPost> builder)
+    {
+        builder.HasData(
+            new BlogPost
+            {
+                Id = new Guid("24900544-58fc-4be7-9ab1-18f088510da4"),
+                Title = "Introduction to ASP.NET Core",
+                Content = "ASP.NET Core is a cross-platform, high-performance framework for building modern, cloud-based, internet-connected applications. It allows developers to create web apps, services, and APIs with ease.",
+                ImageUrl = "https://picsum.photos/seed/aspnetcore/400/300",
+                CreatedAt = DateTime.Now,
+            },
+            new BlogPost
+            {
+                Id = new Guid("7aa98865-285c-4c67-a96a-8fcd30855234"),
+                Title = "Understanding Entity Framework Core",
+                Content = "Entity Framework Core is a lightweight and extensible version of Entity Framework. It is an open-source object-relational mapper for .NET applications.",
+                ImageUrl = "https://picsum.photos/seed/entityframework/400/300",
+                CreatedAt = DateTime.Now,
+            },
+            new BlogPost
+            {
+                Id = new Guid("b860336c-64af-497d-9bbd-ed95fd752e9f"),
+                Title = "Building RESTful APIs with ASP.NET Core",
+                Content = "In this blog post, we will explore how to build RESTful APIs using ASP.NET Core. We will cover routing, controllers, and data handling.",
+                ImageUrl = "https://picsum.photos/seed/restfulapi/400/300",
+                CreatedAt = DateTime.Now,
+            }
+        );
     }
 }

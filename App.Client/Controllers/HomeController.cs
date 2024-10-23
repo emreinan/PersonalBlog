@@ -7,6 +7,7 @@ using App.Client.Services.Education;
 using App.Client.Services.Experience;
 using App.Client.Services.PersonalInfo;
 using App.Client.Services.Project;
+using App.Shared.Services.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -21,7 +22,8 @@ public class HomeController(
     IEducationService educationService,
     IExperienceService experienceService,
     IPersonalInfoService personalInfoService,
-    IProjectService projectService
+    IProjectService projectService,
+    IUserService userService
     ) : Controller
 {
     public async Task<IActionResult> Index()
@@ -33,10 +35,29 @@ public class HomeController(
         var personalInfo = await personalInfoService.GetPersonalInfo();
         var projects = await projectService.GetProjects();
 
+        var postViewModels = new List<BlogPostViewModel>();
+
+        foreach (var post in posts)
+        {
+            var comments = await commentService.GetCommentsForPost(post.Id);
+
+            var blogPostViewModel = new BlogPostViewModel
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                ImageUrl = post.ImageUrl,
+                Date = post.Date,
+                Comments = comments
+            };
+
+            postViewModels.Add(blogPostViewModel);
+        }
+
         var model = new HomeViewModel
         {
             AboutMe = aboutMe,
-            BlogPosts = posts,
+            BlogPosts = postViewModels,
             Educations = educations,
             Experiences = experiences,
             PersonalInfo = personalInfo,
@@ -49,6 +70,8 @@ public class HomeController(
             ContactMessage = new ContactMessageViewModel()
 
         };
+        ViewBag.PersonalInfo = personalInfo;
+        ViewBag.AboutMe = aboutMe;
 
         return View(model);
     }
@@ -78,15 +101,86 @@ public class HomeController(
     public async Task<IActionResult> BlogPost(Guid postId)
     {
         var comments = await commentService.GetCommentsForPost(postId);
+        var approvedComments = comments.Where(c => c.IsApproved).ToList();
 
+        var blogPost = await postService.GetBlogPost(postId);
+
+        var recentBlogs = await postService.GetBlogPosts();
+
+        var commentViewModels = new List<CommentViewModel>();
+
+        foreach (var comment in approvedComments)
+        {
+            var commmentUser = await userService.GetUserAsync(comment.UserId);
+
+            if (commmentUser?.Value != null)
+            {
+
+                commentViewModels.Add(new CommentViewModel
+                {
+                    Id = comment.Id,
+                    Content = comment.Content,
+                    PostId = comment.PostId,
+                    UserId = comment.UserId,
+                    Author = commmentUser.Value.UserName,
+                    CreatedAt = comment.CreatedAt,
+                    IsApproved = comment.IsApproved,
+                    UserImage = commmentUser.Value.ProfilePhoto!.ToString()
+                });
+            }
+        }
         var model = new BlogPostViewModel
         {
             Id = postId,
-            Comments = comments
+            Title = blogPost.Title,
+            Content = blogPost.Content,
+            ImageUrl = blogPost.ImageUrl,
+            Date = blogPost.Date,
+            Comments = commentViewModels,
+            RecentBlogs = recentBlogs.Select(b => new BlogPostViewModel
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Content = b.Content,
+                ImageUrl = b.ImageUrl,
+                Date = b.Date
+            }).ToList()
+
         };
 
         return View(model);
     }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> SubmitComment(CommentSendViewModel commentSendViewModel)
+    {
+        if (!ModelState.IsValid)
+            return View(commentSendViewModel);
+
+        var userMail = GetUserMail();
+        var userName = GetUserName();
+
+        var commentViewModel = new CommentViewModel
+        {
+            Content = commentSendViewModel.Content,
+            PostId = commentSendViewModel.PostId,
+            UserId = GetUserId(),
+            Author = userName
+        };
+        var result = await commentService.CreateComment(commentViewModel);
+
+        if (result is null)
+        {
+            ModelState.AddModelError(string.Empty, "An error occurred while submitting the comment. Please try again.");
+            return View(commentSendViewModel);
+        }
+
+        TempData["SuccessMessage"] = "Your comment has been submitted successfully!";
+        return RedirectToAction("BlogPost", new { postId = commentViewModel.PostId });
+
+    }
+
     public Guid GetUserId()
     {
         return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -94,5 +188,9 @@ public class HomeController(
     private string GetUserMail()
     {
         return User.FindFirst(ClaimTypes.Email).Value;
+    }
+    private string GetUserName()
+    {
+        return User.FindFirst(ClaimTypes.Name).Value;
     }
 }
