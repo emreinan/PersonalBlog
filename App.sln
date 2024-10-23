@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Data", "App.Data\App.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Shared", "App.Shared\App.Shared.csproj", "{BF4DC61B-DA5B-4D7C-A825-F37F82E9836D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Client", "App.Client\App.Client.csproj", "{70AE3810-C913-44F6-BD61-DEF73929DA56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Client", "App.Client\App.Client.csproj", "{70AE3810-C913-44F6-BD61-DEF73929DA56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Admin", "App.Admin\App.Admin.csproj", "{CAA25BB7-235F-490A-919B-68B1F71A5F01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{70AE3810-C913-44F6-BD61-DEF73929DA56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70AE3810-C913-44F6-BD61-DEF73929DA56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70AE3810-C913-44F6-BD61-DEF73929DA56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAA25BB7-235F-490A-919B-68B1F71A5F01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAA25BB7-235F-490A-919B-68B1F71A5F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAA25BB7-235F-490A-919B-68B1F71A5F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAA25BB7-235F-490A-919B-68B1F71A5F01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
