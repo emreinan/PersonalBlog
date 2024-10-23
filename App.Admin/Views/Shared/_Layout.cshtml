@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/" data-template="vertical-menu-template-free">
+<head>
+    <partial name="Partials/_Head.cshtml" />
+</head>
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <partial name="Partials/_Menu.cshtml" />
+            <!-- Layout container -->
+            <div class="layout-page">
+                <partial name="Partials/_Navbar.cshtml" />
+                 
+                <div class="content-wrapper">
+                @RenderBody()
+                </div>
+
+            </div>
+            <!-- / Layout page -->
+        </div>
+        <!-- Overlay -->
+    </div>
+    <!-- / Layout wrapper -->
+    <partial name="Partials/_Loader.cshtml" />
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
