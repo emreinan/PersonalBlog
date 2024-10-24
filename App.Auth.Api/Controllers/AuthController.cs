@@ -16,7 +16,8 @@ namespace App.Auth.Api.Controllers
             var result = await authService.LoginAsync(loginDto);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return Ok(result);
+            var dto = result.Value;
+            return Ok(dto);
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto registerDto)
@@ -24,7 +25,8 @@ namespace App.Auth.Api.Controllers
             var result = await authService.RegisterAsync(registerDto);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return Ok(result);
+            var dto = result.Value;
+            return Ok(dto);
         }
         [HttpGet("verify-email")]
         public async Task<IActionResult> VerifyEmail([FromQuery]VerifyEmailDto verifyEmailDto)
@@ -32,7 +34,8 @@ namespace App.Auth.Api.Controllers
             var result = await authService.VerifyEmailAsync(verifyEmailDto);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return Ok(result);
+            var dto = result.Value;
+            return Ok(dto);
         }
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest forgotPasswordRequest)
@@ -40,7 +43,8 @@ namespace App.Auth.Api.Controllers
             var result = await authService.ForgotPasswordAsync(forgotPasswordRequest);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return Ok(result);
+            var dto = result.Value;
+            return Ok(dto);
         }
         [HttpGet("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest resetPasswordRequest)
@@ -48,7 +52,8 @@ namespace App.Auth.Api.Controllers
             var result = await authService.ResetPasswordAsync(resetPasswordRequest);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return Ok(result);
+            var dto = result.Value;
+            return Ok(dto);
         }
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshTokenRequest)
@@ -56,7 +61,8 @@ namespace App.Auth.Api.Controllers
             var result = await authService.RefrehsTokenAsync(refreshTokenRequest);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return Ok(result);
+            var dto = result.Value;
+            return Ok(dto);
         }
 
     }

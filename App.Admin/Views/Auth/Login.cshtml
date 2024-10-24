@@ -1,0 +1,62 @@
+﻿@using App.Shared.Models
+@model LoginViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="../assets/" data-template="vertical-menu-template-free">
+<head>
+    <partial name="Partials/_HeadAuth.cshtml" />
+</head>
+<body>
+    <!-- Content -->
+    <div class="container-xxl">
+        <div class="authentication-wrapper authentication-basic container-p-y">
+            <div class="authentication-inner">
+                <!-- Login -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mb-2">Login 👋</h4>
+                        <p class="mb-4">Please sign-in to your account and start the adventure</p>
+                        <form asp-action="Login" method="POST" class="mb-3">
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" placeholder="Enter your email" autofocus />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3 form-password-toggle">
+                                <div class="d-flex justify-content-between">
+                                    <label asp-for="Password" class="form-label"></label>
+                                    <a asp-action="ForgotPassword">
+                                        <small>Forgot Password?</small>
+                                    </a>
+                                </div>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Password" class="form-control" type="password" />
+                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                            </div>
+                        </form>
+                        <p class="text-center">
+                            <span>New on our platform?</span>
+                            <a asp-action="Register">
+                                <span>Create an account</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                <!-- /Login -->
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+    <partial name="Partials/_ScriptsAuth.cshtml" />
+</body>
+</html>

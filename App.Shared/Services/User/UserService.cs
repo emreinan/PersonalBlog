@@ -40,11 +40,11 @@ public class UserService(IHttpClientFactory httpClientFactory) : IUserService
         return new Result();
     }
 
-    public async Task<Result> UploadProfilePhotoAsync(IFormFile file)
+    public async Task<Result<string>> UploadProfilePhotoAsync(IFormFile file)
     {
         var fileUpload = new ProfilePicUpload { File = file };
-        var response = await _httpClient.PostAsJsonAsync($"/api/User/UploadProfilePhoto", fileUpload);
+        var response = await _httpClient.PostAsJsonAsync($"/api/User/upload-profile-image", fileUpload);
         await response.EnsureSuccessStatusCodeWithApiError();
-        return new Result();
+        return await response.Content.ReadFromJsonAsync<Result<string>>();
     }
 }

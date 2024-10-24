@@ -93,10 +93,23 @@ public class UserController(IUserService userService) : Controller
         if (!result.IsSuccess)
             return BadRequest(result.Errors);
 
+        await SavePhotoToLocalAsync(file);
+
         return RedirectToAction(nameof(Details));
     }
     public Guid GetUserId()
     {
         return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+    }
+    private async Task SavePhotoToLocalAsync(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            throw new ArgumentException("File cannot be null or empty", nameof(file));
+
+        var originalFileName = file.FileName; 
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", originalFileName);
+
+        using var fileStream = new FileStream(filePath, FileMode.Create);
+        await file.CopyToAsync(fileStream); // Yükleme sırasında dosyanın içeriğini kullan
     }
 }

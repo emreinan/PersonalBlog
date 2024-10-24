@@ -2,13 +2,14 @@
 using App.Shared.Models;
 using AutoMapper;
 
-namespace App.Shared.Services.Auth.Profiles;
+namespace App.Client.Profiles;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
     {
         CreateMap<LoginDto, LoginViewModel>().ReverseMap();
+
         CreateMap<RegisterDto, RegisterViewModel>().ReverseMap();
     }
 }

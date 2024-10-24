@@ -10,7 +10,7 @@ using System.Web;
 
 namespace App.Auth.Api.Services;
 
-public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, IMailService emailService, IFileService fileService) : IAuthService
+public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, IMailService emailService) : IAuthService
 {
     public async Task<Result> ForgotPasswordAsync(ForgotPasswordRequest forgotPasswordRequest)
     {

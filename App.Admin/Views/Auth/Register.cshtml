@@ -1,0 +1,55 @@
+﻿@using App.Shared.Models
+@model RegisterViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Register";
+}
+
+<!DOCTYPE html>
+<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="../assets/" data-template="vertical-menu-template-free">
+<head>
+    <partial name="Partials/_HeadAuth.cshtml" />
+</head>
+<body>
+    <!-- Content -->
+    <div class="container-xxl">
+        <div class="authentication-wrapper authentication-basic container-p-y">
+            <div class="authentication-inner">
+                <!-- Register Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mb-2">Register 🚀</h4>
+                        <p class="mb-4">Make your app management easy and fun!</p>
+                        <form asp-action="Register" method="POST" class="mb-3" >
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" placeholder="Enter your email" autofocus />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3 form-password-toggle">
+                                <label asp-for="Password" class="form-label"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Password" class="form-control" type="password" />
+                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <button class="btn btn-primary d-grid w-100" type="submit">Sign up</button>
+                        </form>
+                        <p class="text-center">
+                            <span>Already have an account?</span>
+                            <a asp-action="Login">
+                                <span>Sign in instead</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                <!-- /Register Card -->
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+    <partial name="Partials/_ScriptsAuth.cshtml" />
+</body>
+</html>
