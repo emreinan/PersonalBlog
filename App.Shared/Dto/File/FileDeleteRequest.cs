@@ -9,12 +9,12 @@ namespace App.Shared.Dto.File;
 
 public class FileDeleteRequest
 {
-    public string FileName { get; set; }
+    public string FileUrl { get; set; }
 }
 public class FileDeleteRequestValidator : AbstractValidator<FileDeleteRequest>
 {
     public FileDeleteRequestValidator()
     {
-        RuleFor(x => x.FileName).NotEmpty();
+        RuleFor(x => x.FileUrl).NotEmpty();
     }
 }

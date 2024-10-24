@@ -13,10 +13,10 @@ namespace App.Shared.Services.File;
 public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
 {
     private readonly HttpClient client = httpClientFactory.CreateClient("FileApiClient");
-    public async Task<Result> DeleteFileAsync(string fileName)
+    public async Task<Result> DeleteFileAsync(string fileUrl)
     {
-        var deleteRequestDto = new FileDeleteRequest { FileName = fileName };
-        var response = await client.DeleteAsync($"/api/File/Delete?FileName={deleteRequestDto}");
+        var deleteRequestDto = new FileDeleteRequest { FileUrl = fileUrl };
+        var response = await client.DeleteAsync($"/api/File/Delete?FileUrl={deleteRequestDto}");
 
         if (!response.IsSuccessStatusCode)
             return Result.Error("Unexpected error occurred while deleting the file.");
@@ -24,10 +24,10 @@ public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
         return Result.Success();
     }
 
-    public async Task<Result> DownloadFileAsync(string fileName)
+    public async Task<Result> DownloadFileAsync(string fileUrl)
     {
-        var downloadRequestDto = new FileDownloadRequest { FileName = fileName };
-        var response = await client.GetAsync($"/api/File/Download?FileName={downloadRequestDto}");
+        var downloadRequestDto = new FileDownloadRequest { FileUrl = fileUrl };
+        var response = await client.GetAsync($"/api/File/Download?FileUrl={downloadRequestDto}");
 
         if (!response.IsSuccessStatusCode)
             return Result.Error("Unexpected error occurred while downloading the file.");
@@ -49,8 +49,8 @@ public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
         if (!response.IsSuccessStatusCode)
             return Result.Error("Unexpected error occurred while uploading the file.");
 
-        var fileName = await response.Content.ReadAsStringAsync();
-        return Result.Success(fileName);
+        var fileUrl = await response.Content.ReadAsStringAsync();
+        return Result.Success(fileUrl);
 
     }
 }

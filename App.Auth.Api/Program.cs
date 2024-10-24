@@ -29,7 +29,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-    await context.Database.MigrateAsync();
+    await context.Database.EnsureCreatedAsync();
 }
 
 app.Run();

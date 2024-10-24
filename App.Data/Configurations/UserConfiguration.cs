@@ -55,7 +55,7 @@ internal class UserSeed : IEntityTypeConfiguration<User>
                RoleId = 1,
                CreatedAt = DateTime.Now,
                IsActive = true,
-               ProfilePhoto = "Dosya_000.jpeg"
+               ProfilePhotoUrl = "Dosya_000.jpeg"
            },
             new User
             {

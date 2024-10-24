@@ -10,7 +10,7 @@ namespace App.File.Api.Controllers
     {
 
         [HttpPost("Upload")]
-        public async Task<IActionResult> Upload(FileUploadRequest fileUploadRequest)
+        public async Task<IActionResult> Upload([FromForm] FileUploadRequest fileUploadRequest)
         {
             var file = fileUploadRequest.File;
             var filePath = Path.Combine(GetFileSaveFolder(), file.FileName);
@@ -26,8 +26,9 @@ namespace App.File.Api.Controllers
                 {
                     await file.CopyToAsync(stream);
                 }
+                var fileUrl = GetFileUrl(file.FileName);
 
-                return Ok(file.FileName);
+                return Ok(fileUrl);
             }
             catch (IOException ex)
             {
@@ -38,25 +39,25 @@ namespace App.File.Api.Controllers
         [HttpGet("Download")]
         public async Task<IActionResult> Download([FromQuery] FileDownloadRequest fileDownloadRequest)
         {
-            var fileName = fileDownloadRequest.FileName;
-            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
+            var fileName = Path.GetFileName(fileDownloadRequest.FileUrl);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", fileName);
 
             if (!System.IO.File.Exists(filePath))
             {
                 return NotFound("File not found.");
             }
 
-            var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
             var contentType = GetContentType(filePath);
 
             return File(fileBytes, contentType, fileName);
-
         }
 
         [HttpDelete("Delete")]
         public IActionResult Delete([FromQuery] FileDeleteRequest fileDeleteRequest)
         {
-            var filePath = Path.Combine(GetFileSaveFolder(), fileDeleteRequest.FileName);
+            var fileName = Path.GetFileName(fileDeleteRequest.FileUrl);
+            var filePath = Path.Combine(GetFileSaveFolder(), fileName);
 
             if (!System.IO.File.Exists(filePath))
             {
@@ -68,17 +69,12 @@ namespace App.File.Api.Controllers
             return Ok(filePath);
         }
 
-        [HttpGet("GetByUrl")]
-        public IActionResult GetByUrl([FromQuery] FileGetUrlReuqest fileGetUrlReuqest)
+        private string GetFileUrl(string fileName)
         {
-            var filePath = Path.Combine(GetFileSaveFolder(), fileGetUrlReuqest.FileName);
-            if (!System.IO.File.Exists(filePath))
-            {
-                return NotFound("File not found.");
-            }
-            var contentType =GetContentType(filePath);
-            var fileBytes = System.IO.File.ReadAllBytes(filePath);
-            return File(fileBytes, contentType, fileGetUrlReuqest.FileName);
+            var baseUrl = $"{Request.Scheme}://{Request.Host}"; 
+            var fileUrl = $"{baseUrl}/images/{fileName}"; 
+
+            return fileUrl;
         }
         private static string GetFileSaveFolder()
         {

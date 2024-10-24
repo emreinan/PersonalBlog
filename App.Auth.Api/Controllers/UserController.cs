@@ -29,7 +29,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
             Email = user.Email,
             CreatedAt = user.CreatedAt,
             IsActive = user.IsActive,
-            ProfilePhoto = user.ProfilePhoto
+            ProfilePhoto = user.ProfilePhotoUrl
         
         };
         return Ok(userGetResult);
@@ -54,7 +54,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
                 Email = user.Email,
                 CreatedAt = user.CreatedAt,
                 IsActive = user.IsActive,
-                ProfilePhoto = user.ProfilePhoto
+                ProfilePhoto = user.ProfilePhotoUrl
             };
             userGetResults.Add(userGetResult);
         }
@@ -110,7 +110,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         if (!result.IsSuccess)
             return BadRequest("Profile image can not be uploaded.");
 
-        user.ProfilePhoto = result.Value;
+        user.ProfilePhotoUrl = result.Value;
 
         await authDbContext.SaveChangesAsync();
         return Ok(result.Value);

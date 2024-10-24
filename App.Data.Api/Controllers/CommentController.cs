@@ -66,7 +66,7 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
                 PostId = comment.PostId,
                 UserId = comment.UserId,
                 Author = user.UserName,
-                UserImage = user.ProfilePhoto
+                UserImage = user.ProfilePhotoUrl
             };
 
             commentDtos.Add(commentDto);

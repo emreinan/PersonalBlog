@@ -9,7 +9,7 @@ public class User : Entity<Guid>
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
     public string Email { get; set; }
-    public string? ProfilePhoto { get; set; }
+    public string? ProfilePhotoUrl { get; set; }
     public bool IsActive { get; set; } = false;
     public string? VerificationCode { get; set; }
     public int RoleId { get; set; } 

@@ -23,7 +23,7 @@ public class TokenHelper(IConfiguration configuration,AuthDbContext authDbContex
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Role, user.Role.Name),
             new Claim("IsActive", user.IsActive.ToString()),
-            new Claim("ProfilePhoto", user.ProfilePhoto?.ToString() ?? string.Empty)
+            new Claim("ProfilePhotoUrl", user.ProfilePhotoUrl?.ToString() ?? string.Empty)
         };
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.SecurityKey));
