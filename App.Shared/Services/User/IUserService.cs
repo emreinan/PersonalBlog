@@ -10,6 +10,6 @@ public interface IUserService
     Task<Result<List<UserGetResult>>> GetUsersAsync();
     Task<Result> UpdateUserAsync(Guid id, UserUpdateDto userUpdateDto);
     Task<Result> DeleteUserAsync(Guid userId);
-    Task<Result> UploadProfilePhotoAsync(IFormFile file);
+    Task<Result<string>> UploadProfilePhotoAsync(IFormFile file);
 
 }

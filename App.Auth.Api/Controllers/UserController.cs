@@ -113,7 +113,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         user.ProfilePhoto = result.Value;
 
         await authDbContext.SaveChangesAsync();
-        return Ok();
+        return Ok(result.Value);
     }
 
     private Guid GetUserId()
