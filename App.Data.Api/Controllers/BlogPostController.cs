@@ -2,7 +2,7 @@
 using App.Data.Entities.Data;
 using App.Shared.Dto.BlogPost;
 using App.Shared.Dto.File;
-using App.Shared.Services.Abstract;
+using App.Shared.Services.File;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

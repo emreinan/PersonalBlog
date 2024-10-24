@@ -1,10 +1,8 @@
-﻿using App.Auth.Api.Services;
-using App.Data.Contexts;
+﻿using App.Data.Contexts;
 using App.Shared.Dto.Auth;
 using App.Shared.Dto.User;
-using App.Shared.Services.Abstract;
+using App.Shared.Services.File;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;

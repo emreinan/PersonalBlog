@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
-using App.Client.Util.ExceptionHandling;
+using App.Shared.Util.ExceptionHandling;
 
 namespace App.Client.Util.Filters;
 

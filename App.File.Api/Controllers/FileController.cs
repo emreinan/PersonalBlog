@@ -1,8 +1,4 @@
-﻿using App.File.Api.Services;
-using App.Shared.Dto.File;
-using App.Shared.Services.Abstract;
-using Ardalis.Result;
-using Ardalis.Result.AspNetCore;
+﻿using App.Shared.Dto.File;
 using Microsoft.AspNetCore.Mvc;
 
 

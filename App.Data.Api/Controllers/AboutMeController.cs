@@ -1,6 +1,6 @@
 ﻿using App.Data.Contexts;
 using App.Shared.Dto.AboutMe;
-using App.Shared.Services.Abstract;
+using App.Shared.Services.File;
 using Ardalis.Result;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;

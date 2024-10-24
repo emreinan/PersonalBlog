@@ -1,6 +1,4 @@
-
-using App.Shared.Services.Abstract;
-using App.Shared.Services.Concrate;
+using App.Shared.Services.File;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using System.Reflection;

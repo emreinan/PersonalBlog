@@ -1,6 +1,6 @@
 ﻿using App.Auth.Api.Model;
-using App.Shared.Services.Abstract;
-using App.Shared.Services.Concrate;
+using App.Shared.Services.File;
+using App.Shared.Services.Mail;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

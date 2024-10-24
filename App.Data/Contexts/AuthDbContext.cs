@@ -1,7 +1,5 @@
 ﻿using App.Data.Configurations;
 using App.Data.Entities.Auth;
-using App.Data.Entities.Data;
-using App.Shared.Security;
 using Microsoft.EntityFrameworkCore;
 
 

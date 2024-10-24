@@ -2,7 +2,8 @@
 using App.Data.Entities.Auth;
 using App.Shared.Dto.Auth;
 using App.Shared.Security;
-using App.Shared.Services.Abstract;
+using App.Shared.Services.File;
+using App.Shared.Services.Mail;
 using Ardalis.Result;
 using Microsoft.EntityFrameworkCore;
 using System.Web;

@@ -1,7 +1,7 @@
-﻿using App.Client.Models;
-using App.Client.Services.Auth;
-using App.Client.Services.Token;
-using App.Shared.Dto.Auth;
+﻿using App.Shared.Dto.Auth;
+using App.Shared.Models;
+using App.Shared.Services.Auth;
+using App.Shared.Services.Token;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 

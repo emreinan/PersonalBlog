@@ -1,6 +1,6 @@
-﻿using App.Client.Models;
-using App.Shared.Dto.User;
-using App.Shared.Services.Abstract;
+﻿using App.Shared.Dto.User;
+using App.Shared.Models;
+using App.Shared.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
