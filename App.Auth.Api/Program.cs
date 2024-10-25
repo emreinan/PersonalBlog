@@ -29,6 +29,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    await context.Database.EnsureDeletedAsync();
     await context.Database.EnsureCreatedAsync();
 }
 

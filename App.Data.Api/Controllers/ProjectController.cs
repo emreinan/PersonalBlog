@@ -77,5 +77,39 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
 
         return NoContent();
     }
+
+    [HttpPut("Active/{id}")]
+    public async Task<IActionResult> MakeActiveProject(int id)
+    {
+        var project = await context.Projects.FindAsync(id);
+
+        if (project == null)
+            return NotFound();
+
+        if (project.IsActive)
+            return BadRequest("Project is already active");
+
+        project.IsActive = true;
+        await context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpPut("InActive/{id}")]
+    public async Task<IActionResult> MakeInActiveProject(int id)
+    {
+        var project = await context.Projects.FindAsync(id);
+
+        if (project == null)
+            return NotFound();
+
+        if (!project.IsActive)
+            return BadRequest("Project is already inactive");
+
+        project.IsActive = false;
+        await context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
 

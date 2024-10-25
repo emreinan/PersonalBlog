@@ -13,7 +13,9 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.Title).IsRequired().HasMaxLength(100);
         builder.Property(p => p.Description).HasMaxLength(1000);
         builder.Property(p => p.ImageUrl).HasMaxLength(255);
+        builder.Property(p => p.IsActive).IsRequired();
         builder.Property(cm => cm.CreatedAt).IsRequired();
+        
 
         new ProjectSeed().Configure(builder);
     }
