@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
-
+[Route("Project")]
 public class ProjectController(IProjectService projectService, IMapper mapper) : Controller
 {
     [HttpGet("Projects")]
@@ -63,7 +63,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         await projectService.GetProjectById(id);
         await projectService.DeleteProjectAsync(id);
 
-        TempData["Success"] = "Project deleted successfully";
+        ViewBag.Success = "Project deleted successfully";
         return RedirectToAction(nameof(Projects));
     }
 

@@ -9,8 +9,10 @@ public static class HttpResponseMessageExtensions
     {
         if (!response.IsSuccessStatusCode)
         {
-            var apiError = await response.Content.ReadFromJsonAsync<ApiError>();
-            throw new ApiException(apiError);
+            var apiError = response.Content.ReadAsStringAsync().Result;
+            Console.WriteLine($"API Error: {apiError}");
+            response.EnsureSuccessStatusCode();
+            Console.WriteLine( apiError );
         }
     }
 }

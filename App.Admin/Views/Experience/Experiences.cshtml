@@ -1,0 +1,45 @@
+﻿@using App.Shared.Models
+@model List<ExperienceViewModel>
+
+@{
+    ViewData["Title"] = "Experiences";
+}
+
+
+<div class="container mt-3">
+    <div class="row">
+        <p><a asp-action="Add" class="btn btn-primary ">Add New Experience</a></p>
+        <div class="col-md-12">
+            <h2>Experiences</h2>
+            <partial name="Partials/ViewMessages" />
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Company</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var experience in Model)
+                    {
+                        <tr>
+                            <td>@experience.Title</td>
+                            <td>@experience.Company</td>
+                            <td>@experience.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td>@experience.EndDate?.ToString("yyyy-MM-dd") ?? "Present"</td>
+                            <td>@experience.Description</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@experience.Id">Edit</a> |
+                                <a asp-action="Delete" asp-route-id="@experience.Id" onclick="return confirm('Are you sure you want to delete this experience?');">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

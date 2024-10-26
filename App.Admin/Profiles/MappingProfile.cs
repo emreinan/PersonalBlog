@@ -1,4 +1,5 @@
 ﻿using App.Shared.Dto.Auth;
+using App.Shared.Dto.Experience;
 using App.Shared.Dto.Project;
 using App.Shared.Models;
 using AutoMapper;
@@ -13,5 +14,7 @@ public class MappingProfile : Profile
         CreateMap<RegisterDto, RegisterViewModel>().ReverseMap();
 
         CreateMap<ProjectDto, ProjectViewModel>().ReverseMap();
+
+        CreateMap<ExperienceDto, ExperienceViewModel>().ReverseMap();
     }
 }
