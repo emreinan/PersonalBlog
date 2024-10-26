@@ -19,46 +19,18 @@ namespace App.Data.Api.Controllers
             return Ok(personalInfoDto);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreatePersonalInfo(PersonalInfoDto personalInfoDto)
+        [HttpPut]
+        public async Task<IActionResult> UpdatePersonalInfo(PersonalInfoDto personalInfoDto)
         {
-            var personalInfo = mapper.Map<PersonalInfo>(personalInfoDto);
-            personalInfo.CreatedAt = DateTime.UtcNow;
-
-            context.PersonalInfos.Add(personalInfo);
-            await context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetPersonalInfo), new { id = personalInfo.Id }, personalInfoDto);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePersonalInfo(int id, PersonalInfoDto personalInfoDto)
-        {
-            var personalInfo = await context.PersonalInfos.FindAsync(id);
+            var personalInfo = await context.PersonalInfos.SingleOrDefaultAsync();
 
             if (personalInfo == null)
                 return NotFound();
 
-            var personalInfoUpdated = mapper.Map<PersonalInfo>(personalInfoDto);
-            personalInfoUpdated.UpdatedAt = DateTime.UtcNow;
+            var personalInfoUpdated = mapper.Map(personalInfoDto, personalInfo);
+            personalInfoUpdated.UpdatedAt = DateTime.Now;
 
             context.PersonalInfos.Update(personalInfoUpdated);
-            await context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePersonalInfo(int id)
-        {
-            var personalInfo = await context.PersonalInfos.FindAsync(id);
-
-            if (personalInfo == null)
-            {
-                return NotFound();
-            }
-
-            context.PersonalInfos.Remove(personalInfo);
             await context.SaveChangesAsync();
 
             return NoContent();

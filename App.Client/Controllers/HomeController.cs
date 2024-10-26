@@ -32,7 +32,7 @@ public class HomeController(
         var posts = await postService.GetBlogPosts();
         var educations = await educationService.GetEducations();
         var experiences = await experienceService.GetExperiences();
-        var personalInfo = await personalInfoService.GetPersonalInfo();
+        var personalInfo = await personalInfoService.GetPersonalInfoAsync();
         var projects = await projectService.GetProjects();
 
         var postViewModels = new List<BlogPostViewModel>();

@@ -15,7 +15,7 @@ namespace App.Shared.Dto.PersonalInfo
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public DateTime BirthDate { get; set; }
-        public string About { get; set; }
+        public string Address { get; set; }
     }
 }
 public class PersonalInfoDtoValidator : AbstractValidator<PersonalInfoDto>
@@ -27,5 +27,6 @@ public class PersonalInfoDtoValidator : AbstractValidator<PersonalInfoDto>
         RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Phone number is required.");
         RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required.");
         RuleFor(x => x.BirthDate).NotEmpty().WithMessage("Birth date is required.");
+        RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required.");
     }
 }
