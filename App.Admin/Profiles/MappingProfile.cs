@@ -1,4 +1,5 @@
 ﻿using App.Shared.Dto.Auth;
+using App.Shared.Dto.Education;
 using App.Shared.Dto.Experience;
 using App.Shared.Dto.Project;
 using App.Shared.Models;
@@ -16,5 +17,7 @@ public class MappingProfile : Profile
         CreateMap<ProjectDto, ProjectViewModel>().ReverseMap();
 
         CreateMap<ExperienceDto, ExperienceViewModel>().ReverseMap();
+
+        CreateMap<EducationDto, EducationViewModel>().ReverseMap();
     }
 }
