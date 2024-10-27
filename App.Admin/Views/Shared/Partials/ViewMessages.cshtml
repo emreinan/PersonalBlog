@@ -3,16 +3,16 @@
         .Select(e => e.ErrorMessage)
         .ToList();
 }
-@if (!string.IsNullOrWhiteSpace(ViewBag.SuccessMessage))
+@if (!string.IsNullOrWhiteSpace(ViewBag.Success))
 {
     <div class="alert alert-success" role="alert">
-        @ViewBag.SuccessMessage
+        @ViewBag.Success
     </div>
 }
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+@if (!string.IsNullOrWhiteSpace(ViewBag.Error))
 {
     <div class="alert alert-danger" role="alert">
-        @ViewBag.ErrorMessage
+        @ViewBag.Error
     </div>
 }
 

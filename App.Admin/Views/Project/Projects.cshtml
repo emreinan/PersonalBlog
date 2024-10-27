@@ -3,97 +3,98 @@
 
 @{
     ViewData["Title"] = "Projects";
-    var hasActiveProjects = Model.Any(p => p.IsActive);
     var hasInactiveProjects = Model.Any(p => !p.IsActive);
+    var hasActiveProjects = Model.Any(p => p.IsActive);
 }
-
 
 <div class="container my-3">
     <div class="row">
-    
-        <p><a asp-action="Add" class="btn btn-primary" >Create New Project</a></p>
+
+        <p><a asp-action="Add" class="btn btn-primary">Create New Project</a></p>
         <p>
             <button id="showActiveBtn" class="btn btn-secondary" onclick="showActive()" style="display:@(hasInactiveProjects ? "inline-block" : "none");">Show Active Projects</button>
             <button id="showInactiveBtn" class="btn btn-secondary" onclick="showInactive()" style="display:@(hasActiveProjects ? "inline-block" : "none");">Show Inactive Projects</button>
         </p>
-    <div id="activeProjects" class="project-section" style="display:@(hasActiveProjects ? "block" : "none");">
 
-        <h2>Active Projects</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Project Title</th>
-                    <th>Description</th>
-                    <th>ImageUrl</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var project in Model.Where(p => p.IsActive))
-                {
+        <div id="activeProjects" class="project-section" style="display:@(hasActiveProjects ? "block" : "none");">
+            <h2>Active Projects</h2>
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>@project.Title</td>
-                        <td>@project.Description</td>
-                        <td>@project.ImageUrl</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@project.Id" >Edit</a> |
-                                <a asp-action="MakeInActive" asp-route-id="@project.Id" >Make Inactive</a> |
-                                <a asp-action="Delete" asp-route-id="@project.Id" onclick="return confirm('Are you sure you want to delete this experience?');">Delete</a>
-                        </td>
+                        <th>Project Title</th>
+                        <th>Description</th>
+                        <th>ImageUrl</th>
+                        <th>Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    @foreach (var project in Model.Where(p => p.IsActive))
+                    {
+                        <tr>
+                            <td>@project.Title</td>
+                            <td>@project.Description</td>
+                            <td>@project.ImageUrl</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@project.Id">Edit</a> |
+                                <a asp-action="MakeInActive" asp-route-id="@project.Id">Make Inactive</a> |
+                                <a asp-action="Delete" asp-route-id="@project.Id" onclick="return confirm('Are you sure you want to delete this experience?');">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-    <div id="inactiveProjects" class="project-section" style="display:none;">
-        <h2>Inactive Projects</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Project Title</th>
-                    <th>Description</th>
-                    <th>ImageUrl</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var project in Model.Where(p => !p.IsActive))
-                {
+        <div id="inactiveProjects" class="project-section" style="display:none;">
+            <h2>Inactive Projects</h2>
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>@project.Title</td>
-                        <td>@project.Description</td>
-                        <td>@project.ImageUrl</td>
-                        <td>
+                        <th>Project Title</th>
+                        <th>Description</th>
+                        <th>ImageUrl</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var project in Model.Where(p => !p.IsActive))
+                    {
+                        <tr>
+                            <td>@project.Title</td>
+                            <td>@project.Description</td>
+                            <td>@project.ImageUrl</td>
+                            <td>
                                 <a asp-action="Edit" asp-route-id="@project.Id">Edit</a> |
                                 <a asp-action="MakeActive" asp-route-id="@project.Id">Make Active</a> |
                                 <a asp-action="Delete" asp-route-id="@project.Id" onclick="return confirm('Are you sure you want to delete this experience?');">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-</div>
-
 
 @section Scripts {
     <script>
         function showActive() {
-            document.getElementById("activeProjects").style.display = "block";
-            document.getElementById("inactiveProjects").style.display = "none";
-            document.getElementById("showActiveBtn").style.display = "none";
+            document.getElementById("activeProjects").style.display = "block"; 
+            document.getElementById("inactiveProjects").style.display = "none"; 
+            document.getElementById("showActiveBtn").style.display = "none"; 
             document.getElementById("showInactiveBtn").style.display = "inline-block";
         }
 
         function showInactive() {
             document.getElementById("activeProjects").style.display = "none";
-            document.getElementById("inactiveProjects").style.display = "block";
+            document.getElementById("inactiveProjects").style.display = "block"; 
             document.getElementById("showInactiveBtn").style.display = "none";
-            document.getElementById("showActiveBtn").style.display = "inline-block";
+            document.getElementById("showActiveBtn").style.display = "inline-block"; 
         }
+
+                // Sayfa yüklendiğinde başlangıç durumu
+                document.addEventListener('DOMContentLoaded', function() {
+                    showActive(); 
+                });
     </script>
 }
-
-

@@ -21,6 +21,10 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     [HttpGet("Active/{id}")]
     public async Task<IActionResult> Activate([FromRoute] Guid id)
     {
+        var user = await userService.GetUserAsync(id);
+        if (user == null)
+            return NotFound();
+
         await userService.ActivateUserAsync(id);
         ViewBag.Success = "User activated successfully";
         return RedirectToAction(nameof(Users));
@@ -29,6 +33,10 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     [HttpGet("Deactive/{id}")]
     public async Task<IActionResult> Deactivate([FromRoute] Guid id)
     {
+        var user = await userService.GetUserAsync(id);
+        if (user == null)
+            return NotFound();
+
         await userService.DeactivateUserAsync(id);
         ViewBag.Success = "User deactivated successfully";
         return RedirectToAction(nameof(Users));

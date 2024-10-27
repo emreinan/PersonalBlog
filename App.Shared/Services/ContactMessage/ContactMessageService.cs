@@ -9,16 +9,36 @@ public class ContactMessageService(IHttpClientFactory httpClientFactory) : ICont
 {
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
 
-    public async Task<ContactMessageViewModel> AddContactMessage(ContactMessageViewModel contactMessage)
+    public async Task<ContactMessageViewModel> AddContactMessage(ContactMessageDto contactMessageDto)
     {
-        var contactMessageDto = new ContactMessageDto
-        {
-            Name = contactMessage.Name,
-            Email = contactMessage.Email,
-            Message = contactMessage.Message
-        };
-        var response = await _dataHttpClient.PostAsJsonAsync("api/contactmessage", contactMessageDto);
+        var response = await _dataHttpClient.PostAsJsonAsync("api/ContactMessage", contactMessageDto);
         await response.EnsureSuccessStatusCodeWithApiError();
         return await response.Content.ReadFromJsonAsync<ContactMessageViewModel>();
+    }
+
+    public async Task DeleteMessageAsync(int id)
+    {
+        var response = await _dataHttpClient.DeleteAsync($"api/ContactMessage/{id}");
+        await response.EnsureSuccessStatusCodeWithApiError();
+    }
+
+    public async Task<ContactMessageViewModel> GetMessageByIdAsync(int id)
+    {
+        var response = await _dataHttpClient.GetAsync($"api/ContactMessage/{id}");
+        await response.EnsureSuccessStatusCodeWithApiError();
+        return await response.Content.ReadFromJsonAsync<ContactMessageViewModel>();
+    }
+
+    public async Task<List<ContactMessageViewModel>> GetMessagesAsync()
+    {
+        var response = await _dataHttpClient.GetAsync("api/ContactMessage");
+        await response.EnsureSuccessStatusCodeWithApiError();
+        return await response.Content.ReadFromJsonAsync<List<ContactMessageViewModel>>();
+    }
+
+    public async Task MarkAsReadAsync(int id)
+    {
+        var response = await _dataHttpClient.PutAsync($"api/ContactMessage/mark-as-read/{id}", null);
+        await response.EnsureSuccessStatusCodeWithApiError();
     }
 }

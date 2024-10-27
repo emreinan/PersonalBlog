@@ -45,7 +45,7 @@ namespace App.Shared.Services.Mail
             }
             catch (Exception e)
             {
-                throw new Exception("Error sending email");
+                throw new Exception("Error sending email", e);
             }
         }
     }
