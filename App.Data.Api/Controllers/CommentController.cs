@@ -39,6 +39,40 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
         return Ok(commentDto);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetComments()
+    {
+        var comments = await datDbContext.Comments.ToListAsync();
+
+        if (comments.Count == 0 || comments is null)
+            return NotFound("Comments not found.");
+
+        var commentDtos = new List<CommentResponse>();
+
+        foreach (var comment in comments)
+        {
+            var user = await datDbContext.AuthDbContext.Users.FirstOrDefaultAsync(u => u.Id == comment.UserId);
+
+            if (user is null)
+                return NotFound("User not found this comment.");
+
+            var commentDto = new CommentResponse
+            {
+                Id = comment.Id,
+                Content = comment.Content,
+                IsApproved = comment.IsApproved,
+                CreatedAt = comment.CreatedAt,
+                PostId = comment.PostId,
+                UserId = comment.UserId,
+                Author = user.UserName,
+                UserImage = user.ProfilePhotoUrl
+            };
+
+            commentDtos.Add(commentDto);
+        }
+        return Ok(commentDtos);
+    }
+
     [HttpGet("PostComment/{postId}")]
     public async Task<IActionResult> GetCommentsByPost(Guid postId)
     {
