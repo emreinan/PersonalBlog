@@ -1,4 +1,5 @@
 ﻿using App.Shared.Dto.Auth;
+using App.Shared.Dto.BlogPost;
 using App.Shared.Dto.Education;
 using App.Shared.Dto.Experience;
 using App.Shared.Dto.PersonalInfo;
@@ -22,5 +23,9 @@ public class MappingProfile : Profile
         CreateMap<EducationDto, EducationViewModel>().ReverseMap();
 
         CreateMap<PersonalInfoDto, PersonalInfoViewModel>().ReverseMap();
+
+        CreateMap<BlogPostDto, BlogPostResponse>().ReverseMap();
+
+        CreateMap<BlogPostResponse, BlogPostViewModel>().ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments));
     }
 }

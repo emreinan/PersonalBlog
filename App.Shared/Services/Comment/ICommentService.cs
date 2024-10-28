@@ -7,7 +7,7 @@ namespace App.Shared.Services.Comment;
 public interface ICommentService
 {
     Task<List<CommentViewModel>> GetCommentsForPost(Guid postId);
-    Task<CommentViewModel> CreateComment(CommentViewModel comment);
+    Task CreateComment(CommentDto comment);
     Task DeleteComment(int id);
     Task ApproveComment(int id);
     Task<List<CommentViewModel>> GetComments();

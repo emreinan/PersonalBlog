@@ -65,7 +65,7 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
                 PostId = comment.PostId,
                 UserId = comment.UserId,
                 Author = user.UserName,
-                UserImage = user.ProfilePhotoUrl
+                UserImage = user.ProfilePhotoUrl ?? string.Empty
             };
 
             commentDtos.Add(commentDto);
@@ -74,7 +74,7 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
     }
 
     [HttpGet("PostComment/{postId}")]
-    public async Task<IActionResult> GetCommentsByPost(Guid postId)
+    public async Task<IActionResult> PostComment(Guid postId)
     {
         var comments = await datDbContext.Comments
             .Where(c => c.PostId == postId)
@@ -100,7 +100,7 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
                 PostId = comment.PostId,
                 UserId = comment.UserId,
                 Author = user.UserName,
-                UserImage = user.ProfilePhotoUrl
+                UserImage = user.ProfilePhotoUrl ?? string.Empty
             };
 
             commentDtos.Add(commentDto);
@@ -108,7 +108,7 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
         return Ok(commentDtos);
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateComment([FromBody] CommentDto commentDto)
     {

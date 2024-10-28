@@ -69,7 +69,7 @@
                             <div class="text">
                                 <h3 class="heading"><a href="@Url.Action("BlogPost", new { postId = blog.Id })">@blog.Title</a></h3>
                                 <div class="meta">
-                                    <div><a href="#"><span class="icon-calendar"></span> @blog.Date.ToString("MMMM dd, yyyy")</a></div>
+                                    <div><a href="#"><span class="icon-calendar"></span> @blog.CreatedAt.ToString("MMMM dd, yyyy")</a></div>
                                     <div><a href="#"><span class="icon-person"></span> Admin</a></div>
                                     <div><a href="#"><span class="icon-chat"></span> @blog.Comments.Count</a></div>
                                 </div>

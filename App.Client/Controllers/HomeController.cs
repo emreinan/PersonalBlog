@@ -47,7 +47,7 @@ public class HomeController(
                 Title = post.Title,
                 Content = post.Content,
                 ImageUrl = post.ImageUrl,
-                Date = post.Date,
+                CreatedAt = post.CreatedAt,
                 Comments = comments
             };
 
@@ -135,7 +135,7 @@ public class HomeController(
             Title = blogPost.Title,
             Content = blogPost.Content,
             ImageUrl = blogPost.ImageUrl,
-            Date = blogPost.Date,
+            CreatedAt = blogPost.CreatedAt,
             Comments = commentViewModels,
             RecentBlogs = recentBlogs.Select(b => new BlogPostViewModel
             {
@@ -143,7 +143,7 @@ public class HomeController(
                 Title = b.Title,
                 Content = b.Content,
                 ImageUrl = b.ImageUrl,
-                Date = b.Date
+                CreatedAt = b.CreatedAt
             }).ToList()
 
         };

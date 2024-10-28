@@ -23,7 +23,7 @@ public class CommentController(ICommentService commentService) : Controller
     }
 
     [HttpGet("PostComment/{postId}")]
-    public async Task<IActionResult> GetCommentsForPost(Guid postId)
+    public async Task<IActionResult> PostComment(Guid postId)
     {
         var comments = await commentService.GetCommentsForPost(postId);
         if (comments is null)
@@ -32,7 +32,7 @@ public class CommentController(ICommentService commentService) : Controller
             return View();
         }
 
-        return Ok(comments);
+        return View(comments);
     }
 
     [HttpGet("Edit/{id}")]

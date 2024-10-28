@@ -1,0 +1,55 @@
+﻿@using App.Shared.Models
+@model IEnumerable<BlogPostViewModel>
+
+@{
+    ViewData["Title"] = "Blog Posts";
+}
+
+<div class="container my-3">
+    <div class="row">
+        <p><a asp-action="CreateBlogPost" class="btn btn-primary">Create Blog Post</a></p>
+        <div class="col-md-12">
+            <h2>Blog Posts</h2>
+            <partial name="Partials/ViewMessages" />
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Image</th>
+                        <th>Commments</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model)
+                    {
+                        <tr>
+                            <td>@post.Title</td>
+                            <td>@post.Content</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(post.ImageUrl))
+                                {
+                                    <img src="@post.ImageUrl" alt="Blog Post Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
+                                }
+                                else
+                                {
+                                    <img src="~/image/user-anon.png" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
+                                }
+                            </td>
+                            <td>
+                                <a asp-controller="Comment" asp-action="PostComment" asp-route-id="@post.Id">BlogPost Comments</a>
+                            </td>
+                            <td>
+                                <a asp-controller="BlogPost" asp-action="CreateComment" asp-route-id="@post.Id">Create Comment</a> |
+                                <a asp-controller="BlogPost" asp-action="EditBlogPost" asp-route-id="@post.Id">Edit</a> |
+                                <a asp-controller="BlogPost" asp-action="DeleteBlogPost" asp-route-id="@post.Id" onclick="return confirm('Are you sure you want to delete this comment?');">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

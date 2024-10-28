@@ -16,13 +16,10 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task<CommentViewModel> CreateComment(CommentViewModel comment)
+    public async Task CreateComment(CommentDto comment)
     {
-        var commentDto = new CommentDto { Content = comment.Content, PostId = comment.PostId, UserId = comment.UserId };
-        var response = await _dataHttpClient.PostAsJsonAsync("/api/Comment", commentDto);
+        var response = await _dataHttpClient.PostAsJsonAsync("/api/Comment", comment);
         await response.EnsureSuccessStatusCodeWithApiError();
-        var result = await response.Content.ReadFromJsonAsync<CommentViewModel>();
-        return result;
     }
 
     public async Task DeleteComment(int id)

@@ -3,7 +3,7 @@
         .Select(e => e.ErrorMessage)
         .ToList();
 }
-@if (!string.IsNullOrWhiteSpace(ViewBag.Success))
+@if (!string.IsNullOrWhiteSpace(ViewBag.SuccessMessage))
 {
     <div class="alert alert-success" role="alert">
         @ViewBag.Success

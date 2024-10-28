@@ -37,7 +37,7 @@ public class MappingProfile : Profile
         CreateMap<ContactMessageDto, ContactMessage>()
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
 
-        CreateMap<BlogPost, BlogPostResponseDto>();
+        CreateMap<BlogPost, BlogPostResponse>();
         CreateMap<BlogPostDto, BlogPost>()
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
     }
