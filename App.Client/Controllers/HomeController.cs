@@ -28,7 +28,7 @@ public class HomeController(
 {
     public async Task<IActionResult> Index()
     {
-        var aboutMe = await aboutMeservice.GetAboutMe();
+        var aboutMe = await aboutMeservice.GetAboutMeAsync();
         var posts = await postService.GetBlogPosts();
         var educations = await educationService.GetEducations();
         var experiences = await experienceService.GetExperiences();

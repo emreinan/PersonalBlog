@@ -7,8 +7,8 @@ public interface IExperienceService
 {
     Task<List<ExperienceViewModel>> GetExperiences();
     Task<ExperienceViewModel> GetExperienceByIdAsync(int id);
-    Task AddExperienceAsync(ExperienceDto experienceDto);
-    Task EditExperienceAsync(int id, ExperienceDto experienceDto);
+    Task AddExperienceAsync(ExperienceSaveDto experienceDto);
+    Task EditExperienceAsync(int id, ExperienceSaveDto experienceDto);
     Task DeleteExperienceAsync(int id);
 
 }

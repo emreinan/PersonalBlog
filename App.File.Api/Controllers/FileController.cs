@@ -37,10 +37,10 @@ namespace App.File.Api.Controllers
         }
 
         [HttpGet("Download")]
-        public async Task<IActionResult> Download([FromQuery] FileDownloadRequest fileDownloadRequest)
+        public IActionResult Download([FromQuery] FileDownloadRequest fileDownloadRequest)
         {
             var fileName = Path.GetFileName(fileDownloadRequest.FileUrl);
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", fileName);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
 
             if (!System.IO.File.Exists(filePath))
             {

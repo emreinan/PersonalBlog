@@ -1,5 +1,5 @@
 ﻿@using App.Shared.Models
-@model ExperienceViewModel
+@model ExperienceSaveViewModel
 
 @{
     ViewData["Title"] = "Add Experience";
@@ -8,7 +8,6 @@
 <div class="container mt-3">
     <div class="row">
         <h2>Add Experience</h2>
-        <partial name="Partials/ViewMessages" />
         <form asp-action="Add" method="post">
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>

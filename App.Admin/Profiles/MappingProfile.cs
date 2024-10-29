@@ -19,8 +19,12 @@ public class MappingProfile : Profile
         CreateMap<ProjectDto, ProjectViewModel>().ReverseMap();
 
         CreateMap<ExperienceDto, ExperienceViewModel>().ReverseMap();
+        CreateMap<ExperienceSaveDto, ExperienceSaveViewModel>().ReverseMap();
+        CreateMap<ExperienceViewModel, ExperienceSaveViewModel>().ReverseMap();
 
         CreateMap<EducationDto, EducationViewModel>().ReverseMap();
+        CreateMap<EducationSaveDto, EducationSaveViewModel>().ReverseMap();
+        CreateMap<EducationViewModel, EducationSaveViewModel>().ReverseMap();
 
         CreateMap<PersonalInfoDto, PersonalInfoViewModel>().ReverseMap();
 

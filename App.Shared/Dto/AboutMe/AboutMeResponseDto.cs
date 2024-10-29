@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace App.Shared.Dto.AboutMe;
 
-namespace App.Shared.Models;
-
-public class AboutMeViewModel
+public class AboutMeResponseDto
 {
     public string Introduciton { get; set; }
     public string Title { get; set; }

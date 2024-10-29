@@ -7,7 +7,7 @@ namespace App.Shared.Services.File
     public interface IFileService
     {
         Task<Result<string>> UploadFileAsync(IFormFile file);
-        Task<Result> DownloadFileAsync(string fileUrl);
+        Task<Stream> GetFileAsync(string fileUrl);
         Task<Result> DeleteFileAsync(string fileUrl);
     }
 }

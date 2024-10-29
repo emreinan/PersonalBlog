@@ -41,7 +41,7 @@ public class PersonalInfoController(IPersonalInfoService personalInfoService, IM
         var personalInfoDto = mapper.Map<PersonalInfoDto>(personalInfoViewModel);
         await personalInfoService.UpdatePersonalInfoAsync(personalInfoDto);
 
-        ViewBag.Success = "PersonalInfo updated successfully.";
+        TempData["SuccessMessage"] = "Personal info updated successfully";
         return RedirectToAction(nameof(PersonalInfo));
     }
 }

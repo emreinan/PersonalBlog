@@ -48,7 +48,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         var blogPostDto = new BlogPostDto { Title = model.Title, Content = model.Content, Image = model.Image , AuthorId = userId};
         await blogPostService.CreateBlogPost(blogPostDto);
 
-        ViewBag.Success = "Blog post created successfully.";
+        TempData["SuccessMessage"] = "Blog post created successfully.";
         return RedirectToAction("BlogPosts");
     }
 
@@ -69,6 +69,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         var blogPostDto = new BlogPostUpdateDto { Title = model.Title, Content = model.Content, Image = model.Image };
         await blogPostService.UpdateBlogPost(id, blogPostDto);
 
+        TempData["SuccessMessage"] = "Blog post updated successfully.";
         return RedirectToAction("BlogPosts");
     }
 
@@ -78,6 +79,8 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         var blogPost = await blogPostService.GetBlogPost(id);
 
         await blogPostService.DeleteBlogPost(id);
+
+        TempData["SuccessMessage"] = "Blog post deleted successfully.";
         return RedirectToAction(nameof(BlogPosts));
     }
 
@@ -100,7 +103,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         var commentDto = new CommentDto { Content = model.Content, PostId = Id, UserId = userId };
         await commentService.CreateComment(commentDto);
 
-        ViewBag.Success = "Comment created successfully.";
+        TempData["SuccessMessage"] = "Comment created successfully.";
         return RedirectToAction(nameof(BlogPosts));
     }
 

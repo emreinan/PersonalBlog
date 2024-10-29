@@ -22,8 +22,10 @@ public class ContactMessageController(IContactMessageService contactMessageServi
             return NotFound();
 
         await contactMessageService.DeleteMessageAsync(id);
-        ViewBag.Success = "Message deleted successfully";
+
+        TempData["SuccessMessage"] = "Message deleted successfully";
         return RedirectToAction(nameof(ContactMessages));
+
     }
 
     [HttpGet("MarkAsRead/{id}")]
@@ -41,11 +43,11 @@ public class ContactMessageController(IContactMessageService contactMessageServi
 
             // Email gönderimi başarılıysa, isRead'i true yap ve kaydet
             await contactMessageService.MarkAsReadAsync(id);
-            ViewBag.Success = "Message marked as read and user notified";
+            TempData["SuccessMessage"] = "Message marked as read successfully";
         }
         catch (Exception ex)
         {
-            ViewBag.Error = "Email notification failed. Please try again.";
+            TempData["ErrorMessage"] = "An error occurred while sending the email. Please try again later.";
         }
         return RedirectToAction(nameof(ContactMessages));
     }

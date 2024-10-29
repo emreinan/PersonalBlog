@@ -10,7 +10,7 @@ namespace App.Data.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ExperienceController(DataDbContext context,IMapper mapper) : ControllerBase
+    public class ExperienceController(DataDbContext context, IMapper mapper) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -26,7 +26,7 @@ namespace App.Data.Api.Controllers
         {
             var experience = await context.Experiences.FindAsync(id);
             if (experience == null)
-                return NotFound();
+                return NotFound("Experience not found.");
 
             var experienceDto = mapper.Map<ExperienceDto>(experience);
 
@@ -34,25 +34,25 @@ namespace App.Data.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ExperienceDto experienceDto)
+        public async Task<IActionResult> Create(ExperienceSaveDto experienceDto)
         {
-            var experience =mapper.Map<Experience>(experienceDto);
+            var experience = mapper.Map<Experience>(experienceDto);
             experience.CreatedAt = DateTime.UtcNow;
 
-            context.Experiences.Add(experience);
+            await context.Experiences.AddAsync(experience);
             await context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new { id = experience.Id }, experienceDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, ExperienceDto experienceDto)
+        public async Task<IActionResult> Update(int id, ExperienceSaveDto experienceDto)
         {
             var experience = await context.Experiences.FindAsync(id);
             if (experience == null)
-                return NotFound();
+                return NotFound("Experience not found.");
 
-            var experienceUpdate = mapper.Map<Experience>(experienceDto);
+            var experienceUpdate = mapper.Map(experienceDto, experience);
             experienceUpdate.UpdatedAt = DateTime.UtcNow;
 
             context.Experiences.Update(experienceUpdate);

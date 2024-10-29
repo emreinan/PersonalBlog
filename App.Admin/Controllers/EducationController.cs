@@ -23,15 +23,15 @@ public class EducationController(IEducationService educationService, IMapper map
     }
 
     [HttpPost("Add")]
-    public async Task<IActionResult> Add(EducationViewModel educationViewModel)
+    public async Task<IActionResult> Add(EducationSaveViewModel educationViewModel)
     {
         if (!ModelState.IsValid)
             return View(educationViewModel); 
 
-        var educationDto = mapper.Map<EducationDto>(educationViewModel); 
+        var educationDto = mapper.Map<EducationSaveDto>(educationViewModel); 
         await educationService.AddEducationAsync(educationDto); 
 
-        ViewBag.Success = "Education added successfully"; 
+        TempData["SuccessMessage"] = "Education added successfully";
         return RedirectToAction(nameof(Educations)); 
     }
 
@@ -43,20 +43,20 @@ public class EducationController(IEducationService educationService, IMapper map
         if (education == null)
             return NotFound(); 
 
-        var educationViewModel = mapper.Map<EducationViewModel>(education); 
+        var educationViewModel = mapper.Map<EducationSaveViewModel>(education); 
         return View(educationViewModel); 
     }
 
     [HttpPost("Edit/{id}")]
-    public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] EducationViewModel educationViewModel)
+    public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] EducationSaveViewModel educationViewModel)
     {
         if (!ModelState.IsValid)
             return View(educationViewModel); 
 
-        var educationDto = mapper.Map<EducationDto>(educationViewModel); 
-        await educationService.EditEducationAsync(id, educationDto); 
+        var educationDto = mapper.Map<EducationSaveDto>(educationViewModel); 
+        await educationService.EditEducationAsync(id, educationDto);
 
-        ViewBag.Success = "Education updated successfully"; 
+        TempData["SuccessMessage"] = "Education updated successfully";
         return RedirectToAction(nameof(Educations)); 
     }
 
@@ -70,6 +70,7 @@ public class EducationController(IEducationService educationService, IMapper map
 
         await educationService.DeleteEducationByIdAsync(id);
 
+        TempData["SuccessMessage"] = "Education deleted successfully";
         return RedirectToAction(nameof(Educations));
     }
 }

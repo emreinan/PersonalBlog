@@ -1,24 +1,18 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Shared.Dto.Education
 {
-    public class EducationDto
+    public class EducationSaveDto
     {
-        public int Id { get; set; }
         public string School { get; set; }
         public string Degree { get; set; }
         public string FieldOfStudy { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
     }
-    public class EducationDtoValidator : AbstractValidator<EducationDto>
+    public class EducationSaveDtoValidator : AbstractValidator<EducationSaveDto>
     {
-        public EducationDtoValidator()
+        public EducationSaveDtoValidator()
         {
 
             RuleFor(x => x.School).NotEmpty().MaximumLength(100);

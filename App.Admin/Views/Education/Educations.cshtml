@@ -10,10 +10,10 @@
         <p><a asp-action="Add" class="btn btn-primary">Add New Education</a></p>
         <div class="col-md-12">
             <h2>Education</h2>
-            <partial name="Partials/ViewMessages" />
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>School</th>
                         <th>Field Of Study</th>
                         <th>Degree</th>
                         <th>Start Date</th>
@@ -25,10 +25,11 @@
                     @foreach (var education in Model)
                     {
                         <tr>
+                            <td>@education.School</td>
                             <td>@education.FieldOfStudy</td>
                             <td>@education.Degree</td>
-                            <td>@education.StartDate</td>
-                            <td>@education.EndDate</td>
+                            <td>@education.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td>@(education.EndDate.HasValue ? education.EndDate.Value.ToString("yyyy-MM-dd") : "Present")</td>
                             <td>
                                 <a asp-action="Edit" asp-route-id="@education.Id">Edit</a> |
                                 <a asp-action="Delete" asp-route-id="@education.Id" onclick="return confirm('Are you sure you want to delete this experience?');">Delete</a>

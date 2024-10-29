@@ -26,7 +26,8 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
             return NotFound();
 
         await userService.ActivateUserAsync(id);
-        ViewBag.Success = "User activated successfully";
+
+        TempData["SuccessMessage"] = "User activated successfully";
         return RedirectToAction(nameof(Users));
     }
 
@@ -38,7 +39,8 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
             return NotFound();
 
         await userService.DeactivateUserAsync(id);
-        ViewBag.Success = "User deactivated successfully";
+
+        TempData["SuccessMessage"] = "User deactivated successfully";
         return RedirectToAction(nameof(Users));
     }
 
@@ -50,7 +52,8 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
             return NotFound();
 
         await userService.DeleteUserAsync(id);
-        ViewBag.Success = "User deleted successfully";
+
+        TempData["SuccessMessage"] = "User deleted successfully";
         return RedirectToAction(nameof(Users));
     }
 }

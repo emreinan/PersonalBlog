@@ -7,7 +7,7 @@ public class AboutMeDto
 {
     public string Introduciton { get; set; }
     public string Title { get; set; }
-    public string? Cv { get; set; }
+    public IFormFile? Cv { get; set; }
     public IFormFile? Image1 { get; set; }
     public IFormFile? Image2 { get; set; }
 }

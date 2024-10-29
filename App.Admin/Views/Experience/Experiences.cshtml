@@ -28,8 +28,8 @@
                         <tr>
                             <td>@experience.Title</td>
                             <td>@experience.Company</td>
-                            <td>@experience.StartDate.ToString("yyyy-MM-dd")</td>
-                            <td>@experience.EndDate?.ToString("yyyy-MM-dd") ?? "Present"</td>
+                            <td>@experience.StartDate.ToString("dd-MM-yyyy")</td>
+                            <td>@(experience.EndDate.HasValue ? experience.EndDate.Value.ToString("dd-MM-yyyy") : "Present")</td>
                             <td>@experience.Description</td>
                             <td>
                                 <a asp-action="Edit" asp-route-id="@experience.Id">Edit</a> |

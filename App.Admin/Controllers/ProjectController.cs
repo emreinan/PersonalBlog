@@ -29,6 +29,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         var projectDto = mapper.Map<ProjectDto>(projectViewModel);
         var projectAdd = await projectService.AddProjectAsync(projectDto);
 
+        TempData["SuccessMessage"] = "Project added successfully";
         return RedirectToAction(nameof(Projects));
     }
 
@@ -53,7 +54,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         var projectDto = mapper.Map<ProjectDto>(projectViewModel);
         await projectService.EditProjectAsync(id, projectDto);
 
-        ViewBag.Success = "Project updated successfully";
+        TempData["SuccessMessage"] = "Project updated successfully";
         return RedirectToAction(nameof(Projects));
     }
 
@@ -63,7 +64,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         await projectService.GetProjectById(id);
         await projectService.DeleteProjectAsync(id);
 
-        ViewBag.Success = "Project deleted successfully";
+        TempData["SuccessMessage"] = "Project deleted successfully";
         return RedirectToAction(nameof(Projects));
     }
 
@@ -72,7 +73,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
     {
         await projectService.MakeActiveProject(id);
 
-        ViewBag.Success = "Project is now active";
+        TempData["SuccessMessage"] = "Project is now active";
         return RedirectToAction(nameof(Projects));
     }
 
@@ -81,7 +82,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
     {
         await projectService.MakeInActiveProject(id);
 
-        ViewBag.Success = "Project is now inactive";
+        TempData["SuccessMessage"] = "Project is now inactive";
         return RedirectToAction(nameof(Projects));
     }
 }

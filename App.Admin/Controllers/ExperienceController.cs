@@ -23,15 +23,15 @@ public class ExperienceController(IExperienceService experienceService, IMapper 
     }
 
     [HttpPost("Add")]
-    public async Task<IActionResult> Add(ExperienceViewModel experienceViewModel)
+    public async Task<IActionResult> Add(ExperienceSaveViewModel experienceViewModel)
     {
         if (!ModelState.IsValid)
             return View(experienceViewModel);
 
-        var experienceDto = mapper.Map<ExperienceDto>(experienceViewModel);
+        var experienceDto = mapper.Map<ExperienceSaveDto>(experienceViewModel);
         await experienceService.AddExperienceAsync(experienceDto);
 
-        ViewBag.Success = "Experience added successfully";
+        TempData["SuccessMessage"] = "Experience added successfully";
         return RedirectToAction(nameof(Experiences));
     }
 
@@ -43,20 +43,20 @@ public class ExperienceController(IExperienceService experienceService, IMapper 
         if (experience == null)
             return NotFound();
 
-        var experienceViewModel = mapper.Map<ExperienceViewModel>(experience);
-        return View(experienceViewModel);
+        var experienceSaveViewModel = mapper.Map<ExperienceSaveViewModel>(experience);
+        return View(experienceSaveViewModel);
     }
 
     [HttpPost("Edit/{id}")]
-    public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] ExperienceViewModel experienceViewModel)
+    public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] ExperienceSaveViewModel model)
     {
         if (!ModelState.IsValid)
-            return View(experienceViewModel);
+            return View(model);
 
-        var experienceDto = mapper.Map<ExperienceDto>(experienceViewModel);
+        var experienceDto = mapper.Map<ExperienceSaveDto>(model);
         await experienceService.EditExperienceAsync(id, experienceDto);
 
-        ViewBag.Success = "Experience updated successfully";
+        TempData["SuccessMessage"] = "Experience updated successfully";
         return RedirectToAction(nameof(Experiences));
     }
 
@@ -70,7 +70,7 @@ public class ExperienceController(IExperienceService experienceService, IMapper 
 
         await experienceService.DeleteExperienceAsync(id);
 
-        ViewBag.Success = "Experience deleted successfully";
+        TempData["SuccessMessage"] = "Experience deleted successfully";
         return RedirectToAction(nameof(Experiences));
     }
 }

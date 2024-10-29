@@ -7,8 +7,8 @@ public interface IEducationService
 {
     Task<List<EducationViewModel>> GetEducations();
     Task<EducationViewModel> GetEducationByIdAsync(int id);
-    Task AddEducationAsync(EducationDto educationDto);
-    Task EditEducationAsync(int id, EducationDto educationDto);
+    Task AddEducationAsync(EducationSaveDto educationSaveDto);
+    Task EditEducationAsync(int id, EducationSaveDto educationSaveDto);
     Task DeleteEducationByIdAsync(int id);
 }
 

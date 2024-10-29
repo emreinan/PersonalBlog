@@ -1,12 +1,9 @@
 ﻿using App.Data.Contexts;
 using App.Shared.Dto.AboutMe;
 using App.Shared.Services.File;
-using Ardalis.Result;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Net.Http;
 
 namespace App.Data.Api.Controllers;
 [ApiController]
@@ -20,18 +17,19 @@ public class AboutMeController(DataDbContext context, IFileService fileService,I
         if (aboutMe == null)
             return NotFound("AboutMe section not found.");
 
-        var aboutMeDto = mapper.Map<AboutMeDto>(aboutMe);
+        var aboutMeDto = mapper.Map<AboutMeResponseDto>(aboutMe);
         return Ok(aboutMeDto);
 
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAboutMe(int id, [FromForm] AboutMeDto aboutMeDto)
+    [HttpPut]
+    public async Task<IActionResult> UpdateAboutMe([FromForm] AboutMeDto aboutMeDto)
     {
-        var aboutMe = await context.AboutMes.FindAsync(id);
+        var aboutMe = await context.AboutMes.FindAsync(1);
         if (aboutMe == null)
             return NotFound("AboutMe section not found.");
 
+        aboutMe.Title = aboutMeDto.Title;
         aboutMe.Introduciton = aboutMeDto.Introduciton;
 
         if (aboutMeDto.Image1 != null)
@@ -52,35 +50,13 @@ public class AboutMeController(DataDbContext context, IFileService fileService,I
             aboutMe.ImageUrl2 = imageUrl2;
         }
 
-        context.AboutMes.Update(aboutMe);
-        await context.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAboutMe(int id, [FromQuery] string fileName)
-    {
-        var aboutMe = await context.AboutMes.FindAsync(id);
-
-        if (aboutMe == null)
-            return NotFound();
-
-        if (!string.IsNullOrEmpty(fileName))
+        if (aboutMeDto.Cv != null)
         {
-            var deleteResult = await fileService.DeleteFileAsync(fileName);
+            var cvUrl = await fileService.UploadFileAsync(aboutMeDto.Cv);
+            if (string.IsNullOrEmpty(cvUrl))
+                return BadRequest("CV upload failed.");
 
-            if (!deleteResult.IsSuccess)
-                return BadRequest("File deletion failed.");
-        }
-
-        if (aboutMe.ImageUrl1 == fileName)
-        {
-            aboutMe.ImageUrl1 = ""; 
-        }
-        else if (aboutMe.ImageUrl2 == fileName)
-        {
-            aboutMe.ImageUrl2 = ""; 
+            aboutMe.Cv = cvUrl;
         }
 
         context.AboutMes.Update(aboutMe);
@@ -88,6 +64,7 @@ public class AboutMeController(DataDbContext context, IFileService fileService,I
 
         return NoContent();
     }
+
 }
 
 

@@ -15,7 +15,7 @@ public class CommentController(ICommentService commentService) : Controller
         var comments = await commentService.GetComments();
         if (comments is null)
         {
-            ViewBag.Error = "No comments found.";
+            TempData["ErrorMessage"] = "No comments found.";
             return View();
         }
 
@@ -28,7 +28,7 @@ public class CommentController(ICommentService commentService) : Controller
         var comments = await commentService.GetCommentsForPost(postId);
         if (comments is null)
         {
-            ViewBag.Error = "No comments found for this post.";
+            TempData["ErrorMessage"] = "No comments found.";
             return View();
         }
 
@@ -41,7 +41,7 @@ public class CommentController(ICommentService commentService) : Controller
         var comment = await commentService.GetCommentById(id);
         if (comment is null)
         {
-            ViewBag.Error = "Comment not found.";
+            TempData["ErrorMessage"] = "Comment not found.";
             return View();
         }
         var commentUpdateViewModel = new CommentUpdateViewModel { Id = comment.Id, Content = comment.Content };
@@ -58,6 +58,7 @@ public class CommentController(ICommentService commentService) : Controller
         var commentUpdateDto = new CommentUpdateDto { Content = comment.Content };
         await commentService.UpdateComment(id, commentUpdateDto);
 
+        TempData["SuccessMessage"] = "Comment updated successfully.";
         return RedirectToAction(nameof(Comments));
     }
 
@@ -67,6 +68,7 @@ public class CommentController(ICommentService commentService) : Controller
     {
         await commentService.DeleteComment(id);
 
+        TempData["SuccessMessage"] = "Comment deleted successfully.";
         return RedirectToAction(nameof(Comments));
     }
 
@@ -75,6 +77,7 @@ public class CommentController(ICommentService commentService) : Controller
     {
         await commentService.ApproveComment(id);
 
+        TempData["SuccessMessage"] = "Comment approved successfully.";
         return RedirectToAction(nameof(Comments));
     }
 }

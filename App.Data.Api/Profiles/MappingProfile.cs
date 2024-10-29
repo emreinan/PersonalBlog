@@ -15,7 +15,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<AboutMe, AboutMeDto>();
+        CreateMap<AboutMe, AboutMeResponseDto>();
 
         CreateMap<Project, ProjectDto>();
         CreateMap<ProjectDto, Project>()
@@ -26,10 +26,12 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
 
         CreateMap<Experience, ExperienceDto>();
+        CreateMap<ExperienceSaveDto, Experience>();
         CreateMap<ExperienceDto, Experience>()
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
 
         CreateMap<Education, EducationDto>();
+        CreateMap<EducationSaveDto, Education>();
         CreateMap<EducationDto, Education>()
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
 

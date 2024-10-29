@@ -9,7 +9,7 @@ public class ExperienceService(IHttpClientFactory httpClientFactory) : IExperien
 {
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
 
-    public async Task AddExperienceAsync(ExperienceDto experienceDto)
+    public async Task AddExperienceAsync(ExperienceSaveDto experienceDto)
     {
         var response = await _dataHttpClient.PostAsJsonAsync("/api/Experience", experienceDto);
         await response.EnsureSuccessStatusCodeWithApiError();
@@ -21,7 +21,7 @@ public class ExperienceService(IHttpClientFactory httpClientFactory) : IExperien
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task EditExperienceAsync(int id, ExperienceDto experienceDto)
+    public async Task EditExperienceAsync(int id, ExperienceSaveDto experienceDto)
     {
         var response = await _dataHttpClient.PutAsJsonAsync($"/api/Experience/{id}", experienceDto);
         await response.EnsureSuccessStatusCodeWithApiError();

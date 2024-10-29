@@ -9,9 +9,9 @@ public class EducationService(IHttpClientFactory httpClientFactory) : IEducation
 {
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
 
-    public async Task AddEducationAsync(EducationDto educationDto)
+    public async Task AddEducationAsync(EducationSaveDto educationSaveDto)
     {
-        var response = await _dataHttpClient.PostAsJsonAsync("/api/Education", educationDto);
+        var response = await _dataHttpClient.PostAsJsonAsync("/api/Education", educationSaveDto);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
@@ -21,9 +21,9 @@ public class EducationService(IHttpClientFactory httpClientFactory) : IEducation
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task EditEducationAsync(int id, EducationDto educationDto)
+    public async Task EditEducationAsync(int id, EducationSaveDto educationSaveDto)
     {
-        var response = await _dataHttpClient.PutAsJsonAsync($"/api/Education/{id}", educationDto);
+        var response = await _dataHttpClient.PutAsJsonAsync($"/api/Education/{id}", educationSaveDto);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
