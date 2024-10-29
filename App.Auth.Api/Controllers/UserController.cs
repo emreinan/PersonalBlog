@@ -29,13 +29,12 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
             Email = user.Email,
             CreatedAt = user.CreatedAt,
             IsActive = user.IsActive,
-            ProfilePhoto = user.ProfilePhotoUrl
-        
+            ProfilePhoto = user.ProfilePhotoUrl,
         };
         return Ok(userGetResult);
     }
 
-    [HttpGet()]
+    [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
         var users = await authDbContext.Users.ToListAsync();
@@ -62,7 +61,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         return Ok(userGetResults);
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(Guid id, UserUpdateDto userUpdateDto)
     {
@@ -80,7 +79,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         return Ok("User updated successfully.");
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(Guid id)
     {
@@ -95,7 +94,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         return Ok("User deleted successfully.");
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpPost("upload-profile-image")]
     public async Task<IActionResult> UploadProfileImage([FromForm] ProfilePicUpload profilePicUpload)
     {
@@ -114,6 +113,40 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
 
         await authDbContext.SaveChangesAsync();
         return Ok(result.Value);
+    }
+
+    //[Authorize]
+    [HttpPut("Activate/{id}")]
+    public async Task<IActionResult> ActivateUser(Guid id)
+    {
+        var user = await authDbContext.Users.FindAsync(id);
+
+        if (user is null)
+            return NotFound("User not found.");
+
+        user.IsActive = true;
+
+        authDbContext.Users.Update(user);
+        await authDbContext.SaveChangesAsync();
+
+        return Ok("User activated successfully.");
+    }
+
+    //[Authorize]
+    [HttpPut("Deactivate/{id}")]
+    public async Task<IActionResult> DeactivateUser(Guid id)
+    {
+        var user = await authDbContext.Users.FindAsync(id);
+
+        if (user is null)
+            return NotFound("User not found.");
+
+        user.IsActive = false;
+
+        authDbContext.Users.Update(user);
+        await authDbContext.SaveChangesAsync();
+
+        return Ok("User deactivated successfully.");
     }
 
     private Guid GetUserId()

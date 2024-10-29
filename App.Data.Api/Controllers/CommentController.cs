@@ -39,8 +39,42 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
         return Ok(commentDto);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetComments()
+    {
+        var comments = await datDbContext.Comments.ToListAsync();
+
+        if (comments.Count == 0 || comments is null)
+            return NotFound("Comments not found.");
+
+        var commentDtos = new List<CommentResponse>();
+
+        foreach (var comment in comments)
+        {
+            var user = await datDbContext.AuthDbContext.Users.FirstOrDefaultAsync(u => u.Id == comment.UserId);
+
+            if (user is null)
+                return NotFound("User not found this comment.");
+
+            var commentDto = new CommentResponse
+            {
+                Id = comment.Id,
+                Content = comment.Content,
+                IsApproved = comment.IsApproved,
+                CreatedAt = comment.CreatedAt,
+                PostId = comment.PostId,
+                UserId = comment.UserId,
+                Author = user.UserName,
+                UserImage = user.ProfilePhotoUrl ?? string.Empty
+            };
+
+            commentDtos.Add(commentDto);
+        }
+        return Ok(commentDtos);
+    }
+
     [HttpGet("PostComment/{postId}")]
-    public async Task<IActionResult> GetCommentsByPost(Guid postId)
+    public async Task<IActionResult> PostComment(Guid postId)
     {
         var comments = await datDbContext.Comments
             .Where(c => c.PostId == postId)
@@ -66,7 +100,7 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
                 PostId = comment.PostId,
                 UserId = comment.UserId,
                 Author = user.UserName,
-                UserImage = user.ProfilePhotoUrl
+                UserImage = user.ProfilePhotoUrl ?? string.Empty
             };
 
             commentDtos.Add(commentDto);
@@ -74,7 +108,7 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
         return Ok(commentDtos);
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateComment([FromBody] CommentDto commentDto)
     {

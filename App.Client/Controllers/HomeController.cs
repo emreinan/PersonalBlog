@@ -28,11 +28,11 @@ public class HomeController(
 {
     public async Task<IActionResult> Index()
     {
-        var aboutMe = await aboutMeservice.GetAboutMe();
+        var aboutMe = await aboutMeservice.GetAboutMeAsync();
         var posts = await postService.GetBlogPosts();
         var educations = await educationService.GetEducations();
         var experiences = await experienceService.GetExperiences();
-        var personalInfo = await personalInfoService.GetPersonalInfo();
+        var personalInfo = await personalInfoService.GetPersonalInfoAsync();
         var projects = await projectService.GetProjects();
 
         var postViewModels = new List<BlogPostViewModel>();
@@ -47,7 +47,7 @@ public class HomeController(
                 Title = post.Title,
                 Content = post.Content,
                 ImageUrl = post.ImageUrl,
-                Date = post.Date,
+                CreatedAt = post.CreatedAt,
                 Comments = comments
             };
 
@@ -135,7 +135,7 @@ public class HomeController(
             Title = blogPost.Title,
             Content = blogPost.Content,
             ImageUrl = blogPost.ImageUrl,
-            Date = blogPost.Date,
+            CreatedAt = blogPost.CreatedAt,
             Comments = commentViewModels,
             RecentBlogs = recentBlogs.Select(b => new BlogPostViewModel
             {
@@ -143,7 +143,7 @@ public class HomeController(
                 Title = b.Title,
                 Content = b.Content,
                 ImageUrl = b.ImageUrl,
-                Date = b.Date
+                CreatedAt = b.CreatedAt
             }).ToList()
 
         };

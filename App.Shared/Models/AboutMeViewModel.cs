@@ -1,4 +1,6 @@
-﻿namespace App.Shared.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace App.Shared.Models;
 
 public class AboutMeViewModel
 {

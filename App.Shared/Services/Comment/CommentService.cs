@@ -1,6 +1,7 @@
 ﻿using App.Shared.Dto.Comment;
 using App.Shared.Models;
 using App.Shared.Util.ExceptionHandling;
+using Ardalis.Result;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.Comment;
@@ -9,12 +10,38 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
 {
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
 
-    public async Task<CommentViewModel> CreateComment(CommentViewModel comment)
+    public async Task ApproveComment(int id)
     {
-        var commentDto = new CommentDto { Content = comment.Content, PostId = comment.PostId, UserId = comment.UserId };
-        var response = await _dataHttpClient.PostAsJsonAsync("/api/Comment", commentDto);
+        var response = await _dataHttpClient.PutAsync($"/api/Comment/Approve/{id}", null);
+        await response.EnsureSuccessStatusCodeWithApiError();
+    }
+
+    public async Task CreateComment(CommentDto comment)
+    {
+        var response = await _dataHttpClient.PostAsJsonAsync("/api/Comment", comment);
+        await response.EnsureSuccessStatusCodeWithApiError();
+    }
+
+    public async Task DeleteComment(int id)
+    {
+        var response = await _dataHttpClient.DeleteAsync($"/api/Comment/{id}");
+        await response.EnsureSuccessStatusCodeWithApiError();
+
+    }
+
+    public async Task<CommentViewModel> GetCommentById(int id)
+    {
+        var response = await _dataHttpClient.GetAsync($"/api/Comment/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<CommentViewModel>();
+        return result;
+    }
+
+    public async Task<List<CommentViewModel>> GetComments()
+    {
+        var response = await _dataHttpClient.GetAsync("/api/Comment");
+        await response.EnsureSuccessStatusCodeWithApiError();
+        var result = await response.Content.ReadFromJsonAsync<List<CommentViewModel>>();
         return result;
     }
 
@@ -24,5 +51,11 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
         await response.EnsureSuccessStatusCodeWithApiError();
         var result = await response.Content.ReadFromJsonAsync<List<CommentViewModel>>();
         return result;
+    }
+
+    public async Task UpdateComment(int id,CommentUpdateDto commentUpdateDto)
+    {
+        var response = await _dataHttpClient.PutAsJsonAsync($"/api/Comment/{id}", commentUpdateDto);
+        await response.EnsureSuccessStatusCodeWithApiError();
     }
 }

@@ -24,15 +24,12 @@ public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
         return Result.Success();
     }
 
-    public async Task<Result> DownloadFileAsync(string fileUrl)
+    public async Task<Stream> GetFileAsync(string fileUrl)
     {
-        var downloadRequestDto = new FileDownloadRequest { FileUrl = fileUrl };
-        var response = await client.GetAsync($"/api/File/Download?FileUrl={downloadRequestDto}");
+        var response = await client.GetAsync($"/api/File/Download?FileUrl={Uri.EscapeDataString(fileUrl)}");
+        response.EnsureSuccessStatusCode();
 
-        if (!response.IsSuccessStatusCode)
-            return Result.Error("Unexpected error occurred while downloading the file.");
-
-        return Result.Success();
+        return await response.Content.ReadAsStreamAsync();
     }
 
 

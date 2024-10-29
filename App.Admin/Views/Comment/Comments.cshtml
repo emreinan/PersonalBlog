@@ -1,0 +1,113 @@
+﻿@using App.Shared.Models
+@model List<CommentViewModel>
+
+@{
+    ViewData["Title"] = "Comments";
+    var hasApprovedComments = Model.Any(c => c.IsApproved);
+    var hasPendingComments = Model.Any(c => !c.IsApproved);
+}
+
+<div class="container my-3">
+    <h2>Blog Comments</h2>
+
+    <div class="mb-3">
+        <button id="showApprovedBtn" class="btn btn-secondary" onclick="showApproved()" style="display: @(hasPendingComments ? "inline-block" : "none");">Show Approved Comments</button>
+        <button id="showPendingBtn" class="btn btn-secondary" onclick="showPending()" style="display: @(hasApprovedComments ? "inline-block" : "none");">Show Pending Comments</button>
+    </div>
+
+    <div id="approvedComments" class="comment-section" style="display: block;">
+        <h2>Approved Comments</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Comment</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var comment in Model.Where(c => c.IsApproved))
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(comment.UserImage))
+                            {
+                                <img src="@comment.UserImage" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
+                            }
+                            else
+                            {
+                                <img src="~/image/user-anon.png" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
+                            }
+                            @comment.Author
+                        </td>
+                        <td>@comment.Content</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@comment.Id">Edit</a> |
+                            <a asp-action="Delete" asp-route-id="@comment.Id" onclick="return confirm('Are you sure you want to delete this comment?');" >Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div id="pendingComments" class="comment-section" style="display: none;">
+        <h2>Pending Comments</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Comment</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var comment in Model.Where(c => !c.IsApproved))
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(comment.UserImage))
+                            {
+                                <img src="@comment.UserImage" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
+                            }
+                            else
+                            {
+                                <img src="~/image/user-anon.png" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
+                            }
+                            @comment.Author
+                        </td>
+                        <td>@comment.Content</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@comment.Id">Edit</a> |
+                            <a asp-action="Approve" asp-route-id="@comment.Id" onclick="return confirm('Are you sure you want to approve this comment?');" >Approve</a> |
+                            <a asp-action="Delete" asp-route-id="@comment.Id" onclick="return confirm('Are you sure you want to delete this comment?');" >Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Sayfa açıldığında varsayılan olarak onaylı yorumları göster
+        document.addEventListener('DOMContentLoaded', function () {
+            showApproved();
+        });
+
+        function showApproved() {
+            document.getElementById("approvedComments").style.display = "block";
+            document.getElementById("pendingComments").style.display = "none";
+            document.getElementById("showApprovedBtn").style.display = "none";
+            document.getElementById("showPendingBtn").style.display = "inline-block";
+        }
+
+        function showPending() {
+            document.getElementById("approvedComments").style.display = "none";
+            document.getElementById("pendingComments").style.display = "block";
+            document.getElementById("showPendingBtn").style.display = "none";
+            document.getElementById("showApprovedBtn").style.display = "inline-block";
+        }
+    </script>
+}

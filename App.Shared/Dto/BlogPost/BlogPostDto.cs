@@ -12,7 +12,8 @@ public class BlogPostDto
 {
     public string Title { get; set; }
     public string Content { get; set; }
-    public IFormFile Image { get; set; } 
+    public IFormFile Image { get; set; }
+    public Guid AuthorId { get; set; }
 }
 public class BlogPostDtoValidator : AbstractValidator<BlogPostDto>
 {

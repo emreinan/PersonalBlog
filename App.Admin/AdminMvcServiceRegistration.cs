@@ -6,6 +6,7 @@ using App.Shared.Services.ContactMessage;
 using App.Shared.Services.Education;
 using App.Shared.Services.Experience;
 using App.Shared.Services.File;
+using App.Shared.Services.Mail;
 using App.Shared.Services.PersonalInfo;
 using App.Shared.Services.Project;
 using App.Shared.Services.Token;
@@ -45,6 +46,12 @@ public static class AdminMvcServiceRegistration
         services.AddScoped<ITokenService, CookieTokenService>();
         services.AddScoped<IFileService, FileApiService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IMailService, SmtpEmailService>();
+
+        services.AddOptions<SmtpConfiguration>().Configure<IConfiguration>((settings, configuration) =>
+        {
+            configuration.GetSection("SmtpConfiguration").Bind(settings);
+        });
     }
 
     private static void GetApiUrl(IServiceCollection services, IConfiguration configuration)

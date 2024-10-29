@@ -1,0 +1,50 @@
+﻿@using App.Shared.Models
+@model AboutMeSaveViewModel
+
+@{
+    ViewData["Title"] = "Edit About Me";
+}
+
+<div class="container my-3">
+    <h2>Edit About Me</h2>
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label asp-for="Title" class="form-label">Title</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Introduciton" class="form-label">Introduction</label>
+            <textarea asp-for="Introduciton" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Introduciton" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Cv" class="form-label">Upload CV</label>
+            <input asp-for="Cv" type="file" class="form-control" />
+            <span asp-validation-for="Cv" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Image1" class="form-label">Upload Image 1</label>
+            <input asp-for="Image1" type="file" class="form-control" />
+            <span asp-validation-for="Image1" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Image2" class="form-label">Upload Image 2</label>
+            <input asp-for="Image2" type="file" class="form-control" />
+            <span asp-validation-for="Image2" class="text-danger"></span>
+        </div>
+
+        <div class="form-group my-3">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a asp-action="Index" class="btn btn-secondary">Back to About Me</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

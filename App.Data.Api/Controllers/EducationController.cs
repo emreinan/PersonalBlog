@@ -9,7 +9,7 @@ namespace App.Data.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EducationController(DataDbContext dbContext,IMapper mapper) : ControllerBase
+    public class EducationController(DataDbContext dbContext, IMapper mapper) : ControllerBase
     {
 
         [HttpGet]
@@ -33,34 +33,34 @@ namespace App.Data.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEducation([FromBody] EducationDto educationDto)
+        public async Task<IActionResult> CreateEducation([FromBody] EducationSaveDto educationSaveDto)
         {
-            if (educationDto == null)
+            if (educationSaveDto == null)
                 return BadRequest("Invalid education data.");
 
-            var education = mapper.Map<Education>(educationDto);
+            var education = mapper.Map<Education>(educationSaveDto);
             education.CreatedAt = DateTime.UtcNow;
 
             await dbContext.Educations.AddAsync(education);
             await dbContext.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetEducationById), new { id = education.Id }, educationDto);
+            return CreatedAtAction(nameof(GetEducationById), new { id = education.Id }, educationSaveDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEducation(int id, [FromBody] EducationDto educationDto)
+        public async Task<IActionResult> UpdateEducation(int id, [FromBody] EducationSaveDto educationSaveDto)
         {
             var education = await dbContext.Educations.FindAsync(id);
             if (education == null)
                 return NotFound("Education not found.");
 
-            var educationUpdated = mapper.Map(educationDto, education);
+            var educationUpdated = mapper.Map(educationSaveDto, education);
             educationUpdated.UpdatedAt = DateTime.UtcNow;
 
             dbContext.Educations.Update(educationUpdated);
             await dbContext.SaveChangesAsync();
 
-            return Ok(educationDto);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

@@ -1,0 +1,45 @@
+﻿@using App.Shared.Models
+@model BlogPostEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Blog Post";
+}
+
+<div class="container my-3">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Edit Blog Post</h2>
+            <partial name="Partials/ViewMessages" />
+
+            <form asp-action="EditBlogPost" method="post" enctype="multipart/form-data">
+
+                <div class="form-group mb-3">
+                    <label asp-for="Title" class="form-label">Title</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Content" class="form-label">Content</label>
+                    <textarea asp-for="Content" class="form-control"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Image" class="form-label">Image</label>
+                    <input type="file" asp-for="Image" class="form-control" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="BlogPosts" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
