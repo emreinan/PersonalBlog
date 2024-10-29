@@ -1,3 +1,4 @@
+using App.Shared.Dto.ContactMessage;
 using App.Shared.Models;
 using App.Shared.Services.AboutMe;
 using App.Shared.Services.BlogPost;
@@ -28,11 +29,11 @@ public class HomeController(
 {
     public async Task<IActionResult> Index()
     {
-        var aboutMe = await aboutMeservice.GetAboutMeAsync();
+        var aboutMe = await aboutMeservice.GetAboutMe();
         var posts = await postService.GetBlogPosts();
         var educations = await educationService.GetEducations();
         var experiences = await experienceService.GetExperiences();
-        var personalInfo = await personalInfoService.GetPersonalInfoAsync();
+        var personalInfo = await personalInfoService.GetPersonalInfo();
         var projects = await projectService.GetProjects();
 
         var postViewModels = new List<BlogPostViewModel>();
@@ -86,13 +87,15 @@ public class HomeController(
         if (!string.IsNullOrEmpty(userMail))
             contactMessageViewModel.Email = userMail;
 
-        var result = await contactMessageService.AddContactMessage(contactMessageViewModel);
-
-        if (result == null)
+        var contactMessageDto = new ContactMessageAddDto
         {
-            ModelState.AddModelError(string.Empty, "An error occurred while submitting the contact message. Please try again.");
-            return View(contactMessageViewModel);
-        }
+            Name = contactMessageViewModel.Name,
+            Email = contactMessageViewModel.Email,
+            Subject = contactMessageViewModel.Subject,
+            Message = contactMessageViewModel.Message
+        };
+        await contactMessageService.AddContactMessage(contactMessageDto);
+
         TempData["SuccessMessage"] = "Your message has been submitted successfully!";
         return RedirectToAction("Index", "Home");
 

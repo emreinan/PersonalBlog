@@ -34,26 +34,25 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateProject(ProjectDto projectDto)
+    public async Task<IActionResult> CreateProject(ProjectAddDto projectAddDto)
     {
-        var project = mapper.Map<Project>(projectDto);
-        project.CreatedAt = DateTime.Now;
+        var project = mapper.Map<Project>(projectAddDto);
+        project.CreatedAt = DateTime.UtcNow;
 
         context.Projects.Add(project);
         await context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetProject), new { id = project.Id }, projectDto);
+        return CreatedAtAction(nameof(GetProject), new { id = project.Id }, projectAddDto);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProject(int id, ProjectDto projectDto)
+    public async Task<IActionResult> UpdateProject(int id, ProjectEditDto projectEditDto)
     {
         var project = await context.Projects.FindAsync(id);
-
         if (project == null)
             return NotFound();
 
-        var projectUpdate = mapper.Map<Project>(projectDto);
+        var projectUpdate = mapper.Map(projectEditDto, project);
         projectUpdate.UpdatedAt = DateTime.Now;
 
         context.Projects.Update(projectUpdate);

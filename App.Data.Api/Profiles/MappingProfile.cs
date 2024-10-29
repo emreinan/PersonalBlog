@@ -18,8 +18,8 @@ public class MappingProfile : Profile
         CreateMap<AboutMe, AboutMeResponseDto>();
 
         CreateMap<Project, ProjectDto>();
-        CreateMap<ProjectDto, Project>()
-            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+        CreateMap<ProjectAddDto, Project>();
+        CreateMap<ProjectEditDto, Project>();
 
         CreateMap<PersonalInfo, PersonalInfoDto>();
         CreateMap<PersonalInfoDto, PersonalInfo>()
@@ -36,8 +36,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
 
         CreateMap<ContactMessage, ContactMessageDto>();
-        CreateMap<ContactMessageDto, ContactMessage>()
-            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+        CreateMap<ContactMessageAddDto, ContactMessage>();
 
         CreateMap<BlogPost, BlogPostResponse>();
         CreateMap<BlogPostDto, BlogPost>()

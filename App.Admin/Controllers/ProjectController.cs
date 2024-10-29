@@ -26,8 +26,8 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         if (!ModelState.IsValid)
             return View(projectViewModel);
 
-        var projectDto = mapper.Map<ProjectDto>(projectViewModel);
-        var projectAdd = await projectService.AddProjectAsync(projectDto);
+        var projectDto = mapper.Map<ProjectAddDto>(projectViewModel);
+        await projectService.AddProjectAsync(projectDto);
 
         TempData["SuccessMessage"] = "Project added successfully";
         return RedirectToAction(nameof(Projects));
@@ -51,7 +51,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         if (!ModelState.IsValid)
             return View(projectViewModel);
 
-        var projectDto = mapper.Map<ProjectDto>(projectViewModel);
+        var projectDto = mapper.Map<ProjectEditDto>(projectViewModel);
         await projectService.EditProjectAsync(id, projectDto);
 
         TempData["SuccessMessage"] = "Project updated successfully";

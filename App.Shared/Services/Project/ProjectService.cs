@@ -10,12 +10,10 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
 {
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
 
-    public async Task<ProjectViewModel> AddProjectAsync(ProjectDto projectDto)
+    public async Task AddProjectAsync(ProjectAddDto projectAddDto)
     {
-        var response = await _dataHttpClient.PostAsJsonAsync("/api/Project", projectDto);
+        var response = await _dataHttpClient.PostAsJsonAsync("/api/Project", projectAddDto);
         await response.EnsureSuccessStatusCodeWithApiError();
-        var result = await response.Content.ReadFromJsonAsync<ProjectViewModel>();
-        return result;
     }
 
     public async Task DeleteProjectAsync(int id)
@@ -24,9 +22,9 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task EditProjectAsync(int id, ProjectDto projectDto)
+    public async Task EditProjectAsync(int id, ProjectEditDto projectEditDto)
     {
-        var response = await _dataHttpClient.PutAsJsonAsync($"/api/Project/{id}", projectDto);
+        var response = await _dataHttpClient.PutAsJsonAsync($"/api/Project/{id}", projectEditDto);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 

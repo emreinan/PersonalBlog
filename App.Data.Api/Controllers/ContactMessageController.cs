@@ -36,32 +36,15 @@ public class ContactMessageController(DataDbContext context,IMapper mapper) : Co
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateContactMessage(ContactMessageDto contactMessageDto)
+    public async Task<IActionResult> CreateContactMessage(ContactMessageAddDto contactMessageAddDto)
     {
-        var contactMessage = mapper.Map<ContactMessage>(contactMessageDto);
+        var contactMessage = mapper.Map<ContactMessage>(contactMessageAddDto);
         contactMessage.CreatedAt = DateTime.Now;
 
         context.ContactMessages.Add(contactMessage);
         await context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetContactMessage), new { id = contactMessage.Id }, contactMessageDto);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateContactMessage(int id, ContactMessageDto contactMessageDto)
-    {
-        var contactMessage = await context.ContactMessages.FindAsync(id);
-
-        if (contactMessage == null)
-            return NotFound();
-
-        var contactMessageUpdated = mapper.Map(contactMessageDto, contactMessage);
-        contactMessageUpdated.CreatedAt = DateTime.Now;
-
-        context.ContactMessages.Update(contactMessageUpdated);
-        await context.SaveChangesAsync();
-
-        return NoContent();
+        return CreatedAtAction(nameof(GetContactMessage), new { id = contactMessage.Id }, contactMessageAddDto);
     }
 
     [HttpDelete("{id}")]
