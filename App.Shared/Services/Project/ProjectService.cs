@@ -2,6 +2,7 @@
 using App.Shared.Models;
 using App.Shared.Util.ExceptionHandling;
 using Ardalis.Result;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.Project;
@@ -12,7 +13,21 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
 
     public async Task AddProjectAsync(ProjectAddDto projectAddDto)
     {
-        var response = await _dataHttpClient.PostAsJsonAsync("/api/Project", projectAddDto);
+        using var content = new MultipartFormDataContent();
+        content.Add(new StringContent(projectAddDto.Title), "Title");
+        content.Add(new StringContent(projectAddDto.Description), "Description");
+
+        if (projectAddDto.Image != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await projectAddDto.Image.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+            var imageContent = new ByteArrayContent(memoryStream.ToArray());
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue(projectAddDto.Image.ContentType);
+            content.Add(imageContent, "Image", projectAddDto.Image.FileName);
+        }
+
+        var response = await _dataHttpClient.PostAsync("/api/Project", content);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
@@ -24,7 +39,21 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
 
     public async Task EditProjectAsync(int id, ProjectEditDto projectEditDto)
     {
-        var response = await _dataHttpClient.PutAsJsonAsync($"/api/Project/{id}", projectEditDto);
+        using var content = new MultipartFormDataContent();
+        content.Add(new StringContent(projectEditDto.Title), "Title");
+        content.Add(new StringContent(projectEditDto.Description), "Description");
+
+        if (projectEditDto.Image != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await projectEditDto.Image.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+            var imageContent = new ByteArrayContent(memoryStream.ToArray());
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue(projectEditDto.Image.ContentType);
+            content.Add(imageContent, "Image", projectEditDto.Image.FileName);
+        }
+
+        var response = await _dataHttpClient.PutAsync($"/api/Project/{id}", content);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 

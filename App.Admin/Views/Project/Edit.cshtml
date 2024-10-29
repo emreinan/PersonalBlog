@@ -1,5 +1,5 @@
 ﻿@using App.Shared.Models
-@model ProjectViewModel
+@model ProjectEditViewModel
 
 @{
     ViewData["Title"] = "Edit Project";
@@ -9,9 +9,8 @@
 <div class="container mt-3">
     <div class="row">
         <h2>Edit Project</h2>
-        <partial name="Partials/ViewMessages" />
 
-        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <form asp-action="Edit" method="post">
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -24,10 +23,10 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            <div class="form-group my-3">
+                <label asp-for="Image" class="control-label"></label>
+                <input asp-for="Image" type="file" class="form-control-file" />
+                <span asp-validation-for="Image" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn btn-primary">Save Changes</button>

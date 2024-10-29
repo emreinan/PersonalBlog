@@ -26,7 +26,6 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
     {
         var response = await _dataHttpClient.DeleteAsync($"/api/Comment/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
-
     }
 
     public async Task<CommentViewModel> GetCommentById(int id)

@@ -14,7 +14,7 @@ public class ContactMessageController(IContactMessageService contactMessageServi
         return View(messages);
     }
 
-    [HttpPost("Delete/{id}")]
+    [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var message = await contactMessageService.GetMessageByIdAsync(id);

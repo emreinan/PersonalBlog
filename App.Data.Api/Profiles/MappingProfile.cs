@@ -19,7 +19,7 @@ public class MappingProfile : Profile
 
         CreateMap<Project, ProjectDto>();
         CreateMap<ProjectAddDto, Project>();
-        CreateMap<ProjectEditDto, Project>();
+        CreateMap<ProjectEditDto, Project>().ForMember(dest => dest.IsActive, opt=>opt.MapFrom(src=>true));
 
         CreateMap<PersonalInfo, PersonalInfoDto>();
         CreateMap<PersonalInfoDto, PersonalInfo>()

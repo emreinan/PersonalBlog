@@ -13,10 +13,10 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.Property(c => c.CreatedAt).IsRequired();
         builder.Property(c => c.IsApproved).IsRequired();
 
-        builder.HasOne(c => c.Post)
-            .WithMany(bp => bp.Comments)
-            .HasForeignKey(c => c.PostId)
-            .OnDelete(DeleteBehavior.NoAction);
+        //builder.HasOne(c => c.Post)
+        //    .WithMany(bp => bp.Comments)
+        //    .HasForeignKey(c => c.PostId)
+        //    .OnDelete(DeleteBehavior.Cascade);
 
         new CommentSeed().Configure(builder);
     }

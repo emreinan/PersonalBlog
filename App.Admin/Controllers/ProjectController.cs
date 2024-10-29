@@ -21,12 +21,12 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         return View();
     }
     [HttpPost("Add")]
-    public async Task<IActionResult> Add(ProjectViewModel projectViewModel)
+    public async Task<IActionResult> Add(ProjectAddViewModel projectAddViewModel)
     {
         if (!ModelState.IsValid)
-            return View(projectViewModel);
+            return View(projectAddViewModel);
 
-        var projectDto = mapper.Map<ProjectAddDto>(projectViewModel);
+        var projectDto = mapper.Map<ProjectAddDto>(projectAddViewModel);
         await projectService.AddProjectAsync(projectDto);
 
         TempData["SuccessMessage"] = "Project added successfully";
@@ -41,17 +41,17 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         if (project is null)
             return NotFound();
 
-        var projectViewModel = mapper.Map<ProjectViewModel>(project);
+        var projectViewModel = mapper.Map<ProjectEditViewModel>(project);
         return View(projectViewModel);
     }
 
     [HttpPost("Edit/{id}")]
-    public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] ProjectViewModel projectViewModel)
+    public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] ProjectEditViewModel projectEditViewModel)
     {
         if (!ModelState.IsValid)
-            return View(projectViewModel);
+            return View(projectEditViewModel);
 
-        var projectDto = mapper.Map<ProjectEditDto>(projectViewModel);
+        var projectDto = mapper.Map<ProjectEditDto>(projectEditViewModel);
         await projectService.EditProjectAsync(id, projectDto);
 
         TempData["SuccessMessage"] = "Project updated successfully";

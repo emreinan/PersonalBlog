@@ -2,7 +2,6 @@
 using App.Shared.Models;
 using App.Shared.Services.Comment;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace App.Admin.Controllers;
 
@@ -63,7 +62,7 @@ public class CommentController(ICommentService commentService) : Controller
     }
 
 
-    [HttpDelete("{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> DeleteComment(int id)
     {
         await commentService.DeleteComment(id);
