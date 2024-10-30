@@ -11,7 +11,7 @@ public class CommentController(ICommentService commentService) : Controller
     [HttpGet("Comments")]
     public async Task<IActionResult> Comments()
     {
-        var comments = await commentService.GetComments();
+        var comments = await commentService.GetCommentsAsync();
         if (comments is null)
         {
             TempData["ErrorMessage"] = "No comments found.";
@@ -24,7 +24,7 @@ public class CommentController(ICommentService commentService) : Controller
     [HttpGet("PostComment/{postId}")]
     public async Task<IActionResult> PostComment(Guid postId)
     {
-        var comments = await commentService.GetCommentsForPost(postId);
+        var comments = await commentService.GetCommentsForPostAsync(postId);
         if (comments is null)
         {
             TempData["ErrorMessage"] = "No comments found.";
@@ -37,7 +37,7 @@ public class CommentController(ICommentService commentService) : Controller
     [HttpGet("Edit/{id}")]
     public async Task<IActionResult> Edit(int id)
     {
-        var comment = await commentService.GetCommentById(id);
+        var comment = await commentService.GetCommentByIdAsync(id);
         if (comment is null)
         {
             TempData["ErrorMessage"] = "Comment not found.";
@@ -55,7 +55,7 @@ public class CommentController(ICommentService commentService) : Controller
             return View(comment);
 
         var commentUpdateDto = new CommentUpdateDto { Content = comment.Content };
-        await commentService.UpdateComment(id, commentUpdateDto);
+        await commentService.UpdateCommentAsync(id, commentUpdateDto);
 
         TempData["SuccessMessage"] = "Comment updated successfully.";
         return RedirectToAction(nameof(Comments));
@@ -65,7 +65,7 @@ public class CommentController(ICommentService commentService) : Controller
     [HttpGet("{id}")]
     public async Task<IActionResult> DeleteComment(int id)
     {
-        await commentService.DeleteComment(id);
+        await commentService.DeleteCommentAsync(id);
 
         TempData["SuccessMessage"] = "Comment deleted successfully.";
         return RedirectToAction(nameof(Comments));
@@ -74,7 +74,7 @@ public class CommentController(ICommentService commentService) : Controller
     [HttpGet("Approve/{id}")]
     public async Task<IActionResult> ApproveComment(int id)
     {
-        await commentService.ApproveComment(id);
+        await commentService.ApproveCommentAsync(id);
 
         TempData["SuccessMessage"] = "Comment approved successfully.";
         return RedirectToAction(nameof(Comments));

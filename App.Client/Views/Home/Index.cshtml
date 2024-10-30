@@ -1,30 +1,28 @@
-﻿@model HomeViewModel
-
-
+﻿
 <section id="home-section" class="hero">
-    <partial name="Index/_Hero.cshtml" model="@Model.PersonalInfoAboutMe" />
+    <vc:about-me use-hero-view="true" />
 </section>
 
 <section class="ftco-section" id="education-section">
-    <partial name="Index/_Education.cshtml" model="@Model.Educations" />
+    <vc:education />
 </section>
 
 <section class="ftco-about img ftco-section ftco-no-pb" id="about-section">
-    <partial name="Index/_AboutMe.cshtml" model="@Model.PersonalInfoAboutMe" />
+    <vc:about-me use-hero-view="false" />
 </section>
 
 <section class="ftco-section ftco-no-pb" id="resume-section">
-    <partial name="Index/_Resume.cshtml" model="@Model.Experiences" />
+    <vc:experience />
 </section>
 
 <section class="ftco-section ftco-project" id="projects-section">
-    <partial name="Index/_Projects.cshtml" model="@Model.Projects" />
+    <vc:project />
 </section>
 
 <section class="ftco-section" id="blog-section">
-    <partial name="Index/_BlogPosts.cshtml" model="@Model.BlogPosts" />
+    <vc:blog-posts view-name="Main" />
 </section>
 
 <section class="ftco-section contact-section ftco-no-pb" id="contact-section">
-    <partial name="Index/_Contact.cshtml" model="@Model.ContactMessage" />
+    <vc:contact-message />
 </section>

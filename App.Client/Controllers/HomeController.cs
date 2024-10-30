@@ -5,11 +5,8 @@ using App.Shared.Services.AboutMe;
 using App.Shared.Services.BlogPost;
 using App.Shared.Services.Comment;
 using App.Shared.Services.ContactMessage;
-using App.Shared.Services.Education;
-using App.Shared.Services.Experience;
+using App.Shared.Services.File;
 using App.Shared.Services.PersonalInfo;
-using App.Shared.Services.Project;
-using App.Shared.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -19,64 +16,22 @@ namespace App.Client.Controllers;
 
 public class HomeController(
     IAboutMeService aboutMeservice,
-    IBlogPostService postService,
     ICommentService commentService,
+    IBlogPostService blogPostService,
     IContactMessageService contactMessageService,
-    IEducationService educationService,
-    IExperienceService experienceService,
     IPersonalInfoService personalInfoService,
-    IProjectService projectService,
-    IUserService userService
+    IFileService fileService
     ) : Controller
 {
     public async Task<IActionResult> Index()
     {
         var aboutMe = await aboutMeservice.GetAboutMeAsync();
-        var posts = await postService.GetBlogPosts();
-        var educations = await educationService.GetEducations();
-        var experiences = await experienceService.GetExperiences();
         var personalInfo = await personalInfoService.GetPersonalInfoAsync();
-        var projects = await projectService.GetProjects();
-
-        var postViewModels = new List<BlogPostViewModel>();
-
-        foreach (var post in posts)
-        {
-            var comments = await commentService.GetCommentsForPost(post.Id);
-
-            var blogPostViewModel = new BlogPostViewModel
-            {
-                Id = post.Id,
-                Title = post.Title,
-                Content = post.Content,
-                ImageUrl = post.ImageUrl,
-                CreatedAt = post.CreatedAt,
-                Comments = comments
-            };
-
-            postViewModels.Add(blogPostViewModel);
-        }
-
-        var model = new HomeViewModel
-        {
-            AboutMe = aboutMe,
-            BlogPosts = postViewModels,
-            Educations = educations,
-            Experiences = experiences,
-            PersonalInfo = personalInfo,
-            Projects = projects,
-            PersonalInfoAboutMe = new PersonalInfoAboutMeViewModel
-            {
-                AboutMe = aboutMe,
-                PersonalInfo = personalInfo
-            },
-            ContactMessage = new ContactMessageViewModel()
-
-        };
+               
         ViewBag.PersonalInfo = personalInfo;
         ViewBag.AboutMe = aboutMe;
 
-        return View(model);
+        return View();
     }
     [Authorize]
     [HttpPost]
@@ -96,7 +51,7 @@ public class HomeController(
             Subject = contactMessageViewModel.Subject,
             Message = contactMessageViewModel.Message
         };
-        await contactMessageService.AddContactMessage(contactMessageDto);
+        await contactMessageService.AddContactMessageAsync(contactMessageDto);
 
         TempData["SuccessMessage"] = "Your message has been submitted successfully!";
         return RedirectToAction("Index", "Home");
@@ -104,55 +59,14 @@ public class HomeController(
 
     public async Task<IActionResult> BlogPost(Guid postId)
     {
-        var comments = await commentService.GetCommentsForPost(postId);
-        var approvedComments = comments.Where(c => c.IsApproved).ToList();
+        var post = await blogPostService.GetBlogPostAsync(postId);
 
-        var blogPost = await postService.GetBlogPost(postId);
+        var comments = await commentService.GetCommentsForPostAsync(postId);
+        var approvedComments = comments.Where(x => x.IsApproved).ToList();
 
-        var recentBlogs = await postService.GetBlogPosts();
+        post.Comments = approvedComments;
 
-        var commentViewModels = new List<CommentViewModel>();
-
-        foreach (var comment in approvedComments)
-        {
-            var commmentUser = await userService.GetUserAsync(comment.UserId);
-
-            if (commmentUser != null)
-            {
-
-                commentViewModels.Add(new CommentViewModel
-                {
-                    Id = comment.Id,
-                    Content = comment.Content,
-                    PostId = comment.PostId,
-                    UserId = comment.UserId,
-                    Author = commmentUser.UserName,
-                    CreatedAt = comment.CreatedAt,
-                    IsApproved = comment.IsApproved,
-                    UserImageUrl = commmentUser.ProfilePhotoUrl! != null ? commmentUser.ProfilePhotoUrl.ToString() : "/images/user-anon.png"
-                });
-            }
-        }
-        var model = new BlogPostViewModel
-        {
-            Id = postId,
-            Title = blogPost.Title,
-            Content = blogPost.Content,
-            ImageUrl = blogPost.ImageUrl,
-            CreatedAt = blogPost.CreatedAt,
-            Comments = commentViewModels,
-            RecentBlogs = recentBlogs.Select(b => new BlogPostViewModel
-            {
-                Id = b.Id,
-                Title = b.Title,
-                Content = b.Content,
-                ImageUrl = b.ImageUrl,
-                CreatedAt = b.CreatedAt
-            }).ToList()
-
-        };
-
-        return View(model);
+        return View(post);
     }
 
     [Authorize]
@@ -173,10 +87,22 @@ public class HomeController(
             UserId = userId
         };
 
-        await commentService.CreateComment(commentDto);
+        await commentService.CreateCommentAsync(commentDto);
 
         TempData["SuccessMessage"] = "Your comment has been submitted successfully!";
         return RedirectToAction("BlogPost", new { postId = commentDto.PostId });
+    }
+
+    [HttpGet("DownloadCv")]
+    public async Task<IActionResult> DownloadCv()
+    {
+        var aboutMe = await aboutMeservice.GetAboutMeAsync();
+        if (aboutMe.Cv == null)
+            return NotFound("Cv not found.");
+
+        var file = await fileService.GetFileAsync(aboutMe.Cv);
+
+        return File(file, "application/pdf", "Emre-Ýnan-Eng-Cv.pdf");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

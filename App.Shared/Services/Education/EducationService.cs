@@ -35,7 +35,7 @@ public class EducationService(IHttpClientFactory httpClientFactory) : IEducation
         return result;
     }
 
-    public async Task<List<EducationViewModel>> GetEducations()
+    public async Task<List<EducationViewModel>> GetEducationsAsync()
     {
         var response = await _dataHttpClient.GetAsync("/api/Education");
         await response.EnsureSuccessStatusCodeWithApiError();

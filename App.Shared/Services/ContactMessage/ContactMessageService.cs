@@ -9,7 +9,7 @@ public class ContactMessageService(IHttpClientFactory httpClientFactory) : ICont
 {
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
 
-    public async Task AddContactMessage(ContactMessageAddDto contactMessageAddDto)
+    public async Task AddContactMessageAsync(ContactMessageAddDto contactMessageAddDto)
     {
         var response = await _dataHttpClient.PostAsJsonAsync("api/ContactMessage", contactMessageAddDto);
         await response.EnsureSuccessStatusCodeWithApiError();

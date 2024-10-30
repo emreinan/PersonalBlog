@@ -16,7 +16,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
     [HttpGet("BlogPosts")]
     public async Task<IActionResult> BlogPosts()
     {
-        var blogPosts = await blogPostService.GetBlogPosts();
+        var blogPosts = await blogPostService.GetBlogPostsAsync();
         var blogpostViewModels = mapper.Map<List<BlogPostViewModel>>(blogPosts);
         return View(blogpostViewModels);
     }
@@ -24,18 +24,18 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
     [HttpGet("{id}")]
     public async Task<IActionResult> BlogPost(Guid id)
     {
-        var blogPost = await blogPostService.GetBlogPost(id);
+        var blogPost = await blogPostService.GetBlogPostAsync(id);
         var model = mapper.Map<BlogPostViewModel>(blogPost);
         return View(model);
     }
 
-    [HttpGet("CreateBlogPost")]
+    [HttpGet("CreateBlogPostAsync")]
     public IActionResult CreateBlogPost()
     {
         return View();
     }
 
-    [HttpPost("CreateBlogPost")]
+    [HttpPost("CreateBlogPostAsync")]
     public async Task<IActionResult> CreateBlogPost(BlogPostCreatedViewModel model)
     {
         if (!ModelState.IsValid)
@@ -46,7 +46,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
             return RedirectToAction("Login", "Auth");
 
         var blogPostDto = new BlogPostDto { Title = model.Title, Content = model.Content, Image = model.Image , AuthorId = userId};
-        await blogPostService.CreateBlogPost(blogPostDto);
+        await blogPostService.CreateBlogPostAsync(blogPostDto);
 
         TempData["SuccessMessage"] = "Blog post created successfully.";
         return RedirectToAction("BlogPosts");
@@ -55,7 +55,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
     [HttpGet("EditBlogPost/{id}")]
     public async Task<IActionResult> EditBlogPost(Guid id)
     {
-        var blogPost = await blogPostService.GetBlogPost(id);
+        var blogPost = await blogPostService.GetBlogPostAsync(id);
         var model = new BlogPostEditViewModel { Id = blogPost.Id, Title = blogPost.Title, Content = blogPost.Content };
         return View(model);
     }
@@ -67,30 +67,30 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
             return View(model);
 
         var blogPostDto = new BlogPostUpdateDto { Title = model.Title, Content = model.Content, Image = model.Image };
-        await blogPostService.UpdateBlogPost(id, blogPostDto);
+        await blogPostService.UpdateBlogPostAsync(id, blogPostDto);
 
         TempData["SuccessMessage"] = "Blog post updated successfully.";
         return RedirectToAction("BlogPosts");
     }
 
-    [HttpGet("DeleteBlogPost/{id}")]
+    [HttpGet("DeleteBlogPostAsync/{id}")]
     public async Task<IActionResult> DeleteBlogPost(Guid id)
     {
-        var blogPost = await blogPostService.GetBlogPost(id);
+        var blogPost = await blogPostService.GetBlogPostAsync(id);
 
-        await blogPostService.DeleteBlogPost(id);
+        await blogPostService.DeleteBlogPostAsync(id);
 
         TempData["SuccessMessage"] = "Blog post deleted successfully.";
         return RedirectToAction(nameof(BlogPosts));
     }
 
-    [HttpGet("CreateComment/{id}")]
+    [HttpGet("CreateCommentAsync/{id}")]
     public IActionResult CreateComment(Guid Id)
     {
         return View();
     }
 
-    [HttpPost("CreateComment/{id}")]
+    [HttpPost("CreateCommentAsync/{id}")]
     public async Task<IActionResult> CreateComment(Guid Id, CommentCreateViewModel model)
     {
         if (!ModelState.IsValid)
@@ -101,7 +101,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
             return RedirectToAction("Login", "Auth");
 
         var commentDto = new CommentDto { Content = model.Content, PostId = Id, UserId = userId };
-        await commentService.CreateComment(commentDto);
+        await commentService.CreateCommentAsync(commentDto);
 
         TempData["SuccessMessage"] = "Comment created successfully.";
         return RedirectToAction(nameof(BlogPosts));

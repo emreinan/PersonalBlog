@@ -11,7 +11,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
     [HttpGet("Projects")]
     public async Task<IActionResult> Projects()
     {
-        var projects = await projectService.GetProjects();
+        var projects = await projectService.GetProjectsAsync();
         return View(projects);
     }
 
@@ -36,7 +36,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
     [HttpGet("Edit/{id}")]
     public async Task<IActionResult> Edit(int id)
     {
-        var project = await projectService.GetProjectById(id);
+        var project = await projectService.GetProjectByIdAsync(id);
 
         if (project is null)
             return NotFound();
@@ -61,7 +61,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await projectService.GetProjectById(id);
+        await projectService.GetProjectByIdAsync(id);
         await projectService.DeleteProjectAsync(id);
 
         TempData["SuccessMessage"] = "Project deleted successfully";
@@ -71,7 +71,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
     [HttpGet("MakeActive/{id}")]
     public async Task<IActionResult> MakeActive(int id)
     {
-        await projectService.MakeActiveProject(id);
+        await projectService.MakeActiveProjectAsync(id);
 
         TempData["SuccessMessage"] = "Project is now active";
         return RedirectToAction(nameof(Projects));
@@ -80,7 +80,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
     [HttpGet("MakeInActive/{id}")]
     public async Task<IActionResult> Hide(int id)
     {
-        await projectService.MakeInActiveProject(id);
+        await projectService.MakeInActiveProjectAsync(id);
 
         TempData["SuccessMessage"] = "Project is now inactive";
         return RedirectToAction(nameof(Projects));

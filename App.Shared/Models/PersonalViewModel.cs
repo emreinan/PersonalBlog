@@ -1,6 +1,6 @@
 ﻿namespace App.Shared.Models;
 
-public class PersonalInfoAboutMeViewModel
+public class PersonalViewModel
 {
     public PersonalInfoViewModel PersonalInfo { get; set; }
     public AboutMeViewModel AboutMe { get; set; }

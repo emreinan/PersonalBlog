@@ -6,12 +6,12 @@ namespace App.Shared.Services.Comment;
 
 public interface ICommentService
 {
-    Task<List<CommentViewModel>> GetCommentsForPost(Guid postId);
-    Task CreateComment(CommentDto comment);
-    Task DeleteComment(int id);
-    Task ApproveComment(int id);
-    Task<List<CommentViewModel>> GetComments();
-    Task UpdateComment(int id, CommentUpdateDto commentUpdateDto);
-    Task<CommentViewModel> GetCommentById(int id);
+    Task<List<CommentViewModel>> GetCommentsForPostAsync(Guid postId);
+    Task CreateCommentAsync(CommentDto comment);
+    Task DeleteCommentAsync(int id);
+    Task ApproveCommentAsync(int id);
+    Task<List<CommentViewModel>> GetCommentsAsync();
+    Task UpdateCommentAsync(int id, CommentUpdateDto commentUpdateDto);
+    Task<CommentViewModel> GetCommentByIdAsync(int id);
 }
 

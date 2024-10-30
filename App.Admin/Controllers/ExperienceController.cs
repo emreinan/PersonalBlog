@@ -12,7 +12,7 @@ public class ExperienceController(IExperienceService experienceService, IMapper 
     [HttpGet("Experiences")]
     public async Task<IActionResult> Experiences()
     {
-        var experiences = await experienceService.GetExperiences();
+        var experiences = await experienceService.GetExperiencesAsync();
         return View(experiences);
     }
 

@@ -66,7 +66,7 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
                 PostId = comment.PostId,
                 UserId = comment.UserId,
                 Author = user.UserName,
-                UserImage = user.ProfilePhotoUrl ?? string.Empty
+                UserImageUrl = user.ProfilePhotoUrl ?? string.Empty
             };
 
             commentDtos.Add(commentDto);
@@ -101,7 +101,7 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
                 PostId = comment.PostId,
                 UserId = comment.UserId,
                 Author = user.UserName,
-                UserImage = user.ProfilePhotoUrl ?? string.Empty
+                UserImageUrl = user.ProfilePhotoUrl ?? string.Empty
             };
 
             commentDtos.Add(commentDto);

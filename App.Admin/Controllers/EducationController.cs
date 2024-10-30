@@ -12,7 +12,7 @@ public class EducationController(IEducationService educationService, IMapper map
     [HttpGet("Educations")]
     public async Task<IActionResult> Educations()
     {
-        var educations = await educationService.GetEducations(); 
+        var educations = await educationService.GetEducationsAsync(); 
         return View(educations);
     }
 

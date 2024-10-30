@@ -1,0 +1,29 @@
+﻿@model IEnumerable<BlogPostViewModel>
+
+<div class="col-lg-4 sidebar ftco-animate">
+    <div class="sidebar-box ftco-animate">
+        <h3 class="heading-sidebar">Recent Blog</h3>
+        @if (Model != null)
+        {
+            @foreach (var blog in Model)
+            {
+                <div class="block-21 mb-4 d-flex">
+                    <a class="blog-img mr-4" style="background-image: url(@blog.ImageUrl);"></a>
+                    <div class="text">
+                        <h3 class="heading"><a asp-controller="Home" asp-action="BlogPost" asp-route-postId="@blog.Id">@blog.Title</a></h3>
+                        <div class="meta">
+                            <div><a><span class="icon-calendar"></span> @blog.CreatedAt.ToString("dd,MM,yyyy")</a></div>
+                            <div><a><span class="icon-person"></span> @blog.Author</a></div>
+                            <div><a><span class="icon-chat"></span> @(blog.Comments?.Count ?? 0)</a></div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No recent blogs available.</p>
+        }
+
+    </div>
+</div>

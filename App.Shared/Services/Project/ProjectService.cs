@@ -57,7 +57,7 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task<ProjectViewModel> GetProjectById(int id)
+    public async Task<ProjectViewModel> GetProjectByIdAsync(int id)
     {
         var response = await _dataHttpClient.GetAsync($"/api/Project/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
@@ -65,7 +65,7 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
         return result;
     }
 
-    public async Task<List<ProjectViewModel>> GetProjects()
+    public async Task<List<ProjectViewModel>> GetProjectsAsync()
     {
         var response = await _dataHttpClient.GetAsync("/api/Project");
         await response.EnsureSuccessStatusCodeWithApiError();
@@ -73,13 +73,13 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
         return result;
     }
 
-    public async Task MakeActiveProject(int id)
+    public async Task MakeActiveProjectAsync(int id)
     {
         var response = await _dataHttpClient.PutAsync($"/api/Project/Active/{id}/", null);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task MakeInActiveProject(int id)
+    public async Task MakeInActiveProjectAsync(int id)
     {
         var response = await _dataHttpClient.PutAsync($"/api/Project/InActive/{id}/", null);
         await response.EnsureSuccessStatusCodeWithApiError();

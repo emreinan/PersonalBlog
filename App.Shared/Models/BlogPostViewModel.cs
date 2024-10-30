@@ -8,8 +8,9 @@ public class BlogPostViewModel
     public string Title { get; set; }
     public string Content { get; set; }
     public string? ImageUrl { get; set; }
+    public Guid AuthorId { get; set; }
+    public string Author { get; set; }
     public DateTime CreatedAt { get; set; }
     public List<CommentViewModel>? Comments { get; set; } 
-    public List<BlogPostViewModel>? RecentBlogs { get; set; } 
 }
 
