@@ -5,11 +5,8 @@ using App.Shared.Services.AboutMe;
 using App.Shared.Services.BlogPost;
 using App.Shared.Services.Comment;
 using App.Shared.Services.ContactMessage;
-using App.Shared.Services.Education;
-using App.Shared.Services.Experience;
+using App.Shared.Services.File;
 using App.Shared.Services.PersonalInfo;
-using App.Shared.Services.Project;
-using App.Shared.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -19,14 +16,11 @@ namespace App.Client.Controllers;
 
 public class HomeController(
     IAboutMeService aboutMeservice,
-    IBlogPostService postService,
     ICommentService commentService,
+    IBlogPostService blogPostService,
     IContactMessageService contactMessageService,
-    IEducationService educationService,
-    IExperienceService experienceService,
     IPersonalInfoService personalInfoService,
-    IProjectService projectService,
-    IUserService userService
+    IFileService fileService
     ) : Controller
 {
     public async Task<IActionResult> Index()
@@ -65,47 +59,14 @@ public class HomeController(
 
     public async Task<IActionResult> BlogPost(Guid postId)
     {
+        var post = await blogPostService.GetBlogPostAsync(postId);
+
         var comments = await commentService.GetCommentsForPostAsync(postId);
-        var approvedComments = comments.Where(c => c.IsApproved).ToList();
+        var approvedComments = comments.Where(x => x.IsApproved).ToList();
 
-        var blogPost = await postService.GetBlogPostAsync(postId);
+        post.Comments = approvedComments;
 
-        var recentBlogs = await postService.GetBlogPostsAsync();
-
-        var commentViewModels = new List<CommentViewModel>();
-
-        foreach (var comment in approvedComments)
-        {
-            var commmentUser = await userService.GetUserAsync(comment.UserId);
-
-            if (commmentUser != null)
-            {
-
-                commentViewModels.Add(new CommentViewModel
-                {
-                    Id = comment.Id,
-                    Content = comment.Content,
-                    PostId = comment.PostId,
-                    UserId = comment.UserId,
-                    Author = commmentUser.UserName,
-                    CreatedAt = comment.CreatedAt,
-                    IsApproved = comment.IsApproved,
-                    UserImageUrl = commmentUser.ProfilePhotoUrl! != null ? commmentUser.ProfilePhotoUrl.ToString() : "/images/user-anon.png"
-                });
-            }
-        }
-        var model = new BlogPostViewModel
-        {
-            Id = postId,
-            Title = blogPost.Title,
-            Content = blogPost.Content,
-            ImageUrl = blogPost.ImageUrl,
-            CreatedAt = blogPost.CreatedAt,
-            Comments = commentViewModels,
-
-        };
-
-        return View(model);
+        return View(post);
     }
 
     [Authorize]
@@ -130,6 +91,18 @@ public class HomeController(
 
         TempData["SuccessMessage"] = "Your comment has been submitted successfully!";
         return RedirectToAction("BlogPost", new { postId = commentDto.PostId });
+    }
+
+    [HttpGet("DownloadCv")]
+    public async Task<IActionResult> DownloadCv()
+    {
+        var aboutMe = await aboutMeservice.GetAboutMeAsync();
+        if (aboutMe.Cv == null)
+            return NotFound("Cv not found.");
+
+        var file = await fileService.GetFileAsync(aboutMe.Cv);
+
+        return File(file, "application/pdf", "Emre-Ýnan-Eng-Cv.pdf");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

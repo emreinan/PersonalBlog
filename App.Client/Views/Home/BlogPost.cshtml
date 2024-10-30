@@ -23,7 +23,7 @@
                 <p>@Model.Content</p>
                 <h2 class="mb-3 mt-5">#2. Creative WordPress Themes</h2>
                 <p>Temporibus ad error suscipit exercitationem hic molestiae totam obcaecati rerum, eius aut, in. Exercitationem atque quidem tempora maiores ex architecto voluptatum aut officia doloremque. Error dolore voluptas, omnis molestias odio dignissimos culpa ex earum nisi consequatur quos odit quasi repellat qui officiis reiciendis incidunt hic non? Debitis commodi aut, adipisci.</p>
-                
+
                 <div class="pt-5 mt-5">
                     <h3 class="mb-5">@(Model.Comments.Count) Comments</h3>
                     <ul class="comment-list">
@@ -57,35 +57,12 @@
                             </div>
                         </form>
                     </div>
-                </div>
-            </div> <!-- .col-md-8 -->
-            <div class="col-lg-4 sidebar ftco-animate">
-                <div class="sidebar-box ftco-animate">
-                    <h3 class="heading-sidebar">Recent Blog</h3>
-                    @if (Model.RecentBlogs != null)
-                    {
-                        @foreach (var blog in Model.RecentBlogs)
-                        {
-                            <div class="block-21 mb-4 d-flex">
-                                <a class="blog-img mr-4" style="background-image: url(@blog.ImageUrl);"></a>
-                                <div class="text">
-                                    <h3 class="heading"><a href="@Url.Action("BlogPost", new { postId = blog.Id })">@blog.Title</a></h3>
-                                    <div class="meta">
-                                        <div><a href="#"><span class="icon-calendar"></span> @blog.CreatedAt.ToString("dd,MM,yyyy")</a></div>
-                                        <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                        <div><a href="#"><span class="icon-chat"></span> @(blog.Comments?.Count ?? 0)</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <p>No recent blogs available.</p>
-                    }
-                    
+
                 </div>
             </div>
+            <!-- .col-md-8 -->
+            <vc:blog-posts view-name="RecentBlog" />
         </div>
     </div>
-</section> <!-- .section -->
+</section> 
+<!-- .section -->

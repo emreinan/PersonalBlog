@@ -26,7 +26,7 @@ public class BlogPostController(DataDbContext dataDbContext, IFileService fileSe
         foreach (var blogPost in blogPosts)
         {
             var user = await dataDbContext.AuthDbContext.Users.FirstOrDefaultAsync(u => u.Id == blogPost.AuthorId);
-            if (user == null) return NotFound("User not found");
+            if (user == null) return NotFound("BlogPost author not found");
 
             var blogPostDto = new BlogPostResponse
             {
@@ -36,18 +36,29 @@ public class BlogPostController(DataDbContext dataDbContext, IFileService fileSe
                 ImageUrl = blogPost.ImageUrl,
                 CreatedAt = blogPost.CreatedAt,
                 AuthorId = blogPost.AuthorId,
-                Comments = blogPost.Comments.Select(c => new CommentResponse
-                {
-                    Id = c.Id,
-                    Content = c.Content,
-                    PostId = c.PostId,
-                    UserId = c.UserId,
-                    Author = user.UserName,
-                    IsApproved = c.IsApproved,
-                    CreatedAt = c.CreatedAt,
-                    UserImage = user.ProfilePhotoUrl ?? string.Empty
-                }).ToList()
+                Author = user.UserName,
+                Comments = new List<CommentResponse>()
             };
+
+            foreach (var comment in blogPost.Comments)
+            {
+                var commentAuthor = await dataDbContext.AuthDbContext.Users.FirstOrDefaultAsync(u => u.Id == comment.UserId);
+                if (commentAuthor == null)
+                    return NotFound("Comment author not found");
+
+                var commentDto = new CommentResponse
+                {
+                    Id = comment.Id,
+                    Content = comment.Content,
+                    PostId = comment.PostId,
+                    UserId = comment.UserId,
+                    Author = commentAuthor.UserName,
+                    IsApproved = comment.IsApproved,
+                    CreatedAt = comment.CreatedAt,
+                    UserImageUrl = commentAuthor.ProfilePhotoUrl ?? string.Empty
+                };
+                blogPostDto.Comments.Add(commentDto);
+            }
             blogPostsDtos.Add(blogPostDto);
         }
         return Ok(blogPostsDtos);
@@ -59,8 +70,28 @@ public class BlogPostController(DataDbContext dataDbContext, IFileService fileSe
         var blogPost = await dataDbContext.BlogPosts.Include(b => b.Comments).FirstOrDefaultAsync(b => b.Id == id);
         if (blogPost == null) return NotFound("BlogPost not found");
 
-        var user = await dataDbContext.AuthDbContext.Users.FirstOrDefaultAsync(u => u.Id == blogPost.AuthorId);
-        if (user == null) return NotFound("User not found");
+        var blogUser = await dataDbContext.AuthDbContext.Users.FirstOrDefaultAsync(u => u.Id == blogPost.AuthorId);
+        if (blogUser == null) return NotFound("User not found");
+
+        var commentResponses = new List<CommentResponse>();
+
+        foreach (var comment in blogPost.Comments)
+        {
+            var commentUser = await dataDbContext.AuthDbContext.Users
+                .FirstOrDefaultAsync(u => u.Id == comment.UserId);
+
+            commentResponses.Add(new CommentResponse
+            {
+                Id = comment.Id,
+                Content = comment.Content,
+                PostId = comment.PostId,
+                UserId = comment.UserId,
+                Author = commentUser?.UserName ?? "Unknown User",
+                IsApproved = comment.IsApproved,
+                CreatedAt = comment.CreatedAt,
+                UserImageUrl = commentUser?.ProfilePhotoUrl ?? string.Empty
+            });
+        }
 
         var blogPostDto = new BlogPostResponse
         {
@@ -70,19 +101,9 @@ public class BlogPostController(DataDbContext dataDbContext, IFileService fileSe
             ImageUrl = blogPost.ImageUrl,
             CreatedAt = blogPost.CreatedAt,
             AuthorId = blogPost.AuthorId,
-            Comments = blogPost.Comments.Select(c => new CommentResponse
-            {
-                Id = c.Id,
-                Content = c.Content,
-                PostId = c.PostId,
-                UserId = c.UserId,
-                Author = user.UserName,
-                IsApproved = c.IsApproved,
-                CreatedAt = c.CreatedAt,
-                UserImage = user.ProfilePhotoUrl ?? string.Empty
-            }).ToList()
+            Author = blogUser.UserName,
+            Comments = commentResponses
         };
-
         return Ok(blogPostDto);
     }
 
