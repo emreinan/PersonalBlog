@@ -1,15 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace App.Shared.Models;
 
 public class UserUpdateViewModel
 {
-    public Guid Id { get; set; }
     [Required, MinLength(2)]
     public string UserName { get; set; }
     [Required, EmailAddress]
     public string Email { get; set; }
-
-    public string ProfilePhoto { get; set; }
-
 }

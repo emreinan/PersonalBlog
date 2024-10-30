@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.Comment;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace App.Data.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CommentController(DataDbContext datDbContext) : ControllerBase
+public class CommentController(DataDbContext datDbContext,IMapper mapper) : ControllerBase
 {
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCommentById(int id)
@@ -116,28 +117,13 @@ public class CommentController(DataDbContext datDbContext) : ControllerBase
         if (post == null)
             return NotFound("Blog post not found.");
 
-        var comment = new Comment
-        {
-            Content = commentDto.Content,
-            UserId = commentDto.UserId,
-            PostId = commentDto.PostId,
-            IsApproved = false,
-            CreatedAt = DateTime.UtcNow
-        };
+        var comment = mapper.Map<Comment>(commentDto);
+        comment.CreatedAt = DateTime.UtcNow;
 
         await datDbContext.Comments.AddAsync(comment);
         await datDbContext.SaveChangesAsync();
 
-        var commentResponse = new CommentResponse
-        {
-            Id = comment.Id,
-            Content = comment.Content,
-            CreatedAt = comment.CreatedAt,
-            PostId = comment.PostId,
-            UserId = comment.UserId
-        };
-
-        return CreatedAtAction(nameof(GetCommentById), new { id = comment.Id }, commentResponse);
+        return CreatedAtAction(nameof(GetCommentById), new { id = comment.Id });
 
     }
 

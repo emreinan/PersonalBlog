@@ -1,6 +1,7 @@
 ﻿using App.Shared.Dto.User;
 using App.Shared.Models;
 using App.Shared.Services.User;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -8,42 +9,31 @@ using System.Security.Claims;
 namespace App.Client.Controllers;
 
 [Authorize]
-public class UserController(IUserService userService) : Controller
+public class UserController(IUserService userService,IMapper mapper) : Controller
 {
 
     public async Task<IActionResult> Details()
     {
         var userId = GetUserId();
-        var result = await userService.GetUserAsync(userId);
-
-        if (result is null)
+        var user = await userService.GetUserAsync(userId);
+        if (user is null)
             return NotFound("User not found.");
-        var dto = result.Value;
-        var userViewModel = new UserViewModel
-        {
-            Id = dto.Id,
-            UserName = dto.UserName,
-            Email = dto.Email,
-            ProfilePhoto = dto.ProfilePhoto,
-            CreatedAt = dto.CreatedAt,
-            IsActive = dto.IsActive
-        };
-        return View(userViewModel);
 
+        return View(user);
     }
 
     [HttpGet]
     public async Task<IActionResult> Edit()
     {
         var id = GetUserId();
-        var result = await userService.GetUserAsync(id);
-        if (result is null)
+        var user = await userService.GetUserAsync(id);
+        if (user is null)
             return NotFound("User not found.");
-        var dto = result.Value;
+
         var userUpdateViewModel = new UserUpdateViewModel
         {
-            UserName = dto.UserName,
-            Email = dto.Email
+            UserName = user.UserName,
+            Email = user.Email
         };
         return View(userUpdateViewModel);
     }
@@ -55,15 +45,9 @@ public class UserController(IUserService userService) : Controller
         if (!ModelState.IsValid)
             return View(userUpdateViewModel);
 
-        var userDto = new UserUpdateDto
-        {
-            UserName = userUpdateViewModel.UserName,
-            Email = userUpdateViewModel.Email
-        };
-        var result = await userService.UpdateUserAsync(id, userDto);
+        var userDto = mapper.Map<UserUpdateDto>(userUpdateViewModel);
 
-        if (!result.IsSuccess)
-            return BadRequest(result.Errors);
+        await userService.UpdateUserAsync(id, userDto);
 
         return RedirectToAction(nameof(Details), new { userId = id });
     }
@@ -72,10 +56,7 @@ public class UserController(IUserService userService) : Controller
     public async Task<IActionResult> Delete()
     {
         var userId = GetUserId();
-        var result = await userService.DeleteUserAsync(userId);
-
-        if (!result.IsSuccess)
-            return BadRequest(result.Errors);
+        await userService.DeleteUserAsync(userId);
 
         return RedirectToAction("Index", "Home");
     }
@@ -85,13 +66,10 @@ public class UserController(IUserService userService) : Controller
     {
         if (file == null || file.Length == 0)
         {
-            ModelState.AddModelError(string.Empty, "Invalid file.");
+            TempData["ErrorMessage"] = "File cannot be null or empty";
             return View();
         }
         var result = await userService.UploadProfilePhotoAsync(file);
-
-        if (!result.IsSuccess)
-            return BadRequest(result.Errors);
 
         await SavePhotoToLocalAsync(file);
 
@@ -99,14 +77,17 @@ public class UserController(IUserService userService) : Controller
     }
     public Guid GetUserId()
     {
-        return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        if (User.Identity.IsAuthenticated)
+            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        throw new UnauthorizedAccessException("User is not authenticated.");
     }
     private async Task SavePhotoToLocalAsync(IFormFile file)
     {
         if (file == null || file.Length == 0)
             throw new ArgumentException("File cannot be null or empty", nameof(file));
 
-        var originalFileName = file.FileName; 
+        var originalFileName = file.FileName;
         var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", originalFileName);
 
         using var fileStream = new FileStream(filePath, FileMode.Create);

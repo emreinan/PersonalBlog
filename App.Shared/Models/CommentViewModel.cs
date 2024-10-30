@@ -9,7 +9,7 @@ public class CommentViewModel
     public string Author { get; set; }
     public bool IsApproved { get; set; }
     public DateTime CreatedAt { get; set; }
-    public string UserImage { get; set; }
+    public string? UserImageUrl { get; set; }
 
 }
 

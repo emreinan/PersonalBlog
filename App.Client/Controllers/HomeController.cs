@@ -1,3 +1,4 @@
+using App.Shared.Dto.Comment;
 using App.Shared.Dto.ContactMessage;
 using App.Shared.Models;
 using App.Shared.Services.AboutMe;
@@ -11,6 +12,7 @@ using App.Shared.Services.Project;
 using App.Shared.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace App.Client.Controllers;
@@ -29,11 +31,11 @@ public class HomeController(
 {
     public async Task<IActionResult> Index()
     {
-        var aboutMe = await aboutMeservice.GetAboutMe();
+        var aboutMe = await aboutMeservice.GetAboutMeAsync();
         var posts = await postService.GetBlogPosts();
         var educations = await educationService.GetEducations();
         var experiences = await experienceService.GetExperiences();
-        var personalInfo = await personalInfoService.GetPersonalInfo();
+        var personalInfo = await personalInfoService.GetPersonalInfoAsync();
         var projects = await projectService.GetProjects();
 
         var postViewModels = new List<BlogPostViewModel>();
@@ -98,7 +100,6 @@ public class HomeController(
 
         TempData["SuccessMessage"] = "Your message has been submitted successfully!";
         return RedirectToAction("Index", "Home");
-
     }
 
     public async Task<IActionResult> BlogPost(Guid postId)
@@ -116,7 +117,7 @@ public class HomeController(
         {
             var commmentUser = await userService.GetUserAsync(comment.UserId);
 
-            if (commmentUser?.Value != null)
+            if (commmentUser != null)
             {
 
                 commentViewModels.Add(new CommentViewModel
@@ -125,10 +126,10 @@ public class HomeController(
                     Content = comment.Content,
                     PostId = comment.PostId,
                     UserId = comment.UserId,
-                    Author = commmentUser.Value.UserName,
+                    Author = commmentUser.UserName,
                     CreatedAt = comment.CreatedAt,
                     IsApproved = comment.IsApproved,
-                    UserImage = commmentUser.Value.ProfilePhoto!.ToString()
+                    UserImageUrl = commmentUser.ProfilePhotoUrl! != null ? commmentUser.ProfilePhotoUrl.ToString() : "/images/user-anon.png"
                 });
             }
         }
@@ -163,25 +164,25 @@ public class HomeController(
 
         var userMail = GetUserMail();
         var userName = GetUserName();
+        var userId = GetUserId();
 
-        var commentViewModel = new CommentViewModel
+        var commentDto = new CommentDto
         {
             Content = commentSendViewModel.Content,
             PostId = commentSendViewModel.PostId,
-            UserId = GetUserId(),
-            Author = userName
+            UserId = userId
         };
-        var result = await commentService.CreateComment(commentViewModel);
 
-        if (result is null)
-        {
-            ModelState.AddModelError(string.Empty, "An error occurred while submitting the comment. Please try again.");
-            return View(commentSendViewModel);
-        }
+        await commentService.CreateComment(commentDto);
 
         TempData["SuccessMessage"] = "Your comment has been submitted successfully!";
-        return RedirectToAction("BlogPost", new { postId = commentViewModel.PostId });
+        return RedirectToAction("BlogPost", new { postId = commentDto.PostId });
+    }
 
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
     public Guid GetUserId()

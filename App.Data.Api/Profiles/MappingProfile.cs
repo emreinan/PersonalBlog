@@ -17,6 +17,8 @@ public class MappingProfile : Profile
     {
         CreateMap<AboutMe, AboutMeResponseDto>();
 
+        CreateMap<CommentDto, Comment>();
+
         CreateMap<Project, ProjectDto>();
         CreateMap<ProjectAddDto, Project>();
         CreateMap<ProjectEditDto, Project>().ForMember(dest => dest.IsActive, opt=>opt.MapFrom(src=>true));

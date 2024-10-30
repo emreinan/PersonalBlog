@@ -1,4 +1,5 @@
 ﻿using App.Shared.Dto.Auth;
+using App.Shared.Dto.User;
 using App.Shared.Models;
 using AutoMapper;
 
@@ -10,5 +11,7 @@ public class MappingProfile : Profile
     {
         CreateMap<LoginDto, LoginViewModel>().ReverseMap();
         CreateMap<RegisterDto, RegisterViewModel>().ReverseMap();
+
+        CreateMap<UserUpdateViewModel, UserUpdateDto>().ReverseMap();
     }
 }
