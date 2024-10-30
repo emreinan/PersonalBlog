@@ -13,7 +13,7 @@ public class BlogPostService(IHttpClientFactory httpClientFactory) : IBlogPostSe
 {
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
 
-    public async Task CreateBlogPost(BlogPostDto blogPostDto)
+    public async Task CreateBlogPostAsync(BlogPostDto blogPostDto)
     {
         using var content = new MultipartFormDataContent();
         content.Add(new StringContent(blogPostDto.Title), "Title");
@@ -34,13 +34,13 @@ public class BlogPostService(IHttpClientFactory httpClientFactory) : IBlogPostSe
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task DeleteBlogPost(Guid id)
+    public async Task DeleteBlogPostAsync(Guid id)
     {
         var response = await _dataHttpClient.DeleteAsync($"/api/BlogPost/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task<BlogPostViewModel> GetBlogPost(Guid postId)
+    public async Task<BlogPostViewModel> GetBlogPostAsync(Guid postId)
     {
         var response = await _dataHttpClient.GetAsync($"/api/BlogPost/{postId}");
         await response.EnsureSuccessStatusCodeWithApiError();
@@ -48,7 +48,7 @@ public class BlogPostService(IHttpClientFactory httpClientFactory) : IBlogPostSe
         return result;
     }
 
-    public async Task<List<BlogPostViewModel>> GetBlogPosts()
+    public async Task<List<BlogPostViewModel>> GetBlogPostsAsync()
     {
         var response = await _dataHttpClient.GetAsync("/api/BlogPost");
         await response.EnsureSuccessStatusCodeWithApiError();
@@ -56,7 +56,7 @@ public class BlogPostService(IHttpClientFactory httpClientFactory) : IBlogPostSe
         return result;
     }
 
-    public async Task UpdateBlogPost(Guid id, BlogPostUpdateDto blogPostUpdateDto)
+    public async Task UpdateBlogPostAsync(Guid id, BlogPostUpdateDto blogPostUpdateDto)
     {
         using var content = new MultipartFormDataContent();
         content.Add(new StringContent(blogPostUpdateDto.Title), "Title");

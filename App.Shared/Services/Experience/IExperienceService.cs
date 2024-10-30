@@ -5,7 +5,7 @@ namespace App.Shared.Services.Experience;
 
 public interface IExperienceService
 {
-    Task<List<ExperienceViewModel>> GetExperiences();
+    Task<List<ExperienceViewModel>> GetExperiencesAsync();
     Task<ExperienceViewModel> GetExperienceByIdAsync(int id);
     Task AddExperienceAsync(ExperienceSaveDto experienceDto);
     Task EditExperienceAsync(int id, ExperienceSaveDto experienceDto);

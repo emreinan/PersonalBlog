@@ -10,25 +10,25 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
 {
     private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
 
-    public async Task ApproveComment(int id)
+    public async Task ApproveCommentAsync(int id)
     {
         var response = await _dataHttpClient.PutAsync($"/api/Comment/Approve/{id}", null);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task CreateComment(CommentDto comment)
+    public async Task CreateCommentAsync(CommentDto comment)
     {
         var response = await _dataHttpClient.PostAsJsonAsync("/api/Comment", comment);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task DeleteComment(int id)
+    public async Task DeleteCommentAsync(int id)
     {
         var response = await _dataHttpClient.DeleteAsync($"/api/Comment/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task<CommentViewModel> GetCommentById(int id)
+    public async Task<CommentViewModel> GetCommentByIdAsync(int id)
     {
         var response = await _dataHttpClient.GetAsync($"/api/Comment/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
@@ -36,7 +36,7 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
         return result;
     }
 
-    public async Task<List<CommentViewModel>> GetComments()
+    public async Task<List<CommentViewModel>> GetCommentsAsync()
     {
         var response = await _dataHttpClient.GetAsync("/api/Comment");
         await response.EnsureSuccessStatusCodeWithApiError();
@@ -44,7 +44,7 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
         return result;
     }
 
-    public async Task<List<CommentViewModel>> GetCommentsForPost(Guid postId)
+    public async Task<List<CommentViewModel>> GetCommentsForPostAsync(Guid postId)
     {
         var response = await _dataHttpClient.GetAsync($"/api/Comment/PostComment/{postId}");
         await response.EnsureSuccessStatusCodeWithApiError();
@@ -52,7 +52,7 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
         return result;
     }
 
-    public async Task UpdateComment(int id,CommentUpdateDto commentUpdateDto)
+    public async Task UpdateCommentAsync(int id,CommentUpdateDto commentUpdateDto)
     {
         var response = await _dataHttpClient.PutAsJsonAsync($"/api/Comment/{id}", commentUpdateDto);
         await response.EnsureSuccessStatusCodeWithApiError();

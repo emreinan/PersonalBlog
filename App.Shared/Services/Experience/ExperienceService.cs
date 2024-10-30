@@ -35,7 +35,7 @@ public class ExperienceService(IHttpClientFactory httpClientFactory) : IExperien
         return experience;
     }
 
-    public async Task<List<ExperienceViewModel>> GetExperiences()
+    public async Task<List<ExperienceViewModel>> GetExperiencesAsync()
     {
         var response = await _dataHttpClient.GetAsync("/api/Experience");
         await response.EnsureSuccessStatusCodeWithApiError();

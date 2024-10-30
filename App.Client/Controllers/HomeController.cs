@@ -32,51 +32,12 @@ public class HomeController(
     public async Task<IActionResult> Index()
     {
         var aboutMe = await aboutMeservice.GetAboutMeAsync();
-        var posts = await postService.GetBlogPosts();
-        var educations = await educationService.GetEducations();
-        var experiences = await experienceService.GetExperiences();
         var personalInfo = await personalInfoService.GetPersonalInfoAsync();
-        var projects = await projectService.GetProjects();
-
-        var postViewModels = new List<BlogPostViewModel>();
-
-        foreach (var post in posts)
-        {
-            var comments = await commentService.GetCommentsForPost(post.Id);
-
-            var blogPostViewModel = new BlogPostViewModel
-            {
-                Id = post.Id,
-                Title = post.Title,
-                Content = post.Content,
-                ImageUrl = post.ImageUrl,
-                CreatedAt = post.CreatedAt,
-                Comments = comments
-            };
-
-            postViewModels.Add(blogPostViewModel);
-        }
-
-        var model = new HomeViewModel
-        {
-            AboutMe = aboutMe,
-            BlogPosts = postViewModels,
-            Educations = educations,
-            Experiences = experiences,
-            PersonalInfo = personalInfo,
-            Projects = projects,
-            PersonalInfoAboutMe = new PersonalInfoAboutMeViewModel
-            {
-                AboutMe = aboutMe,
-                PersonalInfo = personalInfo
-            },
-            ContactMessage = new ContactMessageViewModel()
-
-        };
+               
         ViewBag.PersonalInfo = personalInfo;
         ViewBag.AboutMe = aboutMe;
 
-        return View(model);
+        return View();
     }
     [Authorize]
     [HttpPost]
@@ -96,7 +57,7 @@ public class HomeController(
             Subject = contactMessageViewModel.Subject,
             Message = contactMessageViewModel.Message
         };
-        await contactMessageService.AddContactMessage(contactMessageDto);
+        await contactMessageService.AddContactMessageAsync(contactMessageDto);
 
         TempData["SuccessMessage"] = "Your message has been submitted successfully!";
         return RedirectToAction("Index", "Home");
@@ -104,12 +65,12 @@ public class HomeController(
 
     public async Task<IActionResult> BlogPost(Guid postId)
     {
-        var comments = await commentService.GetCommentsForPost(postId);
+        var comments = await commentService.GetCommentsForPostAsync(postId);
         var approvedComments = comments.Where(c => c.IsApproved).ToList();
 
-        var blogPost = await postService.GetBlogPost(postId);
+        var blogPost = await postService.GetBlogPostAsync(postId);
 
-        var recentBlogs = await postService.GetBlogPosts();
+        var recentBlogs = await postService.GetBlogPostsAsync();
 
         var commentViewModels = new List<CommentViewModel>();
 
@@ -141,14 +102,6 @@ public class HomeController(
             ImageUrl = blogPost.ImageUrl,
             CreatedAt = blogPost.CreatedAt,
             Comments = commentViewModels,
-            RecentBlogs = recentBlogs.Select(b => new BlogPostViewModel
-            {
-                Id = b.Id,
-                Title = b.Title,
-                Content = b.Content,
-                ImageUrl = b.ImageUrl,
-                CreatedAt = b.CreatedAt
-            }).ToList()
 
         };
 
@@ -173,7 +126,7 @@ public class HomeController(
             UserId = userId
         };
 
-        await commentService.CreateComment(commentDto);
+        await commentService.CreateCommentAsync(commentDto);
 
         TempData["SuccessMessage"] = "Your comment has been submitted successfully!";
         return RedirectToAction("BlogPost", new { postId = commentDto.PostId });

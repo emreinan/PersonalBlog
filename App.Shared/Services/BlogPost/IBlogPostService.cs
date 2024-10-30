@@ -5,9 +5,9 @@ namespace App.Shared.Services.BlogPost;
 
 public interface IBlogPostService
 {
-    Task<List<BlogPostViewModel>> GetBlogPosts();
-    Task<BlogPostViewModel> GetBlogPost(Guid postId);
-    Task CreateBlogPost(BlogPostDto blogPostDto);
-    Task UpdateBlogPost(Guid id, BlogPostUpdateDto blogPostUpdateDto);
-    Task DeleteBlogPost(Guid id);
+    Task<List<BlogPostViewModel>> GetBlogPostsAsync();
+    Task<BlogPostViewModel> GetBlogPostAsync(Guid postId);
+    Task CreateBlogPostAsync(BlogPostDto blogPostDto);
+    Task UpdateBlogPostAsync(Guid id, BlogPostUpdateDto blogPostUpdateDto);
+    Task DeleteBlogPostAsync(Guid id);
 }

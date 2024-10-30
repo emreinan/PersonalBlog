@@ -10,6 +10,5 @@ public class BlogPostViewModel
     public string? ImageUrl { get; set; }
     public DateTime CreatedAt { get; set; }
     public List<CommentViewModel>? Comments { get; set; } 
-    public List<BlogPostViewModel>? RecentBlogs { get; set; } 
 }
 
