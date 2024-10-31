@@ -12,7 +12,7 @@ public class AboutMeViewComponent(IAboutMeService aboutMeService, IPersonalInfoS
         var aboutMe = await aboutMeService.GetAboutMeAsync();
         var personalInfo = await personalInfoService.GetPersonalInfoAsync();
 
-        var model = new PersonalViewModel
+        var model = new PersonalDetailViewModel
         {
             AboutMe = aboutMe,
             PersonalInfo = personalInfo
@@ -22,7 +22,7 @@ public class AboutMeViewComponent(IAboutMeService aboutMeService, IPersonalInfoS
             return View("Hero", model);
         }
 
-        return View("Default", model);
+        return View("AboutMe", model);
     }
 
 }

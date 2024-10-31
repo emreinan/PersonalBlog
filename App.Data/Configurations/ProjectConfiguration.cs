@@ -31,42 +31,42 @@ internal class ProjectSeed : IEntityTypeConfiguration<Project>
                 Id = 1,
                 Title = "Web Development",
                 Description = "Creating responsive and dynamic websites.",
-                ImageUrl = "https://picsum.photos/seed/webdev/200/300"
+                ImageUrl = "https://localhost:7207/images/project-3.jpg"
             },
             new Project
             {
                 Id = 2,
                 Title = "Mobile App Development",
                 Description = "Building mobile applications for iOS and Android.",
-                ImageUrl = "https://picsum.photos/seed/mobileapp/200/300"
+                ImageUrl = "https://localhost:7207/images/project-4.jpg"
             },
             new Project
             {
                 Id = 3,
                 Title = "Machine Learning",
                 Description = "Developing machine learning models for data analysis.",
-                ImageUrl = "https://picsum.photos/seed/machinelearning/200/300"
+                ImageUrl = "https://localhost:7207/images/project-5.jpg"
             },
             new Project
             {
                 Id = 4,
                 Title = "Cloud Computing",
                 Description = "Utilizing cloud services for scalable applications.",
-                ImageUrl = "https://picsum.photos/seed/cloudcomputing/200/300"
+                ImageUrl = "https://localhost:7207/images/project-1.jpg"
             },
             new Project
             {
                 Id = 5,
                 Title = "Digital Marketing",
                 Description = "Strategies for promoting products online.",
-                ImageUrl = "https://picsum.photos/seed/digitalmarketing/200/300"
+                ImageUrl = "https://localhost:7207/images/project-2.jpg"
             },
             new Project
             {
                 Id = 6,
                 Title = "Cybersecurity",
                 Description = "Protecting systems and networks from cyber threats.",
-                ImageUrl = "https://picsum.photos/seed/cybersecurity/200/300"
+                ImageUrl = "https://localhost:7207/images/project-6.jpg"
             }
         );
     }

@@ -25,9 +25,9 @@ internal class AboutMeSeed : IEntityTypeConfiguration<AboutMe>
             {
                 Id = 1,
                 Introduciton = "Hello, I'm a software developer.",
-                ImageUrl1 = "https://localhost:7207/api/File/GetByUrl?FileUrl=about.jpg",
-                ImageUrl2 = "",
-                Cv = "https://localhost:7207/api/File/GetByUrl?FileUrl=Emre-Inan-Cv-Eng.pdf",
+                ImageUrl1 = "https://localhost:7207/images/bg_3.png",
+                ImageUrl2 = "https://localhost:7207/images/bg_4.png",
+                Cv = "https://localhost:7207/images/Emre-Inan-Cv-Eng.pdf",
                 Title = "Junior Backend Developer"
             }
         );

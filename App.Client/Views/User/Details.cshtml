@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Profile Details";
+
 }
 
 <section id="profile-section" class="hero" style="margin-top: 100px;">
@@ -10,7 +11,8 @@
             <div class="col-md-6 text-center">
                 <h2>Profile</h2>
                 <div class="form-group">
-                    <img src="@Model.ProfilePhotoUrl ?? https://freesvg.org/img/abstract-user-flat-4.png" alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;">
+                    <img src="@(string.IsNullOrEmpty(Model.ProfilePhotoUrl) ? "https://freesvg.org/img/abstract-user-flat-4.png": Url.Action("GetImage", "Home", new { fileUrl = Model.ProfilePhotoUrl }))"
+                         alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;">
                 </div>
                 <div class="form-group">
                     <label>Email:</label>

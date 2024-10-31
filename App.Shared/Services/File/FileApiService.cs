@@ -24,7 +24,7 @@ public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
         return Result.Success();
     }
 
-    public async Task<Stream> GetFileAsync(string fileUrl)
+    public async Task<Stream> GetDownloadFileAsync(string fileUrl)
     {
         var response = await client.GetAsync($"/api/File/Download?FileUrl={Uri.EscapeDataString(fileUrl)}");
         response.EnsureSuccessStatusCode();
@@ -32,6 +32,13 @@ public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
         return await response.Content.ReadAsStreamAsync();
     }
 
+    public async Task<Stream> GetFileAsync(string fileUrl)
+    {
+        var response = await client.GetAsync($"/api/File/GetImage?fileUrl={Uri.EscapeDataString(fileUrl)}");
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsStreamAsync();
+    }
 
     public async Task<Result<string>> UploadFileAsync(IFormFile file)
     {

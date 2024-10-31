@@ -66,18 +66,20 @@ internal class UserSeed : IEntityTypeConfiguration<User>
                 PasswordSalt = passwordSalt,
                 RoleId = 2,
                 CreatedAt = DateTime.Now,
-                IsActive = true
+                IsActive = true,
+                ProfilePhotoUrl = "https://localhost:7207/images/person_1.jpg"
             },
             new User
             {
                 Id = new Guid("44063c52-807a-40bf-a65c-a06d5ac3ee26"),
-                UserName = "Alice",
+                UserName = "Mike",
                 Email = "commenter2@mail.com",
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 RoleId = 2,
                 CreatedAt = DateTime.Now,
-                IsActive = true
+                IsActive = true,
+                ProfilePhotoUrl = "https://localhost:7207/images/person_2.jpg"
             }
             );
     }

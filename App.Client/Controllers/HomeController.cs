@@ -100,10 +100,26 @@ public class HomeController(
         if (aboutMe.Cv == null)
             return NotFound("Cv not found.");
 
-        var file = await fileService.GetFileAsync(aboutMe.Cv);
+        var file = await fileService.GetDownloadFileAsync(aboutMe.Cv);
 
         return File(file, "application/pdf", "Emre-Ýnan-Eng-Cv.pdf");
     }
+
+    [HttpGet("GetImage")]
+    public async Task<IActionResult> GetImage(string fileUrl)
+    {
+        try
+        {
+            var file = await fileService.GetFileAsync(fileUrl);
+            var contentType = GetContentType(fileUrl);
+            return File(file, contentType);
+        }
+        catch (HttpRequestException)
+        {
+            return NotFound("File not found.");
+        }
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
@@ -122,5 +138,21 @@ public class HomeController(
     private string GetUserName()
     {
         return User.FindFirst(ClaimTypes.Name).Value;
+    }
+
+    private static string GetContentType(string fileUrl)
+    {
+        var types = new Dictionary<string, string>
+        {
+            { ".jpg", "image/jpeg" },
+            { ".jpeg", "image/jpeg" },
+            { ".png", "image/png" },
+            { ".gif", "image/gif" },
+            {".txt", "text/plain"},
+            {".pdf", "application/pdf"}
+        };
+
+        var ext = Path.GetExtension(fileUrl).ToLowerInvariant();
+        return types.ContainsKey(ext) ? types[ext] : "application/octet-stream";
     }
 }

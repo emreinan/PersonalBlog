@@ -43,14 +43,27 @@ namespace App.File.Api.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
 
             if (!System.IO.File.Exists(filePath))
-            {
                 return NotFound("File not found.");
-            }
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
             var contentType = GetContentType(filePath);
 
             return File(fileBytes, contentType, fileName);
+        }
+
+        [HttpGet("GetImage")]
+        public IActionResult GetImage([FromQuery] string fileUrl)
+        {
+            var fileName = Path.GetFileName(fileUrl);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound("File not found.");
+
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            var contentType = GetContentType(filePath);
+
+            return File(fileBytes, contentType);
         }
 
         [HttpDelete("Delete")]
@@ -60,9 +73,7 @@ namespace App.File.Api.Controllers
             var filePath = Path.Combine(GetFileSaveFolder(), fileName);
 
             if (!System.IO.File.Exists(filePath))
-            {
                 return NotFound("File not found.");
-            }
 
             System.IO.File.Delete(filePath);
 
@@ -71,8 +82,8 @@ namespace App.File.Api.Controllers
 
         private string GetFileUrl(string fileName)
         {
-            var baseUrl = $"{Request.Scheme}://{Request.Host}"; 
-            var fileUrl = $"{baseUrl}/images/{fileName}"; 
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var fileUrl = $"{baseUrl}/images/{fileName}";
 
             return fileUrl;
         }
@@ -90,8 +101,10 @@ namespace App.File.Api.Controllers
         {
             var types = new Dictionary<string, string>
         {
-            {".jpg", "image/jpeg"},
-            {".png", "image/png"},
+            { ".jpg", "image/jpeg" },
+            { ".jpeg", "image/jpeg" },
+            { ".png", "image/png" },
+            { ".gif", "image/gif" },
             {".txt", "text/plain"},
             {".pdf", "application/pdf"}
         };

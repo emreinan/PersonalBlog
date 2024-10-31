@@ -46,7 +46,7 @@ public class AboutMeController(IAboutMeService aboutMeService,IFileService fileS
         if(aboutMe.Cv == null)
             return NotFound("Cv not found.");
 
-        var file = await fileService.GetFileAsync(aboutMe.Cv);
+        var file = await fileService.GetDownloadFileAsync(aboutMe.Cv);
 
         return File(file, "application/pdf", "Cv.pdf");
     }

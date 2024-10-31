@@ -110,5 +110,6 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
 
         return NoContent();
     }
+
 }
 

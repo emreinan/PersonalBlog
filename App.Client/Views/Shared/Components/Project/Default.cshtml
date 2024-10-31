@@ -12,7 +12,8 @@
         @foreach (var project in Model)
         {
             <div class="col-md-4">
-                <div class="project img ftco-animate d-flex justify-content-center align-items-center" style="background-image: url('@project.ImageUrl');">
+                <div class="project img ftco-animate d-flex justify-content-center align-items-center" 
+                style="background-image: url('@Url.Action("GetImage", "Home", new { fileUrl = project.ImageUrl })');">
                     <div class="overlay"></div>
                     <div class="text text-center p-4">
                         <h3><a href="#">@project.Title</a></h3>

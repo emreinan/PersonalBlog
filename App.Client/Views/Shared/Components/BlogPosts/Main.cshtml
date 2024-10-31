@@ -11,11 +11,17 @@
     <div class="row d-flex">
         @foreach (var post in Model)
         {
+            {
+                var imageUrl = string.IsNullOrEmpty(post.ImageUrl)
+                ? "../../../../wwwroot/images/project-3.jpg"
+                : post.ImageUrl;
+            }
             <div class="col-md-4 d-flex ftco-animate">
                 <div class="blog-entry justify-content-end">
-                    <a asp-controller="Home" asp-action="BlogPost" asp-route-postId="@post.Id" class="block-20" style="background-image: url('@(string.IsNullOrEmpty(post.ImageUrl) ? "../../../wwwroot/images/image_1.jpg" : post.ImageUrl)');">
+                    <a asp-controller="Home" asp-action="BlogPost" asp-route-postId="@post.Id"
+                       class="block-20"
+                       style="background-image: url('@Url.Action("GetImage", "Home", new { fileUrl = post.ImageUrl })');">
                     </a>
-
                     <div class="text mt-3 float-right d-block">
                         <div class="d-flex align-items-center mb-3 meta">
                             <p class="mb-0">
