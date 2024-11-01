@@ -65,19 +65,6 @@ namespace App.Auth.Api.Controllers
             return Ok(dto);
         }
 
-        [Authorize]
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            var userId = GetUserId();
-            if (userId == Guid.Empty)
-                return BadRequest("User not found.");
-            var result = await authService.LoginAsync(userId);
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return Ok(result);
-        }
-
         private Guid GetUserId()
         {
             if (!User.Identity.IsAuthenticated)

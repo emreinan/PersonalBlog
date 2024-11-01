@@ -4,6 +4,7 @@ using App.Shared.Models;
 using App.Shared.Services.BlogPost;
 using App.Shared.Services.Comment;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using System.Security.Claims;
@@ -29,12 +30,14 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         return View(model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("CreateBlogPostAsync")]
     public IActionResult CreateBlogPost()
     {
         return View();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("CreateBlogPostAsync")]
     public async Task<IActionResult> CreateBlogPost(BlogPostCreatedViewModel model)
     {
@@ -52,6 +55,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         return RedirectToAction("BlogPosts");
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("EditBlogPost/{id}")]
     public async Task<IActionResult> EditBlogPost(Guid id)
     {
@@ -60,6 +64,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         return View(model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("EditBlogPost/{id}")]
     public async Task<IActionResult> EditBlogPost(Guid id, BlogPostEditViewModel model)
     {
@@ -73,6 +78,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         return RedirectToAction("BlogPosts");
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("DeleteBlogPostAsync/{id}")]
     public async Task<IActionResult> DeleteBlogPost(Guid id)
     {
@@ -84,12 +90,14 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         return RedirectToAction(nameof(BlogPosts));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("CreateCommentAsync/{id}")]
     public IActionResult CreateComment(Guid Id)
     {
         return View();
     }
 
+    [Authorize]
     [HttpPost("CreateCommentAsync/{id}")]
     public async Task<IActionResult> CreateComment(Guid Id, CommentCreateViewModel model)
     {

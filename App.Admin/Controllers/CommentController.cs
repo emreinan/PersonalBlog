@@ -1,6 +1,7 @@
 ﻿using App.Shared.Dto.Comment;
 using App.Shared.Models;
 using App.Shared.Services.Comment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
@@ -21,6 +22,7 @@ public class CommentController(ICommentService commentService) : Controller
         return View(comments);
     }
 
+    [Authorize]
     [HttpGet("PostComment/{postId}")]
     public async Task<IActionResult> PostComment(Guid postId)
     {
@@ -34,6 +36,7 @@ public class CommentController(ICommentService commentService) : Controller
         return View(comments);
     }
 
+    [Authorize]
     [HttpGet("Edit/{id}")]
     public async Task<IActionResult> Edit(int id)
     {
@@ -47,7 +50,7 @@ public class CommentController(ICommentService commentService) : Controller
 
         return View(commentUpdateViewModel);
     }
-
+    [Authorize]
     [HttpPost("Edit/{id}")]
     public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] CommentUpdateViewModel comment)
     {
@@ -61,7 +64,7 @@ public class CommentController(ICommentService commentService) : Controller
         return RedirectToAction(nameof(Comments));
     }
 
-
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> DeleteComment(int id)
     {
@@ -71,6 +74,7 @@ public class CommentController(ICommentService commentService) : Controller
         return RedirectToAction(nameof(Comments));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Approve/{id}")]
     public async Task<IActionResult> ApproveComment(int id)
     {

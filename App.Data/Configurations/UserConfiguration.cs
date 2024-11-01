@@ -55,7 +55,7 @@ internal class UserSeed : IEntityTypeConfiguration<User>
                RoleId = 1,
                CreatedAt = DateTime.Now,
                IsActive = true,
-               ProfilePhotoUrl = "https://gravatar.com/tenaciousstranger03f752b74c?utm_source=share_profile"
+               ProfilePhotoUrl = "https://localhost:7207/images/pp-1.png"
            },
             new User
             {

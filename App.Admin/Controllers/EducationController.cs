@@ -2,6 +2,7 @@
 using App.Shared.Models;
 using App.Shared.Services.Education;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
@@ -16,12 +17,14 @@ public class EducationController(IEducationService educationService, IMapper map
         return View(educations);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Add")]
     public IActionResult Add()
     {
         return View(); 
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("Add")]
     public async Task<IActionResult> Add(EducationSaveViewModel educationViewModel)
     {
@@ -35,6 +38,7 @@ public class EducationController(IEducationService educationService, IMapper map
         return RedirectToAction(nameof(Educations)); 
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Edit/{id}")]
     public async Task<IActionResult> Edit(int id)
     {
@@ -47,6 +51,7 @@ public class EducationController(IEducationService educationService, IMapper map
         return View(educationViewModel); 
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("Edit/{id}")]
     public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] EducationSaveViewModel educationViewModel)
     {
@@ -60,6 +65,7 @@ public class EducationController(IEducationService educationService, IMapper map
         return RedirectToAction(nameof(Educations)); 
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

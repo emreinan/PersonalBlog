@@ -46,6 +46,7 @@ public static class ClientMvcServiceRegistration
         services.AddScoped<ITokenService, CookieTokenService>();
         services.AddScoped<IFileService, FileApiService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITokenService, CookieTokenService>();
     }
 
     private static void GetApiUrl(IServiceCollection services, IConfiguration configuration)

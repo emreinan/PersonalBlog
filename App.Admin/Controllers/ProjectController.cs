@@ -2,6 +2,7 @@
 using App.Shared.Models;
 using App.Shared.Services.Project;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
@@ -15,11 +16,14 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         return View(projects);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Add")]
     public IActionResult Add()
     {
         return View();
     }
+
+    [Authorize(Roles = "Admin")]
     [HttpPost("Add")]
     public async Task<IActionResult> Add(ProjectAddViewModel projectAddViewModel)
     {
@@ -33,6 +37,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         return RedirectToAction(nameof(Projects));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Edit/{id}")]
     public async Task<IActionResult> Edit(int id)
     {
@@ -45,6 +50,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         return View(projectViewModel);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("Edit/{id}")]
     public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] ProjectEditViewModel projectEditViewModel)
     {
@@ -58,6 +64,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         return RedirectToAction(nameof(Projects));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -68,6 +75,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         return RedirectToAction(nameof(Projects));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("MakeActive/{id}")]
     public async Task<IActionResult> MakeActive(int id)
     {
@@ -77,6 +85,7 @@ public class ProjectController(IProjectService projectService, IMapper mapper) :
         return RedirectToAction(nameof(Projects));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("MakeInActive/{id}")]
     public async Task<IActionResult> Hide(int id)
     {

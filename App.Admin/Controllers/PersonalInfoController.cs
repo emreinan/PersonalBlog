@@ -2,6 +2,7 @@
 using App.Shared.Models;
 using App.Shared.Services.PersonalInfo;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
@@ -20,6 +21,7 @@ public class PersonalInfoController(IPersonalInfoService personalInfoService, IM
         return View(personalInfo);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Edit")]
     public async Task<IActionResult> Edit()
     {
@@ -32,6 +34,7 @@ public class PersonalInfoController(IPersonalInfoService personalInfoService, IM
         return View(personalInfoViewModel);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("Edit")]
     public async Task<IActionResult> Edit(PersonalInfoViewModel personalInfoViewModel)
     {

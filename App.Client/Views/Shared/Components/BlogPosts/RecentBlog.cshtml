@@ -8,7 +8,7 @@
             @foreach (var blog in Model)
             {
                 <div class="block-21 mb-4 d-flex">
-                    <a class="blog-img mr-4" style="background-image: url(@blog.ImageUrl);"></a>
+                    <a class="blog-img mr-4" style="background-image: url('@Url.Action("GetImage", "Home", new { fileUrl = blog.ImageUrl })');"></a>
                     <div class="text">
                         <h3 class="heading"><a asp-controller="Home" asp-action="BlogPost" asp-route-postId="@blog.Id">@blog.Title</a></h3>
                         <div class="meta">

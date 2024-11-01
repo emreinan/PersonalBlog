@@ -1,6 +1,7 @@
 ﻿using App.Shared.Models;
 using App.Shared.Services.User;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
@@ -18,6 +19,7 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
         return View(users);
     }
 
+    [Authorize]
     [HttpGet("Active/{id}")]
     public async Task<IActionResult> Activate([FromRoute] Guid id)
     {
@@ -31,6 +33,7 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
         return RedirectToAction(nameof(Users));
     }
 
+    [Authorize]
     [HttpGet("Deactive/{id}")]
     public async Task<IActionResult> Deactivate([FromRoute] Guid id)
     {
@@ -44,6 +47,7 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
         return RedirectToAction(nameof(Users));
     }
 
+    [Authorize]
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

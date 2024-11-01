@@ -2,12 +2,13 @@
 using App.Shared.Services.AboutMe;
 using App.Shared.Services.PersonalInfo;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace App.Client.ViewComponents;
 
 public class AboutMeViewComponent(IAboutMeService aboutMeService, IPersonalInfoService personalInfoService) : ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync(bool useHeroView)
+    public async Task<IViewComponentResult> InvokeAsync(string viewName)
     {
         var aboutMe = await aboutMeService.GetAboutMeAsync();
         var personalInfo = await personalInfoService.GetPersonalInfoAsync();
@@ -17,12 +18,18 @@ public class AboutMeViewComponent(IAboutMeService aboutMeService, IPersonalInfoS
             AboutMe = aboutMe,
             PersonalInfo = personalInfo
         };
-        if (useHeroView)
-        {
-            return View("Hero", model);
-        }
 
-        return View("AboutMe", model);
+        switch (viewName)
+        {
+            case "Hero":
+                return View("Hero", model);
+
+            case "Footer":
+                return View("Footer", model);
+
+            default:
+                return View("AboutMe", model);
+        }
     }
 
 }

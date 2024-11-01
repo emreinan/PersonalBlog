@@ -1,5 +1,6 @@
 ﻿using App.Shared.Services.ContactMessage;
 using App.Shared.Services.Mail;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
@@ -14,6 +15,7 @@ public class ContactMessageController(IContactMessageService contactMessageServi
         return View(messages);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -28,6 +30,7 @@ public class ContactMessageController(IContactMessageService contactMessageServi
 
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("MarkAsRead/{id}")]
     public async Task<IActionResult> MarkAsRead(int id)
     {

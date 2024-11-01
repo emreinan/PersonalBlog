@@ -1,42 +1,52 @@
-﻿@model ContactMessageViewModel
+﻿@using System.Security.Claims
+@model ContactMessageViewModel
+
+@{
+    var userClaims = User.Claims.ToList();
+    var userName = User.Identity.IsAuthenticated ? User.Identity.Name : "Guest"; 
+    var emailClaim = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value; 
+}
 
 <div class="container">
-    <div class="row justify-content-center mb-5 pb-3">
-        <div class="col-md-7 heading-section text-center ftco-animate">
-            <h2 class="mb-4">Contact Us</h2>
-            <p>Please Contact Me!</p>
-        </div>
-    </div>
+    <h2>Contact Us</h2>
+    <p>Please Contact Me!</p>
 
-    <div class="row block-9">
-        <div class="col-md-12 order-md-last d-flex">
-            <form asp-action="SubmitContactMessage" method="post" class="bg-light p-5 contact-form">
-                <div class="form-group">
-                    <label asp-for="Name"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Email"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Subject"></label>
-                    <input asp-for="Subject" class="form-control" />
-                    <span asp-validation-for="Subject" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Message"></label>
-                    <textarea asp-for="Message" class="form-control"></textarea>
-                    <span asp-validation-for="Message" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5">
-                </div>
-            </form>
+    <form asp-action="SubmitContactMessage" method="post" class="bg-light p-5 contact-form">
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="Name" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="Email" class="form-control" required />
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" value="@userName" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" value="@emailClaim" class="form-control" readonly />
+            </div>
+        }
+
+        <div class="form-group">
+            <label asp-for="Subject"></label>
+            <input asp-for="Subject" class="form-control" required />
         </div>
-    </div>
+        <div class="form-group">
+            <label asp-for="Message"></label>
+            <textarea asp-for="Message" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5" />
+        </div>
+    </form>
 </div>
 
 @section Scripts {

@@ -19,30 +19,28 @@ public class HomeController(
     ICommentService commentService,
     IBlogPostService blogPostService,
     IContactMessageService contactMessageService,
-    IPersonalInfoService personalInfoService,
     IFileService fileService
     ) : Controller
 {
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var aboutMe = await aboutMeservice.GetAboutMeAsync();
-        var personalInfo = await personalInfoService.GetPersonalInfoAsync();
-               
-        ViewBag.PersonalInfo = personalInfo;
-        ViewBag.AboutMe = aboutMe;
-
         return View();
     }
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> SubmitContactMessage(ContactMessageViewModel contactMessageViewModel)
     {
+        if (User.Identity.IsAuthenticated)
+        {
+            contactMessageViewModel.Email = GetUserMail();
+            contactMessageViewModel.Name = GetUserName();
+
+            //Manual giriþleri siliyoruz. Yoksa model state geçersiz oluyor.
+            ModelState.Remove("Email");
+            ModelState.Remove("Name");
+        }
         if (!ModelState.IsValid)
             return View(contactMessageViewModel);
-
-        var userMail = GetUserMail();
-        if (!string.IsNullOrEmpty(userMail))
-            contactMessageViewModel.Email = userMail;
 
         var contactMessageDto = new ContactMessageAddDto
         {
@@ -89,7 +87,7 @@ public class HomeController(
 
         await commentService.CreateCommentAsync(commentDto);
 
-        TempData["SuccessMessage"] = "Your comment has been submitted successfully!";
+        TempData["SuccessMessage"] = "Your comment has been submitted successfully! Please wait for admin approval.";
         return RedirectToAction("BlogPost", new { postId = commentDto.PostId });
     }
 

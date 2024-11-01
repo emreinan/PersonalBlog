@@ -1,6 +1,9 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.Comment;
+using App.Shared.Services.AboutMe;
+using App.Shared.Services.Mail;
+using App.Shared.Services.PersonalInfo;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +13,7 @@ namespace App.Data.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CommentController(DataDbContext datDbContext,IMapper mapper) : ControllerBase
+public class CommentController(DataDbContext datDbContext,IMapper mapper,IMailService mailService) : ControllerBase
 {
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCommentById(int id)
@@ -122,6 +125,13 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
 
         await datDbContext.Comments.AddAsync(comment);
         await datDbContext.SaveChangesAsync();
+
+        var adminEmail = "emreinannn@gmail.com"; 
+        var subject = "New Comment Submitted";
+        var htmlMessage = $"A new comment has been submitted for the post titled '{post.Title}'.<br/>" +
+                          $"Comment Content: {comment.Content}";
+
+        await mailService.SendEmailAsync(adminEmail, subject, htmlMessage);
 
         return CreatedAtAction(nameof(GetCommentById), new { id = comment.Id }, commentDto);
 
