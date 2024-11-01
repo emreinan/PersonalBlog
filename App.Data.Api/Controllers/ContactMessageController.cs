@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Web;
 
 namespace App.Data.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ContactMessageController(DataDbContext context,IMapper mapper,IMailService mailService) : ControllerBase
+public class ContactMessageController(DataDbContext context,IMapper mapper,IMailService mailService,IConfiguration configuration) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetContactMessages()
@@ -46,11 +47,14 @@ public class ContactMessageController(DataDbContext context,IMapper mapper,IMail
         context.ContactMessages.Add(contactMessage);
         await context.SaveChangesAsync();
 
-        var adminEmail = "emreiannn@gmail.com";
+        var adminEmail = "emreinannn@gmail.com";
         var subject = "Yeni Mesaj Alındı!";
+        var domain = configuration["Domain"];
+        var markAsReadLink = $"{domain}/api/ContactMessage/mark-as-read/{contactMessage.Id}";
         var messageBody = $"<p>Gönderen: {contactMessage.Name} ({contactMessage.Email})</p>" +
                           $"<p>Konu: {contactMessage.Subject}</p>" +
-                          $"<p>Mesaj: {contactMessage.Message}</p>";
+                          $"<p>Mesaj: {contactMessage.Message}</p>" +
+                          $"<p><a href='{markAsReadLink}'>Mesajı okundu olarak işaretle</a></p>";
 
         await mailService.SendEmailAsync(adminEmail, subject, messageBody);
 

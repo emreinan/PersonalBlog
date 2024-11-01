@@ -82,7 +82,7 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
             .ToListAsync();
 
         if (comments.Count == 0 || comments is null)
-            return NotFound("Comments not found.");
+            return NotFound("BlogPost not found.");
 
         var commentDtos = new List<CommentResponse>();
 
@@ -123,7 +123,7 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
         await datDbContext.Comments.AddAsync(comment);
         await datDbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetCommentById), new { id = comment.Id });
+        return CreatedAtAction(nameof(GetCommentById), new { id = comment.Id }, commentDto);
 
     }
 

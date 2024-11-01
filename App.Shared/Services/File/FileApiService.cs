@@ -46,7 +46,7 @@ public class FileApiService(IHttpClientFactory httpClientFactory) : IFileService
 
         using var fileStream = file.OpenReadStream();
         var fileContent = new StreamContent(fileStream);
-        formData.Add(fileContent, "file", file.FileName);
+        formData.Add(fileContent, "File", file.FileName);
 
         var response = await client.PostAsync("/api/File/Upload", formData);
 

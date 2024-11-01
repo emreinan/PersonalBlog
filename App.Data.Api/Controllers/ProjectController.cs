@@ -1,6 +1,7 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.Project;
+using App.Shared.Services.File;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,7 @@ namespace App.Data.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectController(DataDbContext context,IMapper mapper) : ControllerBase
+public class ProjectController(DataDbContext context, IMapper mapper, IFileService fileService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetProjects()
@@ -38,8 +39,17 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
     [HttpPost]
     public async Task<IActionResult> CreateProject(ProjectAddDto projectAddDto)
     {
-        var project = mapper.Map<Project>(projectAddDto);
-        project.CreatedAt = DateTime.UtcNow;
+        var result = await fileService.UploadFileAsync(projectAddDto.Image);
+        if (!result.IsSuccess)
+            return BadRequest(result.Errors);
+
+        var project = new Project
+        {
+            Title = projectAddDto.Title,
+            Description = projectAddDto.Description,
+            ImageUrl = result.Value,
+            CreatedAt = DateTime.UtcNow
+        };
 
         context.Projects.Add(project);
         await context.SaveChangesAsync();
@@ -55,10 +65,20 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
         if (project == null)
             return NotFound();
 
-        var projectUpdate = mapper.Map(projectEditDto, project);
-        projectUpdate.UpdatedAt = DateTime.Now;
+        if (projectEditDto.Image != null)
+        {
+            var result = await fileService.UploadFileAsync(projectEditDto.Image);
+            if (!result.IsSuccess)
+                return BadRequest(result.Errors);
 
-        context.Projects.Update(projectUpdate);
+            project.ImageUrl = result.Value;
+        }
+
+        project.Title = projectEditDto.Title;
+        project.Description = projectEditDto.Description;
+        project.UpdatedAt = DateTime.Now;
+
+        context.Projects.Update(project);
         await context.SaveChangesAsync();
 
         return NoContent();

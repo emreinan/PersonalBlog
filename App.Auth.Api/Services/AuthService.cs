@@ -18,14 +18,20 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
         if (user is null)
             return Result.Error("User not found");
 
-        string domain = "https://localhost:7213";
-        string httpEncodeEmail = HttpUtility.UrlEncode(user.Email);
-        var resetPasswordLink = $"{domain}/api/auth/reset-password?Email={httpEncodeEmail}";
+        var guid = Guid.NewGuid().ToString().Substring(0, 8);
 
-        var emailBody = $@"<h1>Reset Password</h1>
-                            <p>Click the link below to reset your password</p>
-                            <a href='{resetPasswordLink}'>Reset Password</a>";
-        await emailService.SendEmailAsync(user.Email, "Reset Password", emailBody);
+        byte[] passwordHash, passwordSalt;
+        HashingHelper.CreatePasswordHash(guid, out passwordHash, out passwordSalt);
+
+        user.PasswordSalt = passwordSalt;
+        user.PasswordHash = passwordHash;
+
+        authDbContext.Users.Update(user);
+        await authDbContext.SaveChangesAsync();
+
+        var mailMessage = "<p>Tihs your new passford. Plesa don't share your password with anyone!</p>" +
+                         $"<h1><b>{guid}</b></h1>";
+        await emailService.SendEmailAsync(user.Email, "Reset Password", mailMessage);
 
         return Result.Success();
     }
@@ -98,6 +104,8 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
         HashingHelper.CreatePasswordHash(resetPasswordRequest.Password, out var passwordHash, out var passwordSalt);
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
+
+        authDbContext.Users.Update(user);
         await authDbContext.SaveChangesAsync();
 
         return Result.Success();
@@ -163,5 +171,4 @@ public class AuthService(AuthDbContext authDbContext, TokenHelper tokenHelper, I
             RefreshToken = newRefreshToken.Token
         });
     }
-
-}
+    }

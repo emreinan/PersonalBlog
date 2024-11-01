@@ -46,7 +46,7 @@ namespace App.Auth.Api.Controllers
             var dto = result.Value;
             return Ok(dto);
         }
-        [HttpGet("reset-password")]
+        [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest resetPasswordRequest)
         {
             var result = await authService.ResetPasswordAsync(resetPasswordRequest);
@@ -63,6 +63,26 @@ namespace App.Auth.Api.Controllers
                 return BadRequest(result);
             var dto = result.Value;
             return Ok(dto);
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var userId = GetUserId();
+            if (userId == Guid.Empty)
+                return BadRequest("User not found.");
+            var result = await authService.LoginAsync(userId);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
+
+        private Guid GetUserId()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Guid.Empty;
+            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
 
     }

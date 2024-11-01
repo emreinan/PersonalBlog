@@ -1,6 +1,7 @@
 using App.Data.Api.Model;
 using App.Shared.Services.File;
 using App.Shared.Services.Mail;
+using App.Shared.Services.PersonalInfo;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,6 +33,7 @@ public static class Extensions
         }); 
 
         services.AddScoped<IFileService, FileApiService>();
+        services.AddScoped<IMailService, SmtpEmailService>();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddFluentValidationAutoValidation();
 

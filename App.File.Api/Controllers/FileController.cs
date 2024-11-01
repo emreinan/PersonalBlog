@@ -9,7 +9,6 @@ namespace App.File.Api.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        [Authorize]
         [HttpPost("Upload")]
         public async Task<IActionResult> Upload([FromForm] FileUploadRequest fileUploadRequest)
         {
@@ -19,6 +18,12 @@ namespace App.File.Api.Controllers
             if (System.IO.File.Exists(filePath))
             {
                 return Conflict("File already exists.");
+            }
+
+            var maxFileSize = 2 * 1024 * 1024; ; // 2MB
+            if (file.Length > maxFileSize)
+            {
+                return BadRequest($"Dosya boyutu {maxFileSize / 1024}KB'ı geçemez. Yüklediğiniz dosya: {file.Length / 1024}KB");
             }
 
             try
