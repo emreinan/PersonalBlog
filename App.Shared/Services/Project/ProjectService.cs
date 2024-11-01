@@ -1,5 +1,6 @@
 ﻿using App.Shared.Dto.Project;
 using App.Shared.Models;
+using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
 using Ardalis.Result;
 using System.Net.Http.Headers;
@@ -7,10 +8,8 @@ using System.Net.Http.Json;
 
 namespace App.Shared.Services.Project;
 
-public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectService
+public class ProjectService(IHttpClientFactory httpClientFactory,ITokenService tokenService) : BaseService(httpClientFactory),IProjectService
 {
-    private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
-
     public async Task AddProjectAsync(ProjectAddDto projectAddDto)
     {
         using var content = new MultipartFormDataContent();
@@ -27,12 +26,14 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
             content.Add(imageContent, "Image", projectAddDto.Image.FileName);
         }
 
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PostAsync("/api/Project", content);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task DeleteProjectAsync(int id)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.DeleteAsync($"/api/Project/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
     }
@@ -53,6 +54,7 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
             content.Add(imageContent, "Image", projectEditDto.Image.FileName);
         }
 
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsync($"/api/Project/{id}", content);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
@@ -75,12 +77,14 @@ public class ProjectService(IHttpClientFactory httpClientFactory) : IProjectServ
 
     public async Task MakeActiveProjectAsync(int id)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsync($"/api/Project/Active/{id}/", null);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task MakeInActiveProjectAsync(int id)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsync($"/api/Project/InActive/{id}/", null);
         await response.EnsureSuccessStatusCodeWithApiError();
     }

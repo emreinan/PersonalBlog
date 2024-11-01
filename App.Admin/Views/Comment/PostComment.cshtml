@@ -8,16 +8,17 @@
 <div class="container my-3">
     <div class="row">
         <div class="col-md-12">
-            <p><a asp-controller="BlogPost" asp-action="BlogPosts" class="btn btn-secondary mb-3">Back to Blog Posts</a></p> 
+            <p><a asp-controller="BlogPost" asp-action="BlogPosts" class="btn btn-secondary mb-3">Back to Blog Posts</a></p>
 
             <h2>Comments</h2>
 
             <div class="btn-group mb-3" role="group" aria-label="Comment Toggle">
-                <button type="button" id="approvedBtn" class="btn btn-primary" onclick="toggleComments(true)">Approved Comments</button>
+                <button type="button" id="approvedBtn" class="btn btn-primary me-2" onclick="toggleComments(true)">Approved Comments</button>
                 <button type="button" id="unapprovedBtn" class="btn btn-outline-primary" onclick="toggleComments(false)">Unapproved Comments</button>
             </div>
 
             <div id="approvedComments" class="comments-section">
+                <h3>Approved Comments</h3>
                 @foreach (var comment in Model.Where(c => c.IsApproved))
                 {
                     <div class="card mb-3">
@@ -32,7 +33,6 @@
                                 <h5 class="card-title">@comment.Author</h5>
                                 <p class="card-text">@comment.Content</p>
                                 <p class="text-muted"><small>@comment.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small></p>
-                                <a asp-action="ToggleApproval" asp-route-id="@comment.Id" class="btn btn-sm btn-danger">Deactivate</a>
                             </div>
                         </div>
                     </div>
@@ -40,6 +40,7 @@
             </div>
 
             <div id="unapprovedComments" class="comments-section" style="display: none;">
+                <h3>Unapproved Comments</h3>
                 @foreach (var comment in Model.Where(c => !c.IsApproved))
                 {
                     <div class="card mb-3">
@@ -54,7 +55,8 @@
                                 <h5 class="card-title">@comment.Author</h5>
                                 <p class="card-text">@comment.Content</p>
                                 <p class="text-muted"><small>@comment.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small></p>
-                                <a asp-action="ToggleApproval" asp-route-id="@comment.Id" class="btn btn-sm btn-success">Activate</a>
+                                <a asp-action="Approve" asp-controller="Comment" asp-route-id="@comment.Id" 
+                                onclick="return confirm('Are you sure you want to active this comment?')">Activate</a>
                             </div>
                         </div>
                     </div>
@@ -70,10 +72,18 @@
             document.getElementById('approvedComments').style.display = isApproved ? 'block' : 'none';
             document.getElementById('unapprovedComments').style.display = isApproved ? 'none' : 'block';
 
+            document.getElementById('approvedBtn').style.display = isApproved ? 'none' : 'inline-block';
+            document.getElementById('unapprovedBtn').style.display = !isApproved ? 'none' : 'inline-block';
+
             document.getElementById('approvedBtn').classList.toggle('btn-primary', isApproved);
             document.getElementById('approvedBtn').classList.toggle('btn-outline-primary', !isApproved);
             document.getElementById('unapprovedBtn').classList.toggle('btn-primary', !isApproved);
             document.getElementById('unapprovedBtn').classList.toggle('btn-outline-primary', isApproved);
         }
+
+        // Sayfa yüklendiğinde ilk buton aktif olsun
+        window.onload = function () {
+            toggleComments(true); 
+        };
     </script>
 }

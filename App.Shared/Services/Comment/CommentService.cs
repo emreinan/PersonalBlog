@@ -1,29 +1,31 @@
 ﻿using App.Shared.Dto.Comment;
 using App.Shared.Models;
+using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
 using Ardalis.Result;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.Comment;
 
-public class CommentService(IHttpClientFactory httpClientFactory) : ICommentService
+public class CommentService(IHttpClientFactory httpClientFactory,ITokenService tokenService) : BaseService(httpClientFactory),ICommentService
 {
-    private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
-
     public async Task ApproveCommentAsync(int id)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsync($"/api/Comment/Approve/{id}", null);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task CreateCommentAsync(CommentDto comment)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PostAsJsonAsync("/api/Comment", comment);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task DeleteCommentAsync(int id)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.DeleteAsync($"/api/Comment/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
     }
@@ -54,6 +56,7 @@ public class CommentService(IHttpClientFactory httpClientFactory) : ICommentServ
 
     public async Task UpdateCommentAsync(int id,CommentUpdateDto commentUpdateDto)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsJsonAsync($"/api/Comment/{id}", commentUpdateDto);
         await response.EnsureSuccessStatusCodeWithApiError();
     }

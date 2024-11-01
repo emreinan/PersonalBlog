@@ -1,6 +1,7 @@
 ﻿using App.Shared.Dto.Auth;
 using App.Shared.Dto.User;
 using App.Shared.Models;
+using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
 using Ardalis.Result;
 using Microsoft.AspNetCore.Http;
@@ -9,53 +10,56 @@ using System.Net.Http.Json;
 
 namespace App.Shared.Services.User;
 
-public class UserService(IHttpClientFactory httpClientFactory) : IUserService
+public class UserService(IHttpClientFactory httpClientFactory,ITokenService tokenService) : BaseService(httpClientFactory),IUserService
 {
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("AuthApiClient");
-
     public async Task ActivateUserAsync(Guid userId)
     {
-        var response = await _httpClient.PutAsync($"/api/User/Activate/{userId}", null);
+        AuthClientGetToken(tokenService);
+        var response = await _authHttpClient.PutAsync($"/api/User/Activate/{userId}", null);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task DeactivateUserAsync(Guid userId)
     {
-        var response = await _httpClient.PutAsync($"/api/User/Deactivate/{userId}", null);
+        AuthClientGetToken(tokenService);
+        var response = await _authHttpClient.PutAsync($"/api/User/Deactivate/{userId}", null);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
 
     public async Task DeleteUserAsync(Guid userId)
     {
-        var response = await _httpClient.DeleteAsync($"/api/User/{userId}");
+        AuthClientGetToken(tokenService);
+        var response = await _authHttpClient.DeleteAsync($"/api/User/{userId}");
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task<UserViewModel> GetUserAsync(Guid userId)
     {
-        var response = await _httpClient.GetAsync($"/api/User/{userId}");
+        var response = await _authHttpClient.GetAsync($"/api/User/{userId}");
         await response.EnsureSuccessStatusCodeWithApiError();
         return await response.Content.ReadFromJsonAsync<UserViewModel>();
     }
 
     public async Task<List<UserViewModel>> GetUsersAsync()
     {
-        var response = await _httpClient.GetAsync("/api/User");
+        var response = await _authHttpClient.GetAsync("/api/User");
         await response.EnsureSuccessStatusCodeWithApiError();
         return await response.Content.ReadFromJsonAsync<List<UserViewModel>>();
     }
 
     public async Task UpdateUserAsync(Guid id, UserUpdateDto userUpdateDto)
     {
-        var response = await _httpClient.PutAsJsonAsync($"/api/User/{id}", userUpdateDto);
+        AuthClientGetToken(tokenService);
+        var response = await _authHttpClient.PutAsJsonAsync($"/api/User/{id}", userUpdateDto);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task<string> UploadProfilePhotoAsync(IFormFile file)
     {
+        AuthClientGetToken(tokenService);
         var fileUpload = new ProfilePicUpload { File = file };
-        var response = await _httpClient.PostAsJsonAsync($"/api/User/upload-profile-image", fileUpload);
+        var response = await _authHttpClient.PostAsJsonAsync($"/api/User/upload-profile-image", fileUpload);
         await response.EnsureSuccessStatusCodeWithApiError();
         return await response.Content.ReadAsStringAsync();
     }

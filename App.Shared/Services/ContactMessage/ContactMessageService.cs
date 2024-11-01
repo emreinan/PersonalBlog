@@ -1,22 +1,23 @@
 ﻿using App.Shared.Dto.ContactMessage;
 using App.Shared.Models;
+using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.ContactMessage;
 
-public class ContactMessageService(IHttpClientFactory httpClientFactory) : IContactMessageService
+public class ContactMessageService(IHttpClientFactory httpClientFactory,ITokenService tokenService) : BaseService(httpClientFactory),IContactMessageService
 {
-    private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
-
     public async Task AddContactMessageAsync(ContactMessageAddDto contactMessageAddDto)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PostAsJsonAsync("api/ContactMessage", contactMessageAddDto);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task DeleteMessageAsync(int id)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.DeleteAsync($"api/ContactMessage/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
     }
@@ -37,6 +38,7 @@ public class ContactMessageService(IHttpClientFactory httpClientFactory) : ICont
 
     public async Task MarkAsReadAsync(int id)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsync($"api/ContactMessage/mark-as-read/{id}", null);
         await response.EnsureSuccessStatusCodeWithApiError();
     }

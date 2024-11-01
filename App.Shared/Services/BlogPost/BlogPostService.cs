@@ -1,6 +1,7 @@
 ﻿using App.Shared.Dto.BlogPost;
 using App.Shared.Dto.File;
 using App.Shared.Models;
+using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
 using System.IO;
 using System.Net.Http.Headers;
@@ -9,10 +10,8 @@ using System.Text.Json;
 
 namespace App.Shared.Services.BlogPost;
 
-public class BlogPostService(IHttpClientFactory httpClientFactory) : IBlogPostService
+public class BlogPostService(IHttpClientFactory httpClientFactory,ITokenService tokenService) : BaseService(httpClientFactory),IBlogPostService
 {
-    private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
-
     public async Task CreateBlogPostAsync(BlogPostDto blogPostDto)
     {
         using var content = new MultipartFormDataContent();
@@ -30,12 +29,14 @@ public class BlogPostService(IHttpClientFactory httpClientFactory) : IBlogPostSe
             content.Add(imageContent, "Image", blogPostDto.Image.FileName);
         }
 
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PostAsync("/api/BlogPost", content);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
     public async Task DeleteBlogPostAsync(Guid id)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.DeleteAsync($"/api/BlogPost/{id}");
         await response.EnsureSuccessStatusCodeWithApiError();
     }
@@ -73,6 +74,8 @@ public class BlogPostService(IHttpClientFactory httpClientFactory) : IBlogPostSe
             imageContent.Headers.ContentType = new MediaTypeHeaderValue(blogPostUpdateDto.Image.ContentType);
             content.Add(imageContent, "Image", blogPostUpdateDto.Image.FileName);
         }
+
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsync($"/api/BlogPost/{id}", content);
         await response.EnsureSuccessStatusCodeWithApiError();
     }

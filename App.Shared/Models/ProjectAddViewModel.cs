@@ -10,7 +10,7 @@ public class ProjectAddViewModel
     public string Title { get; set; }
     [Required, MinLength(5), MaxLength(500)]
     public string Description { get; set; }
-    [Required]
+    [Required, DataType(DataType.Upload)]
     public IFormFile Image { get; set; }
 }
 

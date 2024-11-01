@@ -31,14 +31,14 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpGet("CreateBlogPostAsync")]
+    [HttpGet("CreateBlogPost")]
     public IActionResult CreateBlogPost()
     {
         return View();
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("CreateBlogPostAsync")]
+    [HttpPost("CreateBlogPost")]
     public async Task<IActionResult> CreateBlogPost(BlogPostCreatedViewModel model)
     {
         if (!ModelState.IsValid)
@@ -79,7 +79,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpGet("DeleteBlogPostAsync/{id}")]
+    [HttpGet("DeleteBlogPost/{id}")]
     public async Task<IActionResult> DeleteBlogPost(Guid id)
     {
         var blogPost = await blogPostService.GetBlogPostAsync(id);

@@ -1,14 +1,13 @@
 ﻿using App.Shared.Dto.PersonalInfo;
 using App.Shared.Models;
+using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.PersonalInfo;
 
-public class PersonalInfoService(IHttpClientFactory httpClientFactory) : IPersonalInfoService
+public class PersonalInfoService(IHttpClientFactory httpClientFactory,ITokenService tokenService) : BaseService(httpClientFactory),IPersonalInfoService
 {
-    private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
-
     public async Task<PersonalInfoViewModel> GetPersonalInfoAsync()
     {
         var response = await _dataHttpClient.GetAsync("/api/PersonalInfo");
@@ -19,6 +18,7 @@ public class PersonalInfoService(IHttpClientFactory httpClientFactory) : IPerson
 
     public async Task UpdatePersonalInfoAsync(PersonalInfoDto personalInfoDto)
     {
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsJsonAsync("/api/PersonalInfo", personalInfoDto);
         await response.EnsureSuccessStatusCodeWithApiError();
     }

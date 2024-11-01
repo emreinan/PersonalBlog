@@ -9,7 +9,7 @@
     <div class="row">
         <h2>Add New Project</h2>
 
-        <form asp-action="Add" method="post">
+        <form asp-action="Add" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" required/>
@@ -24,7 +24,7 @@
 
             <div class="form-group my-3">
                 <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" type="file" class="form-control-file" required />
+                <input asp-for="Image" type="file" class="form-control-file" required/>
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
 

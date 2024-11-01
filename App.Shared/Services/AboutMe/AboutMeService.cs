@@ -1,15 +1,14 @@
 ﻿using App.Shared.Dto.AboutMe;
 using App.Shared.Models;
+using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.AboutMe;
 
-public class AboutMeService(IHttpClientFactory httpClientFactory) : IAboutMeService
+public class AboutMeService(IHttpClientFactory httpClientFactory,ITokenService tokenService) : BaseService(httpClientFactory),IAboutMeService
 {
-    private readonly HttpClient _dataHttpClient = httpClientFactory.CreateClient("DataApiClient");
-
     public async Task<AboutMeViewModel> GetAboutMeAsync()
     {
         var response = await _dataHttpClient.GetAsync("/api/AboutMe");
@@ -45,6 +44,7 @@ public class AboutMeService(IHttpClientFactory httpClientFactory) : IAboutMeServ
             content.Add(image2Content, "Image2", aboutMeDto.Image2.FileName);
         }
 
+        DataClientGetToken(tokenService);
         var response = await _dataHttpClient.PutAsync("/api/AboutMe", content);
         await response.EnsureSuccessStatusCodeWithApiError();
     }
