@@ -5,10 +5,10 @@ namespace App.Data.Entities.Auth;
 
 public class User : Entity<Guid>
 {
-    public string UserName { get; set; }
-    public byte[] PasswordHash { get; set; }
-    public byte[] PasswordSalt { get; set; }
-    public string Email { get; set; }
+    public string UserName { get; set; } = string.Empty;
+    public byte[] PasswordHash { get; set; } = default!;
+    public byte[] PasswordSalt { get; set; } = default!;
+    public string Email { get; set; } = string.Empty;
     public string? ProfilePhotoUrl { get; set; } 
     public bool IsActive { get; set; } = false;
     public string? VerificationCode { get; set; }

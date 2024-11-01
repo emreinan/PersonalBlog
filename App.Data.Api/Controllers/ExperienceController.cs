@@ -2,6 +2,7 @@
 using App.Data.Entities.Data;
 using App.Shared.Dto.Experience;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,7 @@ namespace App.Data.Api.Controllers
             return Ok(experienceDto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(ExperienceSaveDto experienceDto)
         {
@@ -45,6 +47,7 @@ namespace App.Data.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = experience.Id }, experienceDto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ExperienceSaveDto experienceDto)
         {
@@ -61,6 +64,7 @@ namespace App.Data.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

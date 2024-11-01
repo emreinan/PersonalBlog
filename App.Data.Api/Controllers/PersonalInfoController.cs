@@ -2,6 +2,7 @@
 using App.Data.Entities.Data;
 using App.Shared.Dto.PersonalInfo;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ namespace App.Data.Api.Controllers
             return Ok(personalInfoDto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdatePersonalInfo(PersonalInfoDto personalInfoDto)
         {

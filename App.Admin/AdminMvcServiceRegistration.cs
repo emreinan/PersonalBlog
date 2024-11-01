@@ -120,7 +120,7 @@ public static class AdminMvcServiceRegistration
                            tokenService.SetAccessToken(tokenResponse.AccessToken);
                            tokenService.SetRefreshToken(tokenResponse.RefreshToken);
                            context.HandleResponse();
-                           context.Response.Redirect("/"); // main sayfa yani ındex'e gider.
+                           context.Response.Redirect("/Index"); // main sayfa yani ındex'e gider.
                        }
                        catch
                        {

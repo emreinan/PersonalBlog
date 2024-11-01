@@ -61,7 +61,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         return Ok(userGetResults);
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(Guid id, UserUpdateDto userUpdateDto)
     {
@@ -79,7 +79,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         return Ok("User updated successfully.");
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(Guid id)
     {
@@ -94,11 +94,14 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         return Ok("User deleted successfully.");
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPost("upload-profile-image")]
     public async Task<IActionResult> UploadProfileImage([FromForm] ProfilePicUpload profilePicUpload)
     {
         var userId = GetUserId();
+        if (userId == Guid.Empty)
+            return BadRequest("User not found.");
+
         var user = await authDbContext.Users.FindAsync(userId);
 
         if (user is null)
@@ -115,7 +118,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         return Ok(result.Value);
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPut("Activate/{id}")]
     public async Task<IActionResult> ActivateUser(Guid id)
     {
@@ -132,7 +135,7 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
         return Ok("User activated successfully.");
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPut("Deactivate/{id}")]
     public async Task<IActionResult> DeactivateUser(Guid id)
     {
@@ -151,6 +154,8 @@ public class UserController(AuthDbContext authDbContext,IFileService fileService
 
     private Guid GetUserId()
     {
+        if (!User.Identity.IsAuthenticated)
+            return Guid.Empty;
         return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
     }
 }

@@ -109,7 +109,7 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
         return Ok(commentDtos);
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateComment([FromBody] CommentDto commentDto)
     {
@@ -127,6 +127,7 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
 
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateComment(int id, [FromBody] CommentUpdateDto commentDto)
     {
@@ -143,6 +144,7 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteComment(int id)
     {
@@ -156,6 +158,7 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper) : Cont
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("Approve/{id}")]
     public async Task<IActionResult> ApproveComment(int id)
     {

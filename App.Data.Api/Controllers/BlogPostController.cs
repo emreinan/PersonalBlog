@@ -4,6 +4,7 @@ using App.Shared.Dto.BlogPost;
 using App.Shared.Dto.Comment;
 using App.Shared.Services.File;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
@@ -107,6 +108,7 @@ public class BlogPostController(DataDbContext dataDbContext, IFileService fileSe
         return Ok(blogPostDto);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateBlogPost([FromForm] BlogPostDto blogPostDto)
     {
@@ -130,6 +132,7 @@ public class BlogPostController(DataDbContext dataDbContext, IFileService fileSe
         return Ok();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateBlogPost(Guid id, [FromForm] BlogPostUpdateDto blogPostUpdateDto)
     {
@@ -156,6 +159,7 @@ public class BlogPostController(DataDbContext dataDbContext, IFileService fileSe
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteBlogPost(Guid id)
     {
@@ -174,11 +178,6 @@ public class BlogPostController(DataDbContext dataDbContext, IFileService fileSe
         }
 
         return NoContent();
-    }
-
-    private Guid GetUserId()
-    {
-        return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
     }
 }
 

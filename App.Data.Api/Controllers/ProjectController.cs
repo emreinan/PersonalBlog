@@ -2,6 +2,7 @@
 using App.Data.Entities.Data;
 using App.Shared.Dto.Project;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,7 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
         return Ok(projectDto);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateProject(ProjectAddDto projectAddDto)
     {
@@ -45,6 +47,7 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
         return CreatedAtAction(nameof(GetProject), new { id = project.Id }, projectAddDto);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProject(int id, ProjectEditDto projectEditDto)
     {
@@ -61,6 +64,7 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProject(int id)
     {
@@ -77,6 +81,7 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("Active/{id}")]
     public async Task<IActionResult> MakeActiveProject(int id)
     {
@@ -94,6 +99,7 @@ public class ProjectController(DataDbContext context,IMapper mapper) : Controlle
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("InActive/{id}")]
     public async Task<IActionResult> MakeInActiveProject(int id)
     {

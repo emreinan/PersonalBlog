@@ -2,6 +2,7 @@
 using App.Shared.Dto.AboutMe;
 using App.Shared.Services.File;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,7 @@ public class AboutMeController(DataDbContext context, IFileService fileService,I
 
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> UpdateAboutMe([FromForm] AboutMeDto aboutMeDto)
     {

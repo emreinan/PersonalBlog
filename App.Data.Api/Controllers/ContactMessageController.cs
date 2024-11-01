@@ -1,7 +1,9 @@
 ﻿using App.Data.Contexts;
 using App.Data.Entities.Data;
 using App.Shared.Dto.ContactMessage;
+using App.Shared.Services.Mail;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +12,7 @@ namespace App.Data.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ContactMessageController(DataDbContext context,IMapper mapper) : ControllerBase
+public class ContactMessageController(DataDbContext context,IMapper mapper,IMailService mailService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetContactMessages()
@@ -44,9 +46,18 @@ public class ContactMessageController(DataDbContext context,IMapper mapper) : Co
         context.ContactMessages.Add(contactMessage);
         await context.SaveChangesAsync();
 
+        var adminEmail = "emreiannn@gmail.com";
+        var subject = "Yeni Mesaj Alındı!";
+        var messageBody = $"<p>Gönderen: {contactMessage.Name} ({contactMessage.Email})</p>" +
+                          $"<p>Konu: {contactMessage.Subject}</p>" +
+                          $"<p>Mesaj: {contactMessage.Message}</p>";
+
+        await mailService.SendEmailAsync(adminEmail, subject, messageBody);
+
         return CreatedAtAction(nameof(GetContactMessage), new { id = contactMessage.Id }, contactMessageAddDto);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteContactMessage(int id)
     {
@@ -61,6 +72,7 @@ public class ContactMessageController(DataDbContext context,IMapper mapper) : Co
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("mark-as-read/{id}")]
     public async Task<IActionResult> MarkAsRead(int id)
     {

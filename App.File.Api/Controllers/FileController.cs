@@ -1,4 +1,5 @@
 ﻿using App.Shared.Dto.File;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -8,7 +9,7 @@ namespace App.File.Api.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-
+        [Authorize]
         [HttpPost("Upload")]
         public async Task<IActionResult> Upload([FromForm] FileUploadRequest fileUploadRequest)
         {
