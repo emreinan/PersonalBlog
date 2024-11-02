@@ -3,6 +3,7 @@ using App.Shared.Dto.Comment;
 using App.Shared.Models;
 using App.Shared.Services.BlogPost;
 using App.Shared.Services.Comment;
+using App.Shared.Services.File;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ using System.Security.Claims;
 namespace App.Admin.Controllers;
 
 [Route("BlogPost")]
-public class BlogPostController(IBlogPostService blogPostService, ICommentService commentService,IMapper mapper) : Controller
+public class BlogPostController(IBlogPostService blogPostService, ICommentService commentService,IMapper mapper,IFileService fileService) : Controller
 {
     [HttpGet("BlogPosts")]
     public async Task<IActionResult> BlogPosts()
@@ -113,6 +114,36 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
 
         TempData["SuccessMessage"] = "Comment created successfully.";
         return RedirectToAction(nameof(BlogPosts));
+    }
+
+    [HttpGet("GetImage")]
+    public async Task<IActionResult> GetImage(string fileUrl)
+    {
+        try
+        {
+            var file = await fileService.GetFileAsync(fileUrl);
+            var contentType = GetContentType(fileUrl);
+            return File(file, contentType);
+        }
+        catch (HttpRequestException)
+        {
+            return NotFound("File not found.");
+        }
+    }
+    private static string GetContentType(string fileUrl)
+    {
+        var types = new Dictionary<string, string>
+        {
+            { ".jpg", "image/jpeg" },
+            { ".jpeg", "image/jpeg" },
+            { ".png", "image/png" },
+            { ".gif", "image/gif" },
+            {".txt", "text/plain"},
+            {".pdf", "application/pdf"}
+        };
+
+        var ext = Path.GetExtension(fileUrl).ToLowerInvariant();
+        return types.ContainsKey(ext) ? types[ext] : "application/octet-stream";
     }
 
     private Guid GetUserId()

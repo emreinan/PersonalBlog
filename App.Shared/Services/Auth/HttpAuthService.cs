@@ -11,7 +11,7 @@ public class HttpAuthService(IHttpClientFactory httpClientFactory) : IAuthServic
     public async Task ForgotPasswordAsync(string email)
     {
         var emailRequest = new ForgotPasswordRequest { Email = email };
-        var response = await _httpClient.PostAsJsonAsync("/api/Auth/forgot-password", new { emailRequest });
+        var response = await _httpClient.PostAsJsonAsync("/api/Auth/forgot-password", new { Email=emailRequest });
        await response.EnsureSuccessStatusCodeWithApiError();
     }
 
@@ -39,4 +39,11 @@ public class HttpAuthService(IHttpClientFactory httpClientFactory) : IAuthServic
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
         return result;
     }
+
+    public async Task ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/api/Auth/reset-password", resetPasswordRequest);
+        await response.EnsureSuccessStatusCodeWithApiError();
+    }
+
 }

@@ -11,7 +11,7 @@ namespace App.Client.Controllers;
 [Authorize]
 public class UserController(IUserService userService,IMapper mapper) : Controller
 {
-
+    [HttpGet]
     public async Task<IActionResult> Details()
     {
         var userId = GetUserId();
@@ -49,6 +49,7 @@ public class UserController(IUserService userService,IMapper mapper) : Controlle
 
         await userService.UpdateUserAsync(id, userDto);
 
+        TempData["SuccessMessage"] = "User updated successfully";
         return RedirectToAction(nameof(Details), new { userId = id });
     }
 
@@ -58,6 +59,7 @@ public class UserController(IUserService userService,IMapper mapper) : Controlle
         var userId = GetUserId();
         await userService.DeleteUserAsync(userId);
 
+        TempData["SuccessMessage"] = "User deleted successfully";
         return RedirectToAction("Index", "Home");
     }
 
@@ -71,10 +73,11 @@ public class UserController(IUserService userService,IMapper mapper) : Controlle
         }
         var result = await userService.UploadProfilePhotoAsync(file);
 
-        await SavePhotoToLocalAsync(file);
 
+        TempData["SuccessMessage"] = "Profile photo uploaded successfully";
         return RedirectToAction(nameof(Details));
     }
+
     public Guid GetUserId()
     {
         if (User.Identity.IsAuthenticated)
@@ -82,15 +85,5 @@ public class UserController(IUserService userService,IMapper mapper) : Controlle
 
         throw new UnauthorizedAccessException("User is not authenticated.");
     }
-    private async Task SavePhotoToLocalAsync(IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-            throw new ArgumentException("File cannot be null or empty", nameof(file));
 
-        var originalFileName = file.FileName;
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", originalFileName);
-
-        using var fileStream = new FileStream(filePath, FileMode.Create);
-        await file.CopyToAsync(fileStream); // Yükleme sırasında dosyanın içeriğini kullan
-    }
 }

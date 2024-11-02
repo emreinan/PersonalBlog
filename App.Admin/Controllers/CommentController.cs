@@ -1,13 +1,14 @@
 ﻿using App.Shared.Dto.Comment;
 using App.Shared.Models;
 using App.Shared.Services.Comment;
+using App.Shared.Services.File;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
 
 [Route("Comment")]
-public class CommentController(ICommentService commentService) : Controller
+public class CommentController(ICommentService commentService,IFileService fileService) : Controller
 {
     [HttpGet("Comments")]
     public async Task<IActionResult> Comments()
@@ -82,6 +83,37 @@ public class CommentController(ICommentService commentService) : Controller
 
         TempData["SuccessMessage"] = "Comment approved successfully.";
         return RedirectToAction(nameof(Comments));
+    }
+
+
+    [HttpGet("GetImage")]
+    public async Task<IActionResult> GetImage(string fileUrl)
+    {
+        try
+        {
+            var file = await fileService.GetFileAsync(fileUrl);
+            var contentType = GetContentType(fileUrl);
+            return File(file, contentType);
+        }
+        catch (HttpRequestException)
+        {
+            return NotFound("File not found.");
+        }
+    }
+    private static string GetContentType(string fileUrl)
+    {
+        var types = new Dictionary<string, string>
+        {
+            { ".jpg", "image/jpeg" },
+            { ".jpeg", "image/jpeg" },
+            { ".png", "image/png" },
+            { ".gif", "image/gif" },
+            {".txt", "text/plain"},
+            {".pdf", "application/pdf"}
+        };
+
+        var ext = Path.GetExtension(fileUrl).ToLowerInvariant();
+        return types.ContainsKey(ext) ? types[ext] : "application/octet-stream";
     }
 }
 

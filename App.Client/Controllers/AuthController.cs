@@ -59,7 +59,9 @@ public class AuthController
         tokenService.SetRefreshToken(token.RefreshToken);
         tokenService.SetAccessToken(token.AccessToken);
 
-        return RedirectToAction("Index", "Home");
+
+        TempData["SuccessMessage"] = "Register successfully! Please verify Email.";
+        return RedirectToAction("Login", "Auth");
     }
 
     [HttpGet("/Logout")]
@@ -106,4 +108,25 @@ public class AuthController
 
         return RedirectToAction("Index", "Home");
     }
+
+    [HttpGet("/ResetPassword")]
+    public IActionResult ResetPassword()
+    {
+        return View();
+    }
+
+    [HttpPost("/ResetPassword")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordViewModel)
+    {
+        if (!ModelState.IsValid)
+            return View(resetPasswordViewModel);
+
+        var resetPasswordRequest = mapper.Map<ResetPasswordRequest>(resetPasswordViewModel);
+        await authService.ResetPasswordAsync(resetPasswordRequest);
+
+        TempData["SuccessMessage"] = "Password reset successfully!";
+
+        return RedirectToAction("Login", "Auth");
+    }
+
 }
