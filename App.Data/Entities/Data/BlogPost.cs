@@ -8,5 +8,5 @@ public class BlogPost : Entity<Guid>
     public string ImageUrl { get; set; } = string.Empty;
     public Guid AuthorId { get; set; }
 
-    public virtual ICollection<Comment> Comments { get; set; } = default!;
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

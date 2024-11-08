@@ -11,7 +11,7 @@
             <div class="col-md-6 text-center">
                 <h2>Profile</h2>
                 <div class="form-group mb-4">
-                    <img src="@(string.IsNullOrEmpty(Model.ProfilePhotoUrl) ? "https://freesvg.org/img/abstract-user-flat-4.png": Url.Action("GetImage", "Home", new { fileUrl = Model.ProfilePhotoUrl }))"
+                    <img src="@(string.IsNullOrEmpty(Model.ProfilePhotoUrl) ? Url.Content("~/image/user-anon.png"): Url.Action("GetImage", "Home", new { fileUrl = Model.ProfilePhotoUrl }))"
                          alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;">
                 </div>
                 <div class="mt-3">

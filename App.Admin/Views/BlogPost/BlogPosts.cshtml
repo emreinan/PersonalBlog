@@ -27,14 +27,9 @@
                             <td>@post.Title</td>
                             <td>@post.Content</td>
                             <td>
-                                @if (!string.IsNullOrEmpty(post.ImageUrl))
-                                {
-                                    <img src="@Url.Action("GetImage", "BlogPost", new { fileUrl = post.ImageUrl })" alt="Project Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
-                                }
-                                else
-                                {
-                                    <img src="~/image/user-anon.png" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
-                                }
+                                <img src="@(string.IsNullOrEmpty(post.ImageUrl) ? Url.Content("~/image/project-2.jpg") : Url.Action("GetImage", "Base", new { fileUrl = post.ImageUrl }))"
+                                     alt="BlogPost Photo"
+                                     style="width: 50px; height: 50px; border-radius: 50%;" />
                             </td>
                             <td>
                                 <a asp-controller="Comment" asp-action="PostComment" asp-route-id="@post.Id">BlogPost Comments</a>
