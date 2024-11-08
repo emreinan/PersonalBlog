@@ -10,8 +10,8 @@ public static class Extensions
 {
     public static IServiceCollection AddFileService(this IServiceCollection services,IConfiguration configuration)
     {
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssembly(Assembly.Load("App.Shared"));
 
         services.Configure<FormOptions>(options =>
         {
