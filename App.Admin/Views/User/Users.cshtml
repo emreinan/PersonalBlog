@@ -32,12 +32,9 @@
                         <td>@user.UserName</td>
                         <td>@user.Email</td>
                         <td>
-                            @if (!string.IsNullOrEmpty(user.ProfilePhotoUrl))
-                            {
-                                <img src="@user.ProfilePhotoUrl" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
-                            }else{
-                                <img src="~/image/user-anon.png" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
-                            }
+                            <img src="@(string.IsNullOrEmpty(user.ProfilePhotoUrl) ? Url.Content("~/image/user-anon.png") : Url.Action("GetImage", "Base", new { fileUrl = user.ProfilePhotoUrl }))"
+                                 alt="BlogPost Photo"
+                                 style="width: 50px; height: 50px; border-radius: 50%;" />
                         </td>
                         <td>
                             <a asp-action="Deactivate" asp-route-id="@user.Id" onclick="return confirm('Are you sure you want to deactive this user?');">Make Inactive</a> |
@@ -67,14 +64,9 @@
                         <td>@user.UserName</td>
                         <td>@user.Email</td>
                         <td>
-                            @if (!string.IsNullOrEmpty(user.ProfilePhotoUrl))
-                            {
-                                <img src="@user.ProfilePhotoUrl" alt="Profile Photo" style="width: 50px; height: 50px; border-radius: 50%;" />
-                            } 
-                            else
-                            {
-                                <img src="~/image/user-anon.png" style="width: 50px; height: 50px; border-radius: 50%;" />
-                            }
+                            <img src="@(string.IsNullOrEmpty(user.ProfilePhotoUrl) ? Url.Content("~/image/user-anon.png") : Url.Action("GetImage", "Base", new { fileUrl = user.ProfilePhotoUrl }))"
+                                 alt="BlogPost Photo"
+                                 style="width: 50px; height: 50px; border-radius: 50%;" />
                         </td>
                         <td>
                             <a asp-action="Activate" asp-route-id="@user.Id" onclick="return confirm('Are you sure you want to active this user?');">Make Active</a> |

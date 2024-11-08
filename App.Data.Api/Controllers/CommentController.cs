@@ -84,9 +84,6 @@ public class CommentController(DataDbContext datDbContext,IMapper mapper,IMailSe
             .Where(c => c.PostId == postId)
             .ToListAsync();
 
-        if (comments.Count == 0 || comments is null)
-            return NotFound("BlogPost not found.");
-
         var commentDtos = new List<CommentResponse>();
 
         foreach (var comment in comments) {

@@ -27,7 +27,7 @@
                             <p class="mb-0">
                                 <span class="mr-2">@post.CreatedAt.ToString("MMMM dd, yyyy")</span>
                                 <a class="mr-2">@post.Author</a>
-                                <a class="meta-chat"><span class="icon-chat"></span> @post.Comments.Count</a>
+                                <a class="meta-chat"><span class="icon-chat"></span> @(post.Comments.Count > 0 ? post.Comments.Count.ToString() : "0")</a>
                             </p>
                         </div>
                         <h3 class="heading"><a href="">@post.Title</a></h3>
