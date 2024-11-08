@@ -17,8 +17,8 @@ public static class Extensions
     {
         AddJwtAuthentication(services, configuration);
         AddSwaggerGen(services);
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssembly(Assembly.Load("App.Shared"));
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<TokenHelper>();

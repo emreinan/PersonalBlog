@@ -34,8 +34,8 @@ public static class Extensions
 
         services.AddScoped<IFileService, FileApiService>();
         services.AddScoped<IMailService, SmtpEmailService>();
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssembly(Assembly.Load("App.Shared"));
 
 
         return services;
