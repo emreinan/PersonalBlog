@@ -7,6 +7,7 @@ using App.Shared.Services.Comment;
 using App.Shared.Services.ContactMessage;
 using App.Shared.Services.File;
 using App.Shared.Services.PersonalInfo;
+using App.Shared.Services.Recaptcha;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -19,17 +20,24 @@ public class HomeController(
     ICommentService commentService,
     IBlogPostService blogPostService,
     IContactMessageService contactMessageService,
-    IFileService fileService
+    IFileService fileService,
+    IRecaptchaValidator recaptchaValidator
     ) : Controller
 {
     public IActionResult Index()
     {
         return View();
     }
-    [Authorize]
+    
     [HttpPost]
-    public async Task<IActionResult> SubmitContactMessage(ContactMessageViewModel contactMessageViewModel)
+    public async Task<IActionResult> SubmitContactMessage([FromForm] ContactMessageViewModel contactMessageViewModel, [FromForm(Name = "g-recaptcha-response")] string recaptchaResponse)
     {
+        if (!await recaptchaValidator.ValidateRecaptchaAsync(recaptchaResponse))
+        {
+            TempData["ErrorMessage"] = "Recaptcha validation failed!";
+            return View(contactMessageViewModel);
+        }
+
         if (User.Identity.IsAuthenticated)
         {
             contactMessageViewModel.Email = GetUserMail();
