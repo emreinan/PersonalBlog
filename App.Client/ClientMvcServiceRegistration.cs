@@ -8,6 +8,7 @@ using App.Shared.Services.Experience;
 using App.Shared.Services.File;
 using App.Shared.Services.PersonalInfo;
 using App.Shared.Services.Project;
+using App.Shared.Services.Recaptcha;
 using App.Shared.Services.Token;
 using App.Shared.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -47,6 +48,7 @@ public static class ClientMvcServiceRegistration
         services.AddScoped<IFileService, FileApiService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, CookieTokenService>();
+        services.AddScoped<IRecaptchaValidator, RecaptchaValidator>();
     }
 
     private static void GetApiUrl(IServiceCollection services, IConfiguration configuration)

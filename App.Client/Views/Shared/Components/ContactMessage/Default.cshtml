@@ -1,17 +1,23 @@
 ﻿@using System.Security.Claims
+@using Microsoft.Extensions.Configuration
+
 @model ContactMessageViewModel
 
 @{
     var userClaims = User.Claims.ToList();
-    var userName = User.Identity.IsAuthenticated ? User.Identity.Name : "Guest"; 
-    var emailClaim = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value; 
+    var userName = User.Identity.IsAuthenticated ? User.Identity.Name : "Guest";
+    var emailClaim = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+}
+@inject IConfiguration configuration
+@{
+    var siteKey = configuration["RecaptchaSettings:SiteKey"];
 }
 
 <div class="container">
     <h2>Contact Us</h2>
     <p>Please Contact Me!</p>
 
-    <form asp-action="SubmitContactMessage" method="post" class="bg-light p-5 contact-form">
+    <form asp-action="SubmitContactMessage" asp-controller="Home" method="post" class="bg-light p-5 contact-form" novalidate>
         @if (!User.Identity.IsAuthenticated)
         {
             <div class="form-group">
@@ -43,6 +49,11 @@
             <label asp-for="Message"></label>
             <textarea asp-for="Message" class="form-control" required></textarea>
         </div>
+
+        <div class="form-group">
+            <div class="g-recaptcha" data-sitekey="@siteKey"></div>
+        </div>
+
         <div class="form-group">
             <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5" />
         </div>
