@@ -5,6 +5,7 @@ using App.Data.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -32,6 +33,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+
+app.MapDefaultEndpoints();
 
 app.UseHttpsRedirection();
 

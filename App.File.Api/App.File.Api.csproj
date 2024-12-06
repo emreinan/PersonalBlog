@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\App.Shared\App.Shared.csproj" />
+    <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>
