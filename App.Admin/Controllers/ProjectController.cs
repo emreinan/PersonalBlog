@@ -1,6 +1,5 @@
 ﻿using App.Shared.Dto.Project;
 using App.Shared.Models;
-using App.Shared.Services.File;
 using App.Shared.Services.Project;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace App.Admin.Controllers;
 [Route("Project")]
-public class ProjectController(IProjectService projectService, IMapper mapper,IFileService fileService) : Controller
+public class ProjectController(IProjectService projectService, IMapper mapper) : Controller
 {
     [HttpGet("Projects")]
     public async Task<IActionResult> Projects()
@@ -44,9 +43,6 @@ public class ProjectController(IProjectService projectService, IMapper mapper,IF
     {
         var project = await projectService.GetProjectByIdAsync(id);
 
-        if (project is null)
-            return NotFound();
-
         var projectViewModel = mapper.Map<ProjectEditViewModel>(project);
         return View(projectViewModel);
     }
@@ -69,7 +65,6 @@ public class ProjectController(IProjectService projectService, IMapper mapper,IF
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await projectService.GetProjectByIdAsync(id);
         await projectService.DeleteProjectAsync(id);
 
         TempData["SuccessMessage"] = "Project deleted successfully";

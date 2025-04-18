@@ -2,7 +2,6 @@
 using App.Shared.Services.AboutMe;
 using App.Shared.Services.PersonalInfo;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 
 namespace App.Client.ViewComponents;
 

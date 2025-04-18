@@ -3,6 +3,7 @@ using App.Shared.Dto.File;
 using App.Shared.Models;
 using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
+using App.Shared.Util.ExceptionHandling.Types;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -14,10 +15,12 @@ public class BlogPostService(IHttpClientFactory httpClientFactory,ITokenService 
 {
     public async Task CreateBlogPostAsync(BlogPostDto blogPostDto)
     {
-        using var content = new MultipartFormDataContent();
-        content.Add(new StringContent(blogPostDto.Title), "Title");
-        content.Add(new StringContent(blogPostDto.Content), "Content");
-        content.Add(new StringContent(blogPostDto.AuthorId.ToString()), "AuthorId");
+        using var content = new MultipartFormDataContent
+        {
+            { new StringContent(blogPostDto.Title), "Title" },
+            { new StringContent(blogPostDto.Content), "Content" },
+            { new StringContent(blogPostDto.AuthorId.ToString()), "AuthorId" }
+        };
 
         if (blogPostDto.Image != null)
         {
@@ -29,41 +32,45 @@ public class BlogPostService(IHttpClientFactory httpClientFactory,ITokenService 
             content.Add(imageContent, "Image", blogPostDto.Image.FileName);
         }
 
-        DataClientGetToken(tokenService);
-        var response = await _dataHttpClient.PostAsync("/api/BlogPost", content);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PostAsync("/api/BlogPost", content);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
     public async Task DeleteBlogPostAsync(Guid id)
     {
-        DataClientGetToken(tokenService);
-        var response = await _dataHttpClient.DeleteAsync($"/api/BlogPost/{id}");
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.DeleteAsync($"/api/BlogPost/{id}");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
     public async Task<BlogPostViewModel> GetBlogPostAsync(Guid postId)
     {
-        var response = await _dataHttpClient.GetAsync($"/api/BlogPost/{postId}");
-        await response.EnsureSuccessStatusCodeWithApiError();
-        var result = await response.Content.ReadFromJsonAsync<BlogPostViewModel>();
+        var response = await _apiHttpClient.GetAsync($"/api/BlogPost/{postId}");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
+        var result = await response.Content.ReadFromJsonAsync<BlogPostViewModel>() ?? 
+            throw new DeserializationException("Failed to deserialize BlogPostViewModel from response content.");
         return result;
     }
 
     public async Task<List<BlogPostViewModel>> GetBlogPostsAsync()
     {
-        var response = await _dataHttpClient.GetAsync("/api/BlogPost");
-        await response.EnsureSuccessStatusCodeWithApiError();
-        var result = await response.Content.ReadFromJsonAsync<List<BlogPostViewModel>>();
+        var response = await _apiHttpClient.GetAsync("/api/BlogPost");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
+        var result = await response.Content.ReadFromJsonAsync<List<BlogPostViewModel>>() ??
+            throw new DeserializationException("Failed to deserialize List<BlogPostViewModel> from response content.");
         return result;
     }
 
     public async Task UpdateBlogPostAsync(Guid id, BlogPostUpdateDto blogPostUpdateDto)
     {
-        using var content = new MultipartFormDataContent();
-        content.Add(new StringContent(blogPostUpdateDto.Title), "Title");
-        content.Add(new StringContent(blogPostUpdateDto.Content), "Content");
-        content.Add(new StringContent(blogPostUpdateDto.AuthorId.ToString()), "AuthorId");
-        content.Add(new StringContent(id.ToString()), "Id");
+        using var content = new MultipartFormDataContent
+        {
+            { new StringContent(blogPostUpdateDto.Title), "Title" },
+            { new StringContent(blogPostUpdateDto.Content), "Content" },
+            { new StringContent(blogPostUpdateDto.AuthorId.ToString()), "AuthorId" },
+            { new StringContent(id.ToString()), "Id" }
+        };
 
         if (blogPostUpdateDto.Image != null)
         {
@@ -75,8 +82,8 @@ public class BlogPostService(IHttpClientFactory httpClientFactory,ITokenService 
             content.Add(imageContent, "Image", blogPostUpdateDto.Image.FileName);
         }
 
-        DataClientGetToken(tokenService);
-        var response = await _dataHttpClient.PutAsync($"/api/BlogPost/{id}", content);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PutAsync($"/api/BlogPost/{id}", content);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 }

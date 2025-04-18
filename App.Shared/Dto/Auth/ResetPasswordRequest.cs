@@ -4,9 +4,9 @@ namespace App.Shared.Dto.Auth;
 
 public class ResetPasswordRequest
 {
-    public string Email { get; set; } = null!;
-    public string Password { get; set; } = null!;
-    public string PasswordRepeat { get; set; } = null!;
+    public required string Email { get; set; } 
+    public required string Password { get; set; } 
+    public required string PasswordRepeat { get; set; } 
 }
 public class ResetPasswordRequestValidator
         : AbstractValidator<ResetPasswordRequest>

@@ -2,6 +2,7 @@
 using App.Shared.Models;
 using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
+using App.Shared.Util.ExceptionHandling.Types;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
@@ -11,17 +12,20 @@ public class AboutMeService(IHttpClientFactory httpClientFactory,ITokenService t
 {
     public async Task<AboutMeViewModel> GetAboutMeAsync()
     {
-        var response = await _dataHttpClient.GetAsync("/api/AboutMe");
-        await response.EnsureSuccessStatusCodeWithApiError();
-        var result = await response.Content.ReadFromJsonAsync<AboutMeViewModel>();
+        var response = await _apiHttpClient.GetAsync("/api/AboutMe");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
+        var result = await response.Content.ReadFromJsonAsync<AboutMeViewModel>()
+            ?? throw new DeserializationException("Failed to deserialize the response.");
         return result;
     }
 
     public async Task UpdateAboutMeAsync(AboutMeDto aboutMeDto)
     {
-        using var content = new MultipartFormDataContent();
-        content.Add(new StringContent(aboutMeDto.Title), "Title");
-        content.Add(new StringContent(aboutMeDto.Introduciton), "Introduciton");
+        using var content = new MultipartFormDataContent
+        {
+            { new StringContent(aboutMeDto.Title), "Title" },
+            { new StringContent(aboutMeDto.Introduciton), "Introduciton" }
+        };
 
         if (aboutMeDto.Cv != null)
         {
@@ -44,8 +48,8 @@ public class AboutMeService(IHttpClientFactory httpClientFactory,ITokenService t
             content.Add(image2Content, "Image2", aboutMeDto.Image2.FileName);
         }
 
-        DataClientGetToken(tokenService);
-        var response = await _dataHttpClient.PutAsync("/api/AboutMe", content);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PutAsync("/api/AboutMe", content);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
   }

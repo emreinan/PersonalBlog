@@ -2,6 +2,7 @@
 using App.Shared.Models;
 using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
+using App.Shared.Util.ExceptionHandling.Types;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.Experience;
@@ -10,38 +11,40 @@ public class ExperienceService(IHttpClientFactory httpClientFactory,ITokenServic
 {
     public async Task AddExperienceAsync(ExperienceSaveDto experienceDto)
     {
-        DataClientGetToken(tokenService);
-        var response = await _dataHttpClient.PostAsJsonAsync("/api/Experience", experienceDto);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PostAsJsonAsync("/api/Experience", experienceDto);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
     public async Task DeleteExperienceAsync(int id)
     {
-        DataClientGetToken(tokenService);
-        var response = await _dataHttpClient.DeleteAsync($"/api/Experience/{id}");
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.DeleteAsync($"/api/Experience/{id}");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
     public async Task EditExperienceAsync(int id, ExperienceSaveDto experienceDto)
     {
-        DataClientGetToken(tokenService);
-        var response = await _dataHttpClient.PutAsJsonAsync($"/api/Experience/{id}", experienceDto);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PutAsJsonAsync($"/api/Experience/{id}", experienceDto);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
     public async Task<ExperienceViewModel> GetExperienceByIdAsync(int id)
     {
-        var response = await _dataHttpClient.GetAsync($"/api/Experience/{id}");
-        await response.EnsureSuccessStatusCodeWithApiError();
-        var experience = await response.Content.ReadFromJsonAsync<ExperienceViewModel>();
+        var response = await _apiHttpClient.GetAsync($"/api/Experience/{id}");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
+        var experience = await response.Content.ReadFromJsonAsync<ExperienceViewModel>() ??
+            throw new DeserializationException("ExperienceViewModel", response.Content.ReadAsStringAsync().Result);
         return experience;
     }
 
     public async Task<List<ExperienceViewModel>> GetExperiencesAsync()
     {
-        var response = await _dataHttpClient.GetAsync("/api/Experience");
-        await response.EnsureSuccessStatusCodeWithApiError();
-        var result = await response.Content.ReadFromJsonAsync<List<ExperienceViewModel>>();
+        var response = await _apiHttpClient.GetAsync("/api/Experience");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
+        var result = await response.Content.ReadFromJsonAsync<List<ExperienceViewModel>>() ??
+            throw new DeserializationException("List<ExperienceViewModel>", response.Content.ReadAsStringAsync().Result);
         return result;
     }
 }

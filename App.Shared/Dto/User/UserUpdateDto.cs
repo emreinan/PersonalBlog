@@ -4,8 +4,8 @@ namespace App.Shared.Dto.User;
 
 public class UserUpdateDto
 {
-    public string UserName { get; set; }
-    public string Email { get; set; }
+    public required string UserName { get; set; }
+    public required string Email { get; set; }
 }
 public class UserUpdateDtoValidator : AbstractValidator<UserUpdateDto>
 {

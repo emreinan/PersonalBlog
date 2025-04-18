@@ -3,7 +3,6 @@ using App.Client.Util.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
 
 builder.Services.AddControllersWithViews(opt =>
 {
@@ -20,8 +19,6 @@ if (!app.Environment.IsDevelopment())
 }
 else
     app.UseDeveloperExceptionPage();
-
-app.MapDefaultEndpoints();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

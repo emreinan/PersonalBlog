@@ -3,8 +3,6 @@ using App.Admin.Util.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
-
 builder.Services.AddControllersWithViews(opt =>
 {
     opt.Filters.Add<ExceptionAndToastFilter>();
@@ -22,8 +20,6 @@ else
     app.UseDeveloperExceptionPage();
 
 app.UseNToastNotify();
-
-app.MapDefaultEndpoints();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

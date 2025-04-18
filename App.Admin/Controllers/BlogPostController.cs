@@ -4,6 +4,7 @@ using App.Shared.Models;
 using App.Shared.Services.BlogPost;
 using App.Shared.Services.Comment;
 using App.Shared.Services.File;
+using App.Shared.Util.ExceptionHandling.Types;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ using System.Security.Claims;
 namespace App.Admin.Controllers;
 
 [Route("BlogPost")]
-public class BlogPostController(IBlogPostService blogPostService, ICommentService commentService,IMapper mapper,IFileService fileService) : Controller
+public class BlogPostController(IBlogPostService blogPostService, ICommentService commentService,IMapper mapper) : Controller
 {
     [HttpGet("BlogPosts")]
     public async Task<IActionResult> BlogPosts()
@@ -83,8 +84,6 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
     [HttpGet("DeleteBlogPost/{id}")]
     public async Task<IActionResult> DeleteBlogPost(Guid id)
     {
-        var blogPost = await blogPostService.GetBlogPostAsync(id);
-
         await blogPostService.DeleteBlogPostAsync(id);
 
         TempData["SuccessMessage"] = "Blog post deleted successfully.";
@@ -93,14 +92,14 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
 
     [Authorize(Roles = "Admin")]
     [HttpGet("CreateCommentAsync/{id}")]
-    public IActionResult CreateComment(Guid Id)
+    public IActionResult CreateComment(Guid id)
     {
         return View();
     }
 
     [Authorize]
     [HttpPost("CreateCommentAsync/{id}")]
-    public async Task<IActionResult> CreateComment(Guid Id, CommentCreateViewModel model)
+    public async Task<IActionResult> CreateComment(Guid id, CommentCreateViewModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -109,7 +108,7 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
         if (userId == Guid.Empty)
             return RedirectToAction("Login", "Auth");
 
-        var commentDto = new CommentDto { Content = model.Content, PostId = Id, UserId = userId };
+        var commentDto = new CommentDto { Content = model.Content, PostId = id, UserId = userId };
         await commentService.CreateCommentAsync(commentDto);
 
         TempData["SuccessMessage"] = "Comment created successfully.";
@@ -118,8 +117,14 @@ public class BlogPostController(IBlogPostService blogPostService, ICommentServic
 
     private Guid GetUserId()
     {
-        if (!User.Identity.IsAuthenticated)
-            return Guid.Empty;
-        return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        if (User?.Identity?.IsAuthenticated != true)
+            throw new UnauthorizedException("User is not authenticated.");
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            throw new UnauthorizedException("User ID claim is missing or invalid.");
+
+        return userId;
     }
 }

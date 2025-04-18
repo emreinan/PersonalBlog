@@ -1,18 +1,17 @@
-﻿using App.Data.Entities.Auth;
+﻿using App.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace App.Data.Configurations;
 
-public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
+public class RefreshTokenConfiguration : BaseEntityConfiguration<RefreshToken, Guid>
 {
-    public void Configure(EntityTypeBuilder<RefreshToken> builder)
+    public override void Configure(EntityTypeBuilder<RefreshToken> builder)
     {
-        builder.HasKey(r => r.Id);
+        base.Configure(builder);
 
         builder.Property(r => r.Token).IsRequired().HasMaxLength(255);
         builder.Property(r => r.ExpiresAt).IsRequired();
-        builder.Property(r => r.CreatedAt).IsRequired();
 
         builder.HasOne(r => r.User)
             .WithMany(u => u.RefreshTokens)

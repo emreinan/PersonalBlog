@@ -1,5 +1,4 @@
-﻿using Ardalis.Result;
-
+﻿
 namespace App.Shared.Services.Mail
 {
     public interface IMailService

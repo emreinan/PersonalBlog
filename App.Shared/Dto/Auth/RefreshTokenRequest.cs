@@ -4,7 +4,7 @@ namespace App.Shared.Dto.Auth;
 
 public class RefreshTokenRequest
 {
-    public string Token { get; set; }
+    public required string Token { get; set; }
 }
 
 public class RefreshTokenRequestValidator

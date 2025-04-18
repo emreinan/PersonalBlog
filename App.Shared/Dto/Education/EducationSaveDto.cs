@@ -4,9 +4,9 @@ namespace App.Shared.Dto.Education
 {
     public class EducationSaveDto
     {
-        public string School { get; set; }
-        public string Degree { get; set; }
-        public string FieldOfStudy { get; set; }
+        public required string School { get; set; }
+        public required string Degree { get; set; }
+        public required string FieldOfStudy { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
     }

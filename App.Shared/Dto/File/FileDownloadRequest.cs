@@ -4,7 +4,7 @@ namespace App.Shared.Dto.File
 {
     public class FileDownloadRequest
     {
-        public string FileUrl { get; set; } = null!;
+        public required string FileUrl { get; set; } 
     }
 
     public class FileDownloadRequestValidator : AbstractValidator<FileDownloadRequest>

@@ -44,9 +44,6 @@ public class EducationController(IEducationService educationService, IMapper map
     {
         var education = await educationService.GetEducationByIdAsync(id); 
 
-        if (education == null)
-            return NotFound(); 
-
         var educationViewModel = mapper.Map<EducationSaveViewModel>(education); 
         return View(educationViewModel); 
     }
@@ -69,11 +66,6 @@ public class EducationController(IEducationService educationService, IMapper map
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var education = await educationService.GetEducationByIdAsync(id); 
-
-        if (education == null)
-            return NotFound(); 
-
         await educationService.DeleteEducationByIdAsync(id);
 
         TempData["SuccessMessage"] = "Education deleted successfully";

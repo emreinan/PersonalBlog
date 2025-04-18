@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
-using App.Shared.Util.ExceptionHandling;
+using App.Shared.Util.ExceptionHandling.Types;
 
 namespace App.Admin.Util.Filters;
 
@@ -41,26 +41,37 @@ public class ExceptionAndToastFilter(IToastNotification toastNotification
     public void OnException(ExceptionContext context)
     {
 
-        if (context.Exception is ApiException apiEx)
+        var exception = context.Exception;
+
+        switch (exception)
         {
-            if (apiEx.ApiError.Type == "https://example.com/probs/business")
-                toastNotification.AddErrorToastMessage(apiEx.ApiError.Detail);
+            case ValidationException:
+                toastNotification.AddWarningToastMessage(exception.Message);
+                break;
 
-            else if (apiEx.ApiError.Type == "https://example.com/probs/validation")
-                toastNotification.AddWarningToastMessage(apiEx.ApiError.Detail);
+            case NotFoundException:
+                toastNotification.AddInfoToastMessage(exception.Message);
+                break;
 
-            else if (apiEx.ApiError.Type == "https://example.com/probs/notfound")
-                toastNotification.AddInfoToastMessage(apiEx.ApiError.Detail);
+            case UnauthorizedException:
+                toastNotification.AddErrorToastMessage(exception.Message);
+                break;
 
-            else if (apiEx.ApiError.Type == "https://example.com/probs/internal")
-                toastNotification.AddAlertToastMessage(apiEx.ApiError.Detail);
+            case BadRequestException:
+                toastNotification.AddAlertToastMessage(exception.Message);
+                break;
 
-            else if (apiEx.ApiError.Type == "https://example.com/probs/unauthorized")
-                toastNotification.AddErrorToastMessage(apiEx.ApiError.Detail);
+            case DeserializationException:
+                toastNotification.AddErrorToastMessage(exception.Message);
+                break;
 
-            else
-                toastNotification.AddErrorToastMessage(apiEx.ApiError.Detail);
+            case ConflictException:
+                toastNotification.AddErrorToastMessage(exception.Message);
+                break;
 
+            default:
+                toastNotification.AddErrorToastMessage(exception.Message);
+                break;
         }
 
 
@@ -70,11 +81,13 @@ public class ExceptionAndToastFilter(IToastNotification toastNotification
         }
         else if (context.HttpContext.Request.Method == "POST")
         {
-            var routeValues = context.RouteData.Values;
-            var controller = routeValues["controller"];
-            var action = routeValues["action"];
+            var controller = context.RouteData.Values["controller"]?.ToString();
+            var action = context.RouteData.Values["action"]?.ToString();
 
-            context.Result = new RedirectToActionResult(action.ToString(), controller.ToString(), null);
+            if (!string.IsNullOrWhiteSpace(controller) && !string.IsNullOrWhiteSpace(action))
+            {
+                context.Result = new RedirectToActionResult(action, controller, null);
+            }
         }
 
         context.ExceptionHandled = true;

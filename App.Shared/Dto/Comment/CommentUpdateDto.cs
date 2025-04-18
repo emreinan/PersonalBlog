@@ -4,7 +4,7 @@ namespace App.Shared.Dto.Comment;
 
 public class CommentUpdateDto
 {
-    public string Content { get; set; }
+    public required string Content { get; set; }
 }
 public class CommentUpdateDtoValidator : AbstractValidator<CommentUpdateDto>
 {

@@ -19,10 +19,6 @@ public class ContactMessageController(IContactMessageService contactMessageServi
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var message = await contactMessageService.GetMessageByIdAsync(id);
-        if (message == null)
-            return NotFound();
-
         await contactMessageService.DeleteMessageAsync(id);
 
         TempData["SuccessMessage"] = "Message deleted successfully";
@@ -35,8 +31,6 @@ public class ContactMessageController(IContactMessageService contactMessageServi
     public async Task<IActionResult> MarkAsRead(int id)
     {
         var message = await contactMessageService.GetMessageByIdAsync(id);
-        if (message == null)
-            return NotFound();
 
         string subject = "Your message has been read";
         string htmlMessage = "<p>Your message has been read by the admin. Thank you for reaching out!</p>";
@@ -48,7 +42,7 @@ public class ContactMessageController(IContactMessageService contactMessageServi
             await contactMessageService.MarkAsReadAsync(id);
             TempData["SuccessMessage"] = "Message marked as read successfully";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             TempData["ErrorMessage"] = "An error occurred while sending the email. Please try again later.";
         }

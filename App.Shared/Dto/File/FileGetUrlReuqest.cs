@@ -4,7 +4,7 @@ namespace App.Shared.Dto.File;
 
 public class FileGetUrlReuqest
 {
-    public string FileName { get; set; }
+    public required string FileName { get; set; }
 }
 public class FileGetUrlReuqestValidator : AbstractValidator<FileGetUrlReuqest>
 {

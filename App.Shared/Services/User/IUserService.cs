@@ -1,6 +1,5 @@
 ﻿using App.Shared.Dto.User;
 using App.Shared.Models;
-using Ardalis.Result;
 using Microsoft.AspNetCore.Http;
 
 namespace App.Shared.Services.User;

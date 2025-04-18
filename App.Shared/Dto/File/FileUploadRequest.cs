@@ -5,7 +5,7 @@ namespace App.Shared.Dto.File;
 
 public class FileUploadRequest
 {
-    public IFormFile File { get; set; }
+    public required IFormFile File { get; set; }
 }
 public class FileUploadRequestValidator : AbstractValidator<FileUploadRequest>
 {

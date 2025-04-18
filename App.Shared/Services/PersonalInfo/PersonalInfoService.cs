@@ -2,6 +2,7 @@
 using App.Shared.Models;
 using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
+using App.Shared.Util.ExceptionHandling.Types;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.PersonalInfo;
@@ -10,16 +11,17 @@ public class PersonalInfoService(IHttpClientFactory httpClientFactory,ITokenServ
 {
     public async Task<PersonalInfoViewModel> GetPersonalInfoAsync()
     {
-        var response = await _dataHttpClient.GetAsync("/api/PersonalInfo");
-        await response.EnsureSuccessStatusCodeWithApiError();
-        var result = await response.Content.ReadFromJsonAsync<PersonalInfoViewModel>();
+        var response = await _apiHttpClient.GetAsync("/api/PersonalInfo");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
+        var result = await response.Content.ReadFromJsonAsync<PersonalInfoViewModel>() ??
+            throw new DeserializationException("Failed to deserialize the response content.");
         return result;
     }
 
     public async Task UpdatePersonalInfoAsync(PersonalInfoDto personalInfoDto)
     {
-        DataClientGetToken(tokenService);
-        var response = await _dataHttpClient.PutAsJsonAsync("/api/PersonalInfo", personalInfoDto);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PutAsJsonAsync("/api/PersonalInfo", personalInfoDto);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 }

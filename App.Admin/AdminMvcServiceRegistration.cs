@@ -44,31 +44,21 @@ public static class AdminMvcServiceRegistration
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IAuthService, HttpAuthService>();
         services.AddScoped<ITokenService, CookieTokenService>();
-        services.AddScoped<IFileService, FileApiService>();
+        services.AddScoped<IFileService, FileService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IMailService, SmtpEmailService>();
 
-        services.AddOptions<SmtpConfiguration>().Configure<IConfiguration>((settings, configuration) =>
-        {
-            configuration.GetSection("SmtpConfiguration").Bind(settings);
-        });
+        //services.AddOptions<SmtpConfiguration>().Configure<IConfiguration>((settings, configuration) =>
+        //{
+        //    configuration.GetSection("SmtpConfiguration").Bind(settings);
+        //});
     }
 
     private static void GetApiUrl(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHttpClient("FileApiClient", client =>
+        services.AddHttpClient("WebApiClient", client =>
         {
-            string apiUrl = configuration["ExternalApis:FileApiUrl"] ?? throw new InvalidOperationException("FileApi URL is missing");
-            client.BaseAddress = new Uri(apiUrl);
-        });
-        services.AddHttpClient("DataApiClient", client =>
-        {
-            string apiUrl = configuration["ExternalApis:DataApiUrl"] ?? throw new InvalidOperationException("DataApi URL is missing");
-            client.BaseAddress = new Uri(apiUrl);
-        });
-        services.AddHttpClient("AuthApiClient", client =>
-        {
-            string apiUrl = configuration["ExternalApis:AuthApiUrl"] ?? throw new InvalidOperationException("AuthApi URL is missing");
+            string apiUrl = configuration["WebApiUrl"] ?? throw new InvalidOperationException("WebApi URL is missing");
             client.BaseAddress = new Uri(apiUrl);
         });
     }

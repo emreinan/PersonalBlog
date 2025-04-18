@@ -1,26 +1,32 @@
-﻿
-using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Net.Http.Json;
+using System.Net;
+using App.Shared.Util.ExceptionHandling.Types;
 
 namespace App.Shared.Util.ExceptionHandling;
 
 public static class HttpResponseMessageExtensions
 {
-    public static async Task EnsureSuccessStatusCodeWithApiError(this HttpResponseMessage response)
+    public static async Task EnsureSuccessStatusCodeWithProblemDetails(this HttpResponseMessage response)
     {
-        if (!response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
+            return;
+
+        if (response.Content.Headers.ContentLength > 0)
         {
-            if (response.Content.Headers.ContentLength > 0)
+            var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+            var message = problem?.Detail ?? "An error occurred.";
+
+            throw response.StatusCode switch
             {
-                var apiError = await response.Content.ReadFromJsonAsync<ApiError>();
-                throw new Exception(apiError?.Detail ?? "An error occurred while processing the request.");
-            }
-            else
-            {
-                throw new Exception("An error occurred while processing the request.");
-            }
+                HttpStatusCode.NotFound => new NotFoundException(message),
+                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => new UnauthorizedAccessException(message),
+                HttpStatusCode.Conflict => new ConflictException(message),
+                HttpStatusCode.BadRequest => new BadRequestException(message),
+                HttpStatusCode.UnprocessableEntity => new ValidationException(message),
+                _ => new Exception(message)
+            };
         }
+
+        response.EnsureSuccessStatusCode();
     }
 }
-
-

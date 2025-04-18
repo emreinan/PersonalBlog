@@ -3,9 +3,8 @@ using App.Shared.Dto.User;
 using App.Shared.Models;
 using App.Shared.Services.Token;
 using App.Shared.Util.ExceptionHandling;
-using Ardalis.Result;
+using App.Shared.Util.ExceptionHandling.Types;
 using Microsoft.AspNetCore.Http;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace App.Shared.Services.User;
@@ -14,53 +13,55 @@ public class UserService(IHttpClientFactory httpClientFactory,ITokenService toke
 {
     public async Task ActivateUserAsync(Guid userId)
     {
-        AuthClientGetToken(tokenService);
-        var response = await _authHttpClient.PutAsync($"/api/User/Activate/{userId}", null);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PutAsync($"/api/User/Activate/{userId}", null);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
     public async Task DeactivateUserAsync(Guid userId)
     {
-        AuthClientGetToken(tokenService);
-        var response = await _authHttpClient.PutAsync($"/api/User/Deactivate/{userId}", null);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PutAsync($"/api/User/Deactivate/{userId}", null);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
 
     public async Task DeleteUserAsync(Guid userId)
     {
-        AuthClientGetToken(tokenService);
-        var response = await _authHttpClient.DeleteAsync($"/api/User/{userId}");
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.DeleteAsync($"/api/User/{userId}");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
     public async Task<UserViewModel> GetUserAsync(Guid userId)
     {
-        var response = await _authHttpClient.GetAsync($"/api/User/{userId}");
-        await response.EnsureSuccessStatusCodeWithApiError();
-        return await response.Content.ReadFromJsonAsync<UserViewModel>();
+        var response = await _apiHttpClient.GetAsync($"/api/User/{userId}");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
+        return await response.Content.ReadFromJsonAsync<UserViewModel>() ??
+            throw new DeserializationException("Failed to deserialize user list.");
     }
 
     public async Task<List<UserViewModel>> GetUsersAsync()
     {
-        var response = await _authHttpClient.GetAsync("/api/User");
-        await response.EnsureSuccessStatusCodeWithApiError();
-        return await response.Content.ReadFromJsonAsync<List<UserViewModel>>();
+        var response = await _apiHttpClient.GetAsync("/api/User");
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
+        return await response.Content.ReadFromJsonAsync<List<UserViewModel>>() ??
+            throw new DeserializationException("Failed to deserialize user list.");
     }
 
     public async Task UpdateUserAsync(Guid id, UserUpdateDto userUpdateDto)
     {
-        AuthClientGetToken(tokenService);
-        var response = await _authHttpClient.PutAsJsonAsync($"/api/User/{id}", userUpdateDto);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        WebApiClientGetToken(tokenService);
+        var response = await _apiHttpClient.PutAsJsonAsync($"/api/User/{id}", userUpdateDto);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
     }
 
     public async Task<string> UploadProfilePhotoAsync(IFormFile file)
     {
-        AuthClientGetToken(tokenService);
+        WebApiClientGetToken(tokenService);
         var fileUpload = new ProfilePicUpload { File = file };
-        var response = await _authHttpClient.PostAsJsonAsync($"/api/User/upload-profile-image", fileUpload);
-        await response.EnsureSuccessStatusCodeWithApiError();
+        var response = await _apiHttpClient.PostAsJsonAsync($"/api/User/upload-profile-image", fileUpload);
+        await response.EnsureSuccessStatusCodeWithProblemDetails();
         return await response.Content.ReadAsStringAsync();
     }
 }

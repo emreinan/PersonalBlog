@@ -9,7 +9,7 @@ namespace App.Shared.Dto.Comment;
 
 public class CommentDto
 {
-    public string Content { get; set; }
+    public required string Content { get; set; }
     public Guid UserId { get; set; }
     public Guid PostId { get; set; }
 }

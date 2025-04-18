@@ -5,8 +5,8 @@ namespace App.Shared.Dto.AboutMe;
 
 public class AboutMeDto
 {
-    public string Introduciton { get; set; }
-    public string Title { get; set; }
+    public required string Introduciton { get; set; } 
+    public required string Title { get; set; } 
     public IFormFile? Cv { get; set; }
     public IFormFile? Image1 { get; set; }
     public IFormFile? Image2 { get; set; }

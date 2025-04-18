@@ -4,8 +4,8 @@ namespace App.Shared.Dto.Experience;
 
 public class ExperienceSaveDto
 {
-    public string Title { get; set; }
-    public string Company { get; set; }
+    public required string Title { get; set; }
+    public required string Company { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public string? Description { get; set; }

@@ -1,6 +1,7 @@
 ﻿using App.Shared.Dto.User;
 using App.Shared.Models;
 using App.Shared.Services.User;
+using App.Shared.Util.ExceptionHandling.Types;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -78,12 +79,17 @@ public class UserController(IUserService userService,IMapper mapper) : Controlle
         return RedirectToAction(nameof(Details));
     }
 
-    public Guid GetUserId()
+    private Guid GetUserId()
     {
-        if (User.Identity.IsAuthenticated)
-            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        if (User?.Identity?.IsAuthenticated != true)
+            throw new UnauthorizedException("User is not authenticated.");
 
-        throw new UnauthorizedAccessException("User is not authenticated.");
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            throw new UnauthorizedException("User ID claim is missing or invalid.");
+
+        return userId;
     }
 
 }

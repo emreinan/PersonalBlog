@@ -44,9 +44,6 @@ public class ExperienceController(IExperienceService experienceService, IMapper 
     {
         var experience = await experienceService.GetExperienceByIdAsync(id);
 
-        if (experience == null)
-            return NotFound();
-
         var experienceSaveViewModel = mapper.Map<ExperienceSaveViewModel>(experience);
         return View(experienceSaveViewModel);
     }
@@ -69,11 +66,6 @@ public class ExperienceController(IExperienceService experienceService, IMapper 
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var experience = await experienceService.GetExperienceByIdAsync(id);
-
-        if (experience == null)
-            return NotFound();
-
         await experienceService.DeleteExperienceAsync(id);
 
         TempData["SuccessMessage"] = "Experience deleted successfully";
